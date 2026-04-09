@@ -16,7 +16,7 @@ export interface App {
   name: string;
   category: Category;
   description: string;
-  icon: string; // 이모지 — 나중에 이미지로 교체 가능
+  iconName: string;
   isNew?: boolean;
 }
 
@@ -28,14 +28,14 @@ export const apps: App[] = [
     name: "수업 플래너",
     category: "lesson-prep",
     description: "주간 수업 계획을 드래그앤드롭으로 정리해요.",
-    icon: "📅",
+    iconName: "calendar",
   },
   {
     id: "slide-maker",
     name: "퀵 슬라이드",
     category: "lesson-prep",
     description: "주제만 입력하면 수업 슬라이드 초안이 완성됩니다.",
-    icon: "🎞️",
+    iconName: "slides",
     isNew: true,
   },
   {
@@ -43,42 +43,42 @@ export const apps: App[] = [
     name: "워크시트 생성기",
     category: "material",
     description: "학년·과목별 맞춤 워크시트를 자동 생성해요.",
-    icon: "📝",
+    iconName: "fileText",
   },
   {
     id: "quiz-maker",
     name: "퀴즈 메이커",
     category: "assessment",
     description: "객관식·주관식 문제를 한 번에 만들어요.",
-    icon: "❓",
+    iconName: "circleHelp",
   },
   {
     id: "rubric-builder",
     name: "루브릭 빌더",
     category: "assessment",
     description: "수행평가 기준표를 클릭 몇 번으로 완성합니다.",
-    icon: "📊",
+    iconName: "barChart",
   },
   {
     id: "attendance",
     name: "스마트 출석부",
     category: "student-management",
     description: "QR/얼굴 인식으로 출결을 빠르게 기록해요.",
-    icon: "✅",
+    iconName: "checkCircle",
   },
   {
     id: "seating-chart",
     name: "자리 배치도",
     category: "student-management",
     description: "랜덤·조건부로 좌석을 자동 배치합니다.",
-    icon: "🪑",
+    iconName: "chair",
   },
   {
     id: "behavior-log",
     name: "행동 관찰 기록",
     category: "student-management",
     description: "관찰 기록을 누적해 생기부 작성에 활용해요.",
-    icon: "🔍",
+    iconName: "search",
     isNew: true,
   },
   {
@@ -86,13 +86,13 @@ export const apps: App[] = [
     name: "포스터 메이커",
     category: "material",
     description: "교실 게시용 포스터를 템플릿으로 만들어요.",
-    icon: "🎨",
+    iconName: "palette",
   },
   {
     id: "report-writer",
     name: "생기부 도우미",
     category: "material",
     description: "관찰 기록을 문장으로 다듬어 줍니다.",
-    icon: "✍️",
+    iconName: "pen",
   },
 ];
