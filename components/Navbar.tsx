@@ -29,7 +29,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white/10 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-slate-900">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a href="#top" className="text-lg font-extrabold text-white">
           T&B School

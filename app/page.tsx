@@ -7,6 +7,7 @@ import { AppGallery } from "@/components/sections/AppGallery";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
+import { AiCourse } from "@/components/sections/AiCourse";
 import { CustomForm } from "@/components/sections/CustomForm";
 import { FAQ } from "@/components/sections/FAQ";
 import { Footer } from "@/components/sections/Footer";
@@ -23,6 +24,7 @@ export default function HomePage() {
       <Roadmap />
       <Testimonials />
       <Pricing />
+      <AiCourse />
       <CustomForm />
       <FAQ />
       <Footer />

@@ -1,20 +1,20 @@
 import {
-  IconCalendar, IconSlides, IconFileText, IconCircleHelp,
-  IconBarChart, IconCheckCircle, IconChair, IconSearch,
-  IconPalette, IconPen,
+  IconCalendar, IconPresentation, IconFileEdit, IconMessageQuestion,
+  IconChartBar, IconClipboardCheck, IconLayoutGrid, IconEye,
+  IconBrush, IconNotebookPen,
 } from "./Icons";
 
 const map: Record<string, React.FC<{ className?: string }>> = {
   calendar: IconCalendar,
-  slides: IconSlides,
-  fileText: IconFileText,
-  circleHelp: IconCircleHelp,
-  barChart: IconBarChart,
-  checkCircle: IconCheckCircle,
-  chair: IconChair,
-  search: IconSearch,
-  palette: IconPalette,
-  pen: IconPen,
+  slides: IconPresentation,
+  fileText: IconFileEdit,
+  circleHelp: IconMessageQuestion,
+  barChart: IconChartBar,
+  checkCircle: IconClipboardCheck,
+  chair: IconLayoutGrid,
+  search: IconEye,
+  palette: IconBrush,
+  pen: IconNotebookPen,
 };
 
 export function AppIcon({ name, className = "h-6 w-6" }: { name: string; className?: string }) {

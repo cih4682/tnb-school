@@ -8,7 +8,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "lesson-prep": "수업 준비",
   assessment: "평가",
   "student-management": "학생 관리",
-  material: "자료 제작",
+  material: "업무 관리",
 };
 
 export interface App {

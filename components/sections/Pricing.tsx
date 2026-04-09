@@ -12,7 +12,7 @@ const benefits = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="bg-white py-28">
+    <section id="pricing" className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-28">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -21,9 +21,9 @@ export function Pricing() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Pricing</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">입학 안내</h2>
-          <p className="mt-3 text-slate-500">한 번의 입학금으로 평생 동행합니다</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Pricing</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">입학 안내</h2>
+          <p className="mt-3 text-white/50">한 번의 입학금으로 평생 동행합니다</p>
         </motion.div>
 
         <motion.div
@@ -33,18 +33,18 @@ export function Pricing() {
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mx-auto mt-16 max-w-md"
         >
-          <div className="rounded-2xl border border-slate-200 p-10">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">평생 회원</p>
-            <h3 className="mt-2 text-xl font-bold">티처버프 정회원</h3>
+          <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-10 backdrop-blur-sm">
+            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">평생 회원</p>
+            <h3 className="mt-2 text-xl font-bold text-white">티처버프 정회원</h3>
             <div className="mt-6 flex items-baseline gap-1">
-              <span className="text-5xl font-extrabold tracking-tight">₩99,000</span>
-              <span className="text-slate-400">/ 1회</span>
+              <span className="text-5xl font-extrabold tracking-tight text-white">₩99,000</span>
+              <span className="text-white/40">/ 1회</span>
             </div>
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-white/30">
               * 가격은 추후 변경될 수 있습니다.
             </p>
 
-            <div className="my-8 h-px bg-slate-100" />
+            <div className="my-8 h-px bg-white/10" />
 
             <ul className="space-y-4">
               {benefits.map((b, idx) => (
@@ -56,17 +56,17 @@ export function Pricing() {
                   transition={{ delay: 0.3 + idx * 0.08 }}
                   className="flex items-center gap-3 text-sm"
                 >
-                  <svg className="h-4 w-4 shrink-0 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-4 w-4 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="m9 12 2 2 4-4" />
                   </svg>
-                  <span className="text-slate-600">{b}</span>
+                  <span className="text-white/70">{b}</span>
                 </motion.li>
               ))}
             </ul>
 
             <a
               href="#custom"
-              className="mt-8 block w-full rounded-full bg-slate-900 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="mt-8 block w-full rounded-full bg-white py-3.5 text-center text-sm font-semibold text-slate-900 transition hover:bg-white/90"
             >
               지금 입학하기
             </a>

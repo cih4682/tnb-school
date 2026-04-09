@@ -13,11 +13,11 @@ export function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="text-3xl font-extrabold tracking-tight md:text-5xl"
+            className="text-3xl font-extrabold leading-relaxed tracking-tight md:text-5xl"
           >
-            지금 입학하고,
+            아이들과의 시간,
             <br />
-            선생님의 하루를 바꾸세요.
+            되찾을 준비 되셨나요?
           </motion.h2>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -28,9 +28,10 @@ export function Footer() {
           >
             <a
               href="#pricing"
-              className="inline-block rounded-full bg-slate-900 px-8 py-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="relative inline-block rounded-full bg-slate-900 px-8 py-4 text-sm font-semibold text-white transition hover:bg-slate-800"
             >
-              입학하기 →
+              <span className="absolute inset-0 animate-ping rounded-full bg-slate-700 opacity-30" style={{ animationDuration: "2.5s" }} />
+              <span className="relative">입학하기 →</span>
             </a>
           </motion.div>
         </div>

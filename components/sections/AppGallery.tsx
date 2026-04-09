@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { apps, CATEGORY_LABELS, Category, App } from "@/data/apps";
+import { useRef, useState, MouseEvent } from "react";
+import { motion } from "framer-motion";
+import { apps, CATEGORY_LABELS, Category } from "@/data/apps";
 import { AppIcon } from "../ui/AppIcon";
 
 type Filter = "all" | Category;
@@ -15,13 +15,28 @@ const filters: { value: Filter; label: string }[] = [
   { value: "material", label: CATEGORY_LABELS["material"] },
 ];
 
+const categoryDots: Record<Category, string> = {
+  "lesson-prep": "bg-indigo-500",
+  assessment: "bg-rose-500",
+  "student-management": "bg-emerald-500",
+  material: "bg-amber-500",
+};
+
+const categoryHoverBorder: Record<Category, string> = {
+  "lesson-prep": "hover:border-indigo-400",
+  assessment: "hover:border-rose-400",
+  "student-management": "hover:border-emerald-400",
+  material: "hover:border-amber-400",
+};
+
+const categories: Category[] = ["lesson-prep", "assessment", "student-management", "material"];
+
 export function AppGallery() {
   const [filter, setFilter] = useState<Filter>("all");
-  const [active, setActive] = useState<App>(apps[0]);
   const visible = filter === "all" ? apps : apps.filter((a) => a.category === filter);
 
   return (
-    <section id="apps" className="bg-white py-28">
+    <section id="apps" className="bg-white py-36">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -30,8 +45,12 @@ export function AppGallery() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">App Gallery</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">앱 갤러리</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+            App Gallery
+          </p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+            앱 갤러리
+          </h2>
         </motion.div>
 
         {/* 필터 */}
@@ -40,11 +59,7 @@ export function AppGallery() {
             {filters.map((f) => (
               <button
                 key={f.value}
-                onClick={() => {
-                  setFilter(f.value);
-                  const first = f.value === "all" ? apps[0] : apps.find((a) => a.category === f.value);
-                  if (first) setActive(first);
-                }}
+                onClick={() => setFilter(f.value)}
                 className={`relative rounded-full px-5 py-2 text-sm font-medium transition ${
                   filter === f.value ? "text-white" : "text-slate-500 hover:text-slate-900"
                 }`}
@@ -62,76 +77,155 @@ export function AppGallery() {
           </div>
         </div>
 
-        {/* 리스트 + 프리뷰 */}
-        <div className="mt-16 grid gap-8 md:grid-cols-[1fr_1.2fr]">
-          <div className="space-y-0.5">
-            {visible.map((app, i) => {
-              const isActive = active.id === app.id;
+        {/* 전체: 카테고리별 롤링 */}
+        {filter === "all" ? (
+          <div className="mt-14 space-y-0">
+            {categories.map((cat, ci) => {
+              const catApps = apps.filter((a) => a.category === cat);
               return (
-                <motion.button
-                  key={app.id}
-                  initial={{ opacity: 0, x: -12 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                <motion.div
+                  key={cat}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.04 }}
-                  onMouseEnter={() => setActive(app)}
-                  onClick={() => setActive(app)}
-                  className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left transition ${
-                    isActive ? "bg-slate-50" : "hover:bg-slate-50/50"
-                  }`}
+                  transition={{ duration: 0.5, delay: ci * 0.1 }}
+                  className="border-b border-slate-100 py-8 last:border-b-0"
                 >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
-                    isActive ? "border-slate-900 text-slate-900" : "border-slate-200 text-slate-400"
-                  } transition`}>
-                    <AppIcon name={app.iconName} className="h-5 w-5" />
+                  {/* 카테고리 제목 */}
+                  <div className="mb-6 flex items-center justify-center gap-2">
+                    <div className={`h-2 w-2 rounded-full ${categoryDots[cat]}`} />
+                    <h3 className="text-sm font-bold tracking-wide">
+                      {CATEGORY_LABELS[cat]}
+                    </h3>
                   </div>
-                  <div className="flex-1">
-                    <span className={`text-sm font-semibold ${isActive ? "text-slate-900" : "text-slate-600"}`}>
-                      {app.name}
-                    </span>
-                    {app.isNew && (
-                      <span className="ml-2 rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                        NEW
-                      </span>
-                    )}
+
+                  {/* 롤링 + 좌우 페이드 */}
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-white to-transparent" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-white to-transparent" />
+                    <MarqueeRow apps={catApps} direction={ci % 2 === 0 ? "left" : "right"} hoverBorder={categoryHoverBorder[cat]} />
                   </div>
-                  <span className={`text-xs transition ${isActive ? "text-slate-900" : "text-transparent"}`}>→</span>
-                </motion.button>
+                </motion.div>
               );
             })}
           </div>
-
-          {/* 프리뷰 */}
-          <div className="flex items-start justify-center">
-            <AnimatePresence mode="wait">
+        ) : (
+          /* 개별 카테고리: 글로우 그리드 */
+          <GlowGrid>
+            {visible.map((app, i) => (
               <motion.div
-                key={active.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-10 md:p-12"
+                key={app.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className="glow-card relative rounded-2xl border border-slate-200 bg-white p-6 transition-shadow hover:shadow-lg"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-900">
-                  <AppIcon name={active.iconName} className="h-7 w-7" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 text-slate-700">
+                  <AppIcon name={app.iconName} className="h-6 w-6" />
                 </div>
-                <h3 className="mt-6 text-2xl font-extrabold">{active.name}</h3>
-                <span className="mt-2 inline-block text-xs font-medium text-slate-400">
-                  {CATEGORY_LABELS[active.category]}
-                </span>
-                <p className="mt-5 text-base leading-relaxed text-slate-500">
-                  {active.description}
+                <h3 className="mt-4 text-base font-bold">{app.name}</h3>
+                <p className="mt-1 text-xs text-slate-400">
+                  {CATEGORY_LABELS[app.category]}
                 </p>
-                {active.isNew && (
-                  <div className="mt-6 inline-block rounded-full border border-slate-900 px-3 py-1 text-xs font-semibold">
-                    새로 출시
-                  </div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                  {app.description}
+                </p>
+                {app.isNew && (
+                  <span className="absolute right-4 top-4 rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                    NEW
+                  </span>
                 )}
               </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+            ))}
+          </GlowGrid>
+        )}
       </div>
     </section>
+  );
+}
+
+/* 롤링 마퀴 — 호버 시 일시정지 (CSS 애니메이션 사용) */
+function MarqueeRow({
+  apps: rowApps,
+  direction = "left",
+  hoverBorder = "hover:border-slate-300",
+}: {
+  apps: typeof apps;
+  direction?: "left" | "right";
+  hoverBorder?: string;
+}) {
+  const items = [...rowApps, ...rowApps, ...rowApps, ...rowApps];
+
+  return (
+    <div className="group flex overflow-hidden">
+      <div
+        className={`flex shrink-0 gap-5 ${direction === "left" ? "marquee-left" : "marquee-right"} group-hover:[animation-play-state:paused]`}
+      >
+        {items.map((app, i) => (
+          <div
+            key={`${app.id}-${i}`}
+            className={`flex w-[300px] shrink-0 items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md ${hoverBorder}`}
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700">
+              <AppIcon name={app.iconName} className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-bold">{app.name}</p>
+                {app.isNew && (
+                  <span className="shrink-0 rounded bg-slate-900 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                    NEW
+                  </span>
+                )}
+              </div>
+              <p className="mt-0.5 truncate text-xs text-slate-400">{app.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* 글로우 그리드 */
+function GlowGrid({ children }: { children: React.ReactNode }) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+
+  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
+    if (!gridRef.current) return;
+    const rect = gridRef.current.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }
+
+  return (
+    <div
+      ref={gridRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      className="relative mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      style={
+        isHovering
+          ? ({
+              "--glow-x": `${mousePos.x}px`,
+              "--glow-y": `${mousePos.y}px`,
+            } as React.CSSProperties)
+          : undefined
+      }
+    >
+      {isHovering && (
+        <div
+          className="pointer-events-none absolute -inset-px z-10 rounded-2xl opacity-100 transition-opacity"
+          style={{
+            background: `radial-gradient(400px circle at var(--glow-x) var(--glow-y), rgba(99,102,241,0.12), transparent 60%)`,
+          }}
+        />
+      )}
+      {children}
+    </div>
   );
 }

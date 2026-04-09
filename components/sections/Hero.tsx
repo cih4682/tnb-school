@@ -33,9 +33,9 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="mt-6 whitespace-nowrap text-3xl font-extrabold tracking-tight md:text-5xl"
           >
-            <span className="block leading-[1.3]">하루의 30분,</span>
+            <span className="block leading-[1.3]">선생님의 하루에서</span>
             <span className="block bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text leading-[1.3] text-transparent">
-              소중한 학생들을 위해
+              사라진 30분을 되찾으세요.
             </span>
           </motion.h1>
 
@@ -187,7 +187,7 @@ function TypingBadge() {
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
       </span>
-      <span className="text-white/70">지금 이 순간에도 선생님이</span>
+      <span className="text-white/70">이 순간에도 선생님은</span>
       <AnimatePresence mode="wait">
         <motion.span
           key={index}

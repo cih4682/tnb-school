@@ -34,25 +34,25 @@ export function CustomForm() {
   }
 
   return (
-    <section id="custom" className="border-y border-slate-100 bg-white py-28">
+    <section id="custom" className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-28">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Custom App</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">커스텀 앱 제작</h2>
-          <p className="mt-3 text-slate-500">원하는 앱이 없나요? 대화로 간편하게 신청하세요.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Custom App</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">커스텀 앱 제작</h2>
+          <p className="mt-3 text-white/50">원하는 앱이 없나요? 대화로 간편하게 신청하세요.</p>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }} className="mx-auto mt-12 max-w-lg overflow-hidden rounded-2xl border border-slate-200">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-3">
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }} className="mx-auto mt-12 max-w-lg overflow-hidden rounded-2xl border border-white/15">
+          <div className="flex items-center gap-3 border-b border-white/10 bg-white/[0.04] px-5 py-3">
             <div className="h-2 w-2 rounded-full bg-emerald-400" />
-            <p className="text-xs font-semibold text-slate-600">T&B 앱 제작 어시스턴트</p>
+            <p className="text-xs font-semibold text-white/70">T&B 앱 제작 어시스턴트</p>
           </div>
 
-          <div className="flex h-[380px] flex-col gap-3 overflow-y-auto bg-slate-50 p-5">
+          <div className="flex h-[380px] flex-col gap-3 overflow-y-auto bg-white/[0.03] p-5">
             <AnimatePresence initial={false}>
               {messages.map((msg, idx) => (
                 <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm ${msg.from === "user" ? "rounded-br-md bg-slate-900 text-white" : "rounded-bl-md bg-white text-slate-800 shadow-sm"}`}>
+                  <div className={`max-w-[80%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm ${msg.from === "user" ? "rounded-br-md bg-indigo-600 text-white" : "rounded-bl-md bg-white/10 text-white/90"}`}>
                     {msg.text}
                   </div>
                 </motion.div>
@@ -61,14 +61,14 @@ export function CustomForm() {
           </div>
 
           {!done && (
-            <div className="border-t border-slate-100 bg-white p-4">
+            <div className="border-t border-white/10 bg-white/[0.04] p-4">
               <div className="flex gap-2">
                 {steps[step].type === "textarea" ? (
-                  <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder={steps[step].placeholder} rows={2} className="flex-1 resize-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-slate-400" />
+                  <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder={steps[step].placeholder} rows={2} className="flex-1 resize-none rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-white/30" />
                 ) : (
-                  <input type={steps[step].type} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={steps[step].placeholder} className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-slate-400" />
+                  <input type={steps[step].type} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={steps[step].placeholder} className="flex-1 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-white/30" />
                 )}
-                <button onClick={handleSend} disabled={!input.trim()} className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-sm text-white transition hover:bg-slate-800 disabled:opacity-20">↑</button>
+                <button onClick={handleSend} disabled={!input.trim()} className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-sm text-white transition hover:bg-indigo-500 disabled:opacity-20">↑</button>
               </div>
             </div>
           )}

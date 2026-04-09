@@ -10,6 +10,20 @@ body {
   @apply bg-white text-slate-900 antialiased;
 }
 
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+@keyframes marquee-right {
+  0% { transform: translateX(-25%); }
+  100% { transform: translateX(0); }
+}
+.marquee-left { animation: marquee-left 30s linear infinite; }
+.marquee-right { animation: marquee-right 30s linear infinite; }
+
 .bg-radial-vignette {
   background: radial-gradient(
     ellipse at center,
