@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env.local
+.env*.local
+
+# large video files
+t&b.mp4
+school.mp4
+public/tnb.mp4
+public/school.mp4
