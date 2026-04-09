@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   // 조회수 증가
-  await supabaseServer.rpc("increment_view_count", { post_id: params.id }).catch(() => {});
+  await supabaseServer.rpc("increment_view_count", { post_id: params.id });
 
   // 게시글 가져오기
   const { data: post } = await supabaseServer
