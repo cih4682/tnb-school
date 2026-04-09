@@ -7,6 +7,7 @@ import type { User } from "@supabase/supabase-js";
 const links = [
   { href: "#apps", label: "앱" },
   { href: "#pricing", label: "입학 안내" },
+  { href: "/community", label: "커뮤니티" },
   { href: "#custom", label: "커스텀 제작" },
   { href: "#faq", label: "FAQ" },
 ];
