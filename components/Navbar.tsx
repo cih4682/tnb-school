@@ -54,7 +54,7 @@ export function Navbar() {
           {/* 로그인/로그아웃 — 항상 보임 */}
           {user ? (
             <>
-              <span className="hidden text-sm text-white/80 sm:inline">
+              <span className="max-w-[80px] truncate text-xs text-white/80 sm:max-w-none sm:text-sm">
                 {user.user_metadata?.full_name || user.email?.split("@")[0]}
               </span>
               <button
