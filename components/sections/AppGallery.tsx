@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, MouseEvent } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { apps, CATEGORY_LABELS, Category, App } from "@/data/apps";
-import { Section } from "../ui/Section";
 
 type Filter = "all" | Category;
 
@@ -17,112 +16,144 @@ const filters: { value: Filter; label: string }[] = [
 
 export function AppGallery() {
   const [filter, setFilter] = useState<Filter>("all");
+  const [active, setActive] = useState<App>(apps[0]);
+
   const visible = filter === "all" ? apps : apps.filter((a) => a.category === filter);
 
   return (
-    <Section id="apps">
-      <div className="text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
+    <section id="apps" className="relative bg-white py-28">
+      <div className="mx-auto max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl font-extrabold md:text-4xl"
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center"
         >
-          앱 갤러리
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-3 text-slate-600"
-        >
-          선생님께 필요한 도구를 카테고리로 골라보세요
-        </motion.p>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand-600">
+            App Gallery
+          </p>
+          <h2 className="mt-4 text-3xl font-extrabold md:text-5xl">앱 갤러리</h2>
+        </motion.div>
+
+        {/* 필터 탭 */}
+        <div className="relative mt-12 flex justify-center">
+          <div className="inline-flex gap-1 rounded-full bg-slate-100 p-1">
+            {filters.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => {
+                  setFilter(f.value);
+                  const first =
+                    f.value === "all"
+                      ? apps[0]
+                      : apps.find((a) => a.category === f.value);
+                  if (first) setActive(first);
+                }}
+                className={`relative rounded-full px-5 py-2 text-sm font-medium transition ${
+                  filter === f.value
+                    ? "text-white"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {filter === f.value && (
+                  <motion.span
+                    layoutId="filter-pill"
+                    className="absolute inset-0 rounded-full bg-brand-600 shadow-lg shadow-brand-600/30"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{f.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 호버리스트 + 프리뷰 */}
+        <div className="mt-16 grid gap-8 md:grid-cols-[1fr_1.2fr]">
+          {/* 좌: 앱 리스트 */}
+          <div className="space-y-1">
+            {visible.map((app, i) => {
+              const isActive = active.id === app.id;
+              return (
+                <motion.button
+                  key={app.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  onMouseEnter={() => setActive(app)}
+                  onClick={() => setActive(app)}
+                  className={`group flex w-full items-center gap-4 rounded-2xl px-5 py-4 text-left transition ${
+                    isActive
+                      ? "bg-brand-50 shadow-sm"
+                      : "hover:bg-slate-50"
+                  }`}
+                >
+                  <span className="text-3xl">{app.icon}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`font-bold ${isActive ? "text-brand-600" : "text-slate-900"}`}
+                      >
+                        {app.name}
+                      </span>
+                      {app.isNew && (
+                        <span className="rounded-full bg-gradient-to-r from-pink-500 to-brand-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs text-slate-500">
+                      {CATEGORY_LABELS[app.category]}
+                    </span>
+                  </div>
+                  <motion.div
+                    animate={{ x: isActive ? 0 : -8, opacity: isActive ? 1 : 0 }}
+                    className="text-brand-600"
+                  >
+                    →
+                  </motion.div>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* 우: 프리뷰 카드 */}
+          <div className="flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="relative w-full overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-10 shadow-2xl shadow-slate-200/50 md:p-14"
+              >
+                <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-100/50 blur-3xl" />
+                <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-amber-100/50 blur-3xl" />
+                <div className="relative">
+                  <div className="text-7xl">{active.icon}</div>
+                  <h3 className="mt-6 text-2xl font-extrabold md:text-3xl">
+                    {active.name}
+                  </h3>
+                  <span className="mt-2 inline-block rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700">
+                    {CATEGORY_LABELS[active.category]}
+                  </span>
+                  <p className="mt-6 text-lg leading-relaxed text-slate-600">
+                    {active.description}
+                  </p>
+                  {active.isNew && (
+                    <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-brand-600 px-4 py-1.5 text-sm font-medium text-white">
+                      ✨ 새로 출시된 앱
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
-
-      <div className="mt-10 flex flex-wrap justify-center gap-2">
-        {filters.map((f) => (
-          <button
-            key={f.value}
-            onClick={() => setFilter(f.value)}
-            className={`rounded-full px-5 py-2 text-sm font-medium transition ${
-              filter === f.value
-                ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
-                : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      <motion.div
-        layout
-        className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {visible.map((app, i) => (
-          <TiltCard key={app.id} app={app} index={i} />
-        ))}
-      </motion.div>
-
-      {visible.length === 0 && (
-        <p className="mt-12 text-center text-slate-500">
-          이 카테고리에는 아직 앱이 없어요.
-        </p>
-      )}
-    </Section>
-  );
-}
-
-function TiltCard({ app, index }: { app: App; index: number }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 20 });
-  const sy = useSpring(y, { stiffness: 200, damping: 20 });
-  const rotateX = useTransform(sy, [-0.5, 0.5], ["8deg", "-8deg"]);
-  const rotateY = useTransform(sx, [-0.5, 0.5], ["-8deg", "8deg"]);
-
-  function handleMove(e: MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    x.set((e.clientX - r.left) / r.width - 0.5);
-    y.set((e.clientY - r.top) / r.height - 0.5);
-  }
-
-  function handleLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: (index % 6) * 0.06 }}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-300 hover:shadow-2xl hover:shadow-brand-600/10"
-    >
-      {/* 호버 그라데이션 글로우 */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-50 via-transparent to-pink-50 opacity-0 transition-opacity group-hover:opacity-100" />
-
-      {app.isNew && (
-        <span className="absolute right-4 top-4 rounded-full bg-gradient-to-r from-pink-500 to-brand-600 px-2 py-0.5 text-xs font-bold text-white shadow-lg">
-          NEW
-        </span>
-      )}
-      <div className="relative" style={{ transform: "translateZ(40px)" }}>
-        <div className="text-5xl">{app.icon}</div>
-        <h3 className="mt-4 text-lg font-bold">{app.name}</h3>
-        <p className="mt-1 text-xs font-medium text-brand-600">
-          {CATEGORY_LABELS[app.category]}
-        </p>
-        <p className="mt-3 text-sm text-slate-600">{app.description}</p>
-      </div>
-    </motion.div>
+    </section>
   );
 }

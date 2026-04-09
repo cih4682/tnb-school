@@ -6,7 +6,6 @@ import { Counter } from "@/components/sections/Counter";
 import { AppGallery } from "@/components/sections/AppGallery";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { PricingVideo } from "@/components/sections/PricingVideo";
 import { Pricing } from "@/components/sections/Pricing";
 import { CustomForm } from "@/components/sections/CustomForm";
 import { FAQ } from "@/components/sections/FAQ";
@@ -23,7 +22,6 @@ export default function HomePage() {
       <AppGallery />
       <Roadmap />
       <Testimonials />
-      <PricingVideo />
       <Pricing />
       <CustomForm />
       <FAQ />

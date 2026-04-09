@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Section } from "../ui/Section";
+import { useState } from "react";
 
 const values = [
   {
@@ -14,7 +14,7 @@ const values = [
     icon: "🎟️",
     title: "한 번 입학, 평생 사용",
     desc: "입학금만 내면 모든 앱을 추가 비용 없이 사용할 수 있어요.",
-    gradient: "from-brand-500 to-pink-500",
+    gradient: "from-indigo-400 to-purple-500",
   },
   {
     icon: "🛠️",
@@ -25,51 +25,88 @@ const values = [
 ];
 
 export function Values() {
+  const [hovered, setHovered] = useState<number | null>(null);
+
   return (
-    <Section>
-      <div className="text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl font-extrabold md:text-4xl"
-        >
-          왜 T&B School인가요?
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-3 text-slate-600"
-        >
-          선생님의 시간을 아껴주는 3가지 약속
-        </motion.p>
-      </div>
-      <div className="mt-14 grid gap-6 md:grid-cols-3">
-        {values.map((v, i) => (
-          <motion.div
-            key={v.title}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: i * 0.12 }}
-            className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-2xl"
-          >
-            <div
-              className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${v.gradient}`}
-            />
-            <div
-              className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${v.gradient} text-3xl shadow-lg`}
-            >
-              {v.icon}
-            </div>
-            <h3 className="mt-5 text-xl font-bold">{v.title}</h3>
-            <p className="mt-2 text-slate-600">{v.desc}</p>
-          </motion.div>
+    <section className="relative overflow-hidden bg-slate-950 py-28">
+      {/* 별빛 파티클 */}
+      <div className="pointer-events-none absolute inset-0">
+        {Array.from({ length: 60 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-pulse rounded-full bg-white"
+            style={{
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: Math.random() * 0.6 + 0.1,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+            }}
+          />
         ))}
       </div>
-    </Section>
+
+      <div className="pointer-events-none absolute -left-40 top-20 h-[400px] w-[400px] rounded-full bg-indigo-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-20 h-[400px] w-[400px] rounded-full bg-pink-600/15 blur-[120px]" />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center"
+        >
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-indigo-400">
+            Why T&B School
+          </p>
+          <h2 className="mt-4 text-3xl font-extrabold text-white md:text-5xl">
+            왜 T&B School인가요?
+          </h2>
+        </motion.div>
+
+        <div className="mt-20 flex flex-col items-center justify-center gap-8 md:flex-row md:gap-6">
+          {values.map((v, i) => {
+            const isHovered = hovered === i;
+            return (
+              <motion.div
+                key={v.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
+                animate={{
+                  scale: isHovered ? 1.08 : hovered !== null ? 0.95 : 1,
+                  y: isHovered ? -12 : 0,
+                }}
+                className="group relative w-full max-w-sm cursor-default"
+              >
+                {/* 글로우 */}
+                <div
+                  className={`absolute -inset-1 rounded-3xl bg-gradient-to-br ${v.gradient} opacity-0 blur-xl transition-opacity duration-500 ${isHovered ? "opacity-40" : ""}`}
+                />
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.05] p-8 backdrop-blur-sm">
+                  <div
+                    className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${v.gradient} text-3xl shadow-lg`}
+                  >
+                    {v.icon}
+                  </div>
+                  <h3 className="mt-5 text-xl font-bold text-white">{v.title}</h3>
+                  <p className="mt-3 leading-relaxed text-white/60">{v.desc}</p>
+                  {/* 하단 그라데이션 라인 */}
+                  <div
+                    className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r ${v.gradient} opacity-0 transition-opacity duration-500 ${isHovered ? "opacity-100" : ""}`}
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
