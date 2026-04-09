@@ -8,24 +8,10 @@ export default function AuthCallback() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") {
-        router.push("/");
-      }
+    // 해시 또는 쿼리에서 세션 처리 후 홈으로
+    supabase.auth.getSession().then(() => {
+      router.replace("/");
     });
-
-    // URL 해시에서 토큰 처리 (모바일 대응)
-    const hash = window.location.hash;
-    if (hash) {
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
-      if (accessToken && refreshToken) {
-        supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(() => {
-          router.push("/");
-        });
-      }
-    }
   }, [router]);
 
   return (
