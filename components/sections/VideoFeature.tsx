@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export function VideoFeature() {
   return (
-    <section className="relative overflow-hidden border-y border-slate-100 bg-white py-36">
+    <section className="relative overflow-hidden border-y border-slate-100 bg-white py-20 md:py-36">
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
           {/* 좌: 영상 (커튼 효과) */}

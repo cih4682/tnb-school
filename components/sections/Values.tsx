@@ -22,7 +22,7 @@ const values = [
 
 export function Values() {
   return (
-    <section className="bg-white py-36">
+    <section className="bg-white py-20 md:py-36">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

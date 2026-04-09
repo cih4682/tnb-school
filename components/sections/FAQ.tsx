@@ -15,7 +15,7 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-white py-28">
+    <section id="faq" className="bg-white py-20 md:py-28">
       <div className="mx-auto max-w-2xl px-6">
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">FAQ</p>

@@ -6,14 +6,14 @@ export function Footer() {
   return (
     <>
       {/* CTA */}
-      <section className="border-t border-slate-100 bg-white py-28">
+      <section className="border-t border-slate-100 bg-white py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="text-3xl font-extrabold leading-relaxed tracking-tight md:text-5xl"
+            className="text-2xl font-extrabold leading-relaxed tracking-tight sm:text-3xl md:text-5xl"
           >
             아이들과의 시간,
             <br />

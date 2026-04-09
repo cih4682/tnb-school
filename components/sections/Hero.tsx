@@ -31,7 +31,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="mt-6 whitespace-nowrap text-3xl font-extrabold tracking-tight md:text-5xl"
+            className="mt-6 text-2xl font-extrabold tracking-tight sm:text-3xl md:text-5xl"
           >
             <span className="block leading-[1.3]">선생님의 하루에서</span>
             <span className="block bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text leading-[1.3] text-transparent">
@@ -43,7 +43,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 max-w-md text-base leading-[1.9] text-white/80 md:text-lg"
+            className="mt-6 max-w-md text-sm leading-[1.9] text-white/80 sm:text-base md:mt-8 md:text-lg"
           >
             반복되는 행정업무와 자료만들기는
             <br />
@@ -89,7 +89,7 @@ function ReverseClock() {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-      className="relative mx-auto aspect-square w-full max-w-md"
+      className="relative mx-auto aspect-square w-full max-w-[240px] md:max-w-xs lg:max-w-md"
     >
       {/* 외곽 글로우 */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-br from-brand-500/30 to-pink-500/20 blur-3xl" />

@@ -19,7 +19,7 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section className="border-y border-slate-100 bg-white py-36">
+    <section className="border-y border-slate-100 bg-white py-20 md:py-36">
       <div className="mx-auto max-w-4xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -41,7 +41,7 @@ export function Testimonials() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.4 }}
             >
-              <p className="whitespace-pre-line text-2xl font-medium leading-relaxed text-slate-800 md:text-3xl">
+              <p className="whitespace-pre-line text-lg font-medium leading-relaxed text-slate-800 sm:text-2xl md:text-3xl">
                 "{testimonials[i].quote}"
               </p>
               <div className="mt-8">

@@ -36,7 +36,7 @@ export function AppGallery() {
   const visible = filter === "all" ? apps : apps.filter((a) => a.category === filter);
 
   return (
-    <section id="apps" className="bg-white py-36">
+    <section id="apps" className="bg-white py-20 md:py-36">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

@@ -34,7 +34,7 @@ export function CustomForm() {
   }
 
   return (
-    <section id="custom" className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-28">
+    <section id="custom" className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Custom App</p>

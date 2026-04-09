@@ -43,7 +43,7 @@ export function Roadmap() {
   ];
 
   return (
-    <section ref={ref} className="bg-slate-50 py-36">
+    <section ref={ref} className="bg-slate-50 py-20 md:py-36">
       <div className="mx-auto max-w-4xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

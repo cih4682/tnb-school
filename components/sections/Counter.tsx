@@ -53,7 +53,7 @@ export function Counter() {
   const [active, setActive] = useState<number | null>(null);
 
   return (
-    <section className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-28">
+    <section className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -74,7 +74,7 @@ export function Counter() {
         </motion.div>
 
         {/* 고민 그리드 */}
-        <div className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:mt-16">
           {concerns.map((c, i) => {
             const isActive = active === i;
             return (
