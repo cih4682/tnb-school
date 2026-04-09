@@ -101,7 +101,11 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
-        {/* 네이버 웹마스터 인증 — Search Advisor 등록 후 코드 교체 */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0f172a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        {/* 네이버 웹마스터 인증 */}
         <meta name="naver-site-verification" content="d12269421f58f1546659393aca49052897c8b59a" />
         {/* JSON-LD 구조화 데이터 */}
         <script
