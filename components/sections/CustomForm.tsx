@@ -20,10 +20,12 @@ export function CustomForm() {
   const [messages, setMessages] = useState<Message[]>([{ from: "bot", text: steps[0].bot }]);
   const [done, setDone] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", request: "" });
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
   }, [messages]);
 
   async function handleSend() {
@@ -89,7 +91,7 @@ export function CustomForm() {
             <p className="text-xs font-semibold text-white/70">T&B 앱 제작 어시스턴트</p>
           </div>
 
-          <div className="flex h-[380px] flex-col gap-3 overflow-y-auto bg-white/[0.03] p-5">
+          <div ref={chatRef} className="flex h-[380px] flex-col gap-3 overflow-y-auto bg-white/[0.03] p-5">
             <AnimatePresence initial={false}>
               {messages.map((msg, idx) => (
                 <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
@@ -99,7 +101,6 @@ export function CustomForm() {
                 </motion.div>
               ))}
             </AnimatePresence>
-            <div ref={messagesEndRef} />
           </div>
 
           {!done && (
