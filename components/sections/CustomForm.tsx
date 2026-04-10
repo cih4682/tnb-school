@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
@@ -20,6 +20,11 @@ export function CustomForm() {
   const [messages, setMessages] = useState<Message[]>([{ from: "bot", text: steps[0].bot }]);
   const [done, setDone] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", request: "" });
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   async function handleSend() {
     if (!input.trim()) return;
@@ -94,6 +99,7 @@ export function CustomForm() {
                 </motion.div>
               ))}
             </AnimatePresence>
+            <div ref={messagesEndRef} />
           </div>
 
           {!done && (
