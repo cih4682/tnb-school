@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 const steps = [
   { key: "name", bot: "안녕하세요! 커스텀 앱 제작을 도와드릴게요.\n선생님 성함이 어떻게 되세요?", placeholder: "이름 입력", type: "text" },
@@ -16,16 +17,39 @@ export function CustomForm() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ from: "bot", text: steps[0].bot }]);
   const [done, setDone] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", request: "" });
 
-  function handleSend() {
+  async function handleSend() {
     if (!input.trim()) return;
     const newMessages = [...messages, { from: "user" as const, text: input }];
+
+    // 입력값 저장
+    const updatedData = { ...formData };
+    if (step === 0) updatedData.name = input.trim();
+    if (step === 1) updatedData.email = input.trim();
+    if (step === 2) updatedData.request = input.trim();
+    setFormData(updatedData);
+
     if (step < steps.length - 1) {
       const next = step + 1;
       newMessages.push({ from: "bot", text: steps[next].bot });
       setMessages(newMessages);
       setStep(next);
     } else {
+      // DB 저장
+      await supabase.from("app_requests").insert({
+        name: updatedData.name,
+        email: updatedData.email,
+        request: updatedData.request,
+      });
+
+      // 슬랙 알림
+      fetch("/api/slack-notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+
       newMessages.push({ from: "bot", text: "신청이 접수되었습니다!\n검토 후 3일 이내로 이메일 드릴게요." });
       setMessages(newMessages);
       setDone(true);
