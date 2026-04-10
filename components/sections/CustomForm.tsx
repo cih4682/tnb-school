@@ -6,8 +6,10 @@ import { supabase } from "@/lib/supabase";
 
 const steps = [
   { key: "name", bot: "안녕하세요! 커스텀 앱 제작을 도와드릴게요.\n선생님 성함이 어떻게 되세요?", placeholder: "이름 입력", type: "text" },
-  { key: "email", bot: "반갑습니다! 연락 가능한 이메일을 알려주세요.", placeholder: "이메일 입력", type: "email" },
+  { key: "phone", bot: "연락 가능한 전화번호를 알려주세요.", placeholder: "전화번호 입력", type: "tel" },
+  { key: "email", bot: "이메일 주소도 알려주세요.", placeholder: "이메일 입력", type: "email" },
   { key: "request", bot: "어떤 앱이 필요하신가요? 자유롭게 설명해 주세요.", placeholder: "원하는 앱 설명", type: "textarea" },
+  { key: "privacy", bot: "마지막으로, 개인정보 수집·이용에 동의해 주셔야 신청이 완료됩니다.\n\n수집 항목: 이름, 전화번호, 이메일\n수집 목적: 커스텀 앱 제작 상담\n보유 기간: 상담 완료 후 1년\n\n동의하시면 '동의'를 입력해 주세요.", placeholder: "'동의' 입력", type: "text" },
 ];
 
 interface Message { from: "bot" | "user"; text: string }
@@ -17,7 +19,7 @@ export function CustomForm() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ from: "bot", text: steps[0].bot }]);
   const [done, setDone] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", request: "" });
+  const [formData, setFormData] = useState({ name: "", phone: "", email: "", request: "" });
 
   async function handleSend() {
     if (!input.trim()) return;
@@ -26,9 +28,18 @@ export function CustomForm() {
     // 입력값 저장
     const updatedData = { ...formData };
     if (step === 0) updatedData.name = input.trim();
-    if (step === 1) updatedData.email = input.trim();
-    if (step === 2) updatedData.request = input.trim();
+    if (step === 1) updatedData.phone = input.trim();
+    if (step === 2) updatedData.email = input.trim();
+    if (step === 3) updatedData.request = input.trim();
     setFormData(updatedData);
+
+    // 개인정보 동의 체크
+    if (step === 4 && input.trim() !== "동의") {
+      newMessages.push({ from: "bot", text: "'동의'를 정확히 입력해 주세요." });
+      setMessages(newMessages);
+      setInput("");
+      return;
+    }
 
     if (step < steps.length - 1) {
       const next = step + 1;
@@ -39,6 +50,7 @@ export function CustomForm() {
       // DB 저장
       await supabase.from("app_requests").insert({
         name: updatedData.name,
+        phone: updatedData.phone,
         email: updatedData.email,
         request: updatedData.request,
       });
