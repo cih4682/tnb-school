@@ -118,7 +118,7 @@ export function Pricing() {
                     <svg className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <path d="m9 12 2 2 4-4" />
                     </svg>
-                    <span className="leading-relaxed text-white/70">{b}</span>
+                    <span className={`leading-relaxed ${b === "모든 앱 사용" ? "font-extrabold text-white" : "text-white/70"}`}>{b}</span>
                   </motion.li>
                 ))}
               </ul>
