@@ -29,7 +29,7 @@ const waiting = TEACHER_GOAL - helped - ongoing;
 const stages = [
   { label: "함께한 선생님", target: helped, desc: "이미 도와드린 선생님", duration: 1200, suffix: "명" },
   { label: "진행 중", target: ongoing, desc: "현재 상담·제작 중", duration: 1000, suffix: "명" },
-  { label: "다음 주인공", target: waiting, desc: "함께할 자리를 기다려요", duration: 1800, suffix: "명" },
+  { label: "다음 주인공", target: waiting, desc: "지금 행운을 잡으세요!", duration: 1800, suffix: "명" },
 ];
 
 export function Roadmap() {

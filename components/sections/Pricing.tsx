@@ -4,49 +4,53 @@ import { motion } from "framer-motion";
 
 const plans = [
   {
-    name: "체험반",
-    price: "무료",
-    unit: "",
-    desc: "T&B School을 먼저 경험해 보세요",
+    name: "베이직",
+    price: "₩27,900",
+    unit: "/ 월",
+    desc: "처음이라면 부담 없이",
     badge: null,
     benefits: [
-      "기본 앱 3개 사용",
+      "원하는 앱 3개 선택 사용",
       "앱 미리보기",
-      "커뮤니티 읽기 전용",
+      "커뮤니티 읽기 · 댓글",
+      "언제든 해지 / 업그레이드",
+      "월 자동 결제",
     ],
-    cta: "체험 시작하기",
+    cta: "시작하기",
     featured: false,
   },
   {
     name: "정회원",
     price: "₩99,000",
-    unit: "/ 1회",
+    unit: "/ 학기 (6개월)",
     desc: "가장 인기 있는 플랜",
-    badge: "인기",
+    badge: "추천",
     benefits: [
-      "현재 등록된 모든 앱 평생 사용",
+      "모든 앱 사용",
       "신규 추가되는 앱 자동 포함",
       "커스텀 앱 제작 우선 신청권",
       "선생님 전용 커뮤니티 초대",
       "월 1회 신규 앱 라이브 데모",
+      "베타 앱 우선 체험",
     ],
     cta: "지금 입학하기",
     featured: true,
   },
   {
-    name: "프리미엄",
-    price: "₩199,000",
-    unit: "/ 1회",
-    desc: "최우선 지원과 전용 혜택",
+    name: "팀 플랜",
+    price: "단체 문의",
+    unit: "",
+    desc: "학교 · 단체 전용",
     badge: null,
     benefits: [
       "정회원 혜택 전부 포함",
-      "커스텀 앱 제작 무료 1회",
-      "1:1 온보딩 세션",
-      "신규 앱 베타 테스트 참여",
-      "전용 고객 지원 채널",
+      "10명 이상 · 10% 할인",
+      "30명 이상 · 20% 할인",
+      "50명 이상 · 30% 할인",
+      "관리자 대시보드 무료 제공",
+      "세금계산서 발행",
     ],
-    cta: "프리미엄 입학하기",
+    cta: "상담 문의",
     featured: false,
   },
 ];
@@ -63,8 +67,8 @@ export function Pricing() {
           className="text-center"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Pricing</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">입학 안내</h2>
-          <p className="mt-3 text-white/50">한 번의 입학금으로 평생 동행합니다</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white">입학 안내</h2>
+          <p className="mt-3 text-white/50">선생님의 상황에 맞는 플랜을 선택하세요</p>
         </motion.div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -96,7 +100,7 @@ export function Pricing() {
                 }`}>
                   {plan.price}
                 </span>
-                {plan.unit && <span className="text-white/40">{plan.unit}</span>}
+                {plan.unit && <span className="text-sm text-white/40">{plan.unit}</span>}
               </div>
               <p className="mt-2 text-xs text-white/40">{plan.desc}</p>
 
@@ -110,12 +114,12 @@ export function Pricing() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + i * 0.1 + idx * 0.06 }}
-                    className="flex items-center gap-3 text-sm"
+                    className="flex items-start gap-3 text-sm"
                   >
-                    <svg className="h-4 w-4 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <path d="m9 12 2 2 4-4" />
                     </svg>
-                    <span className="text-white/70">{b}</span>
+                    <span className="leading-relaxed text-white/70">{b}</span>
                   </motion.li>
                 ))}
               </ul>
@@ -134,7 +138,23 @@ export function Pricing() {
           ))}
         </div>
 
-        <p className="mt-8 text-center text-xs text-white/30">
+        {/* 가성비 임팩트 메시지 */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mx-auto mt-10 max-w-2xl rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.08] px-6 py-4 text-center backdrop-blur-sm"
+        >
+          <p className="text-sm text-white/80">
+            💡 베이직 1학기 = <span className="font-bold text-white">₩167,400</span> · 정회원 1학기 = <span className="font-bold text-white">₩99,000</span>
+          </p>
+          <p className="mt-1 text-xs text-indigo-300">
+            정회원이 <span className="font-bold">₩68,400 더 저렴</span>하면서 모든 앱을 사용할 수 있어요
+          </p>
+        </motion.div>
+
+        <p className="mt-6 text-center text-xs text-white/30">
           * 가격은 임시 표시이며, 추후 변경될 수 있습니다.
         </p>
       </div>

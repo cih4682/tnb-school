@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
-  { name: "김민지 선생님", role: "초등학교 4학년 담임", quote: "수업 플래너랑 워크시트 생성기 덕분에\n매주 야근이 사라졌어요." },
-  { name: "박준호 선생님", role: "중학교 수학", quote: "퀴즈 메이커로 단원평가 만드는 시간이\n30분에서 5분으로 줄었어요." },
-  { name: "이서연 선생님", role: "고등학교 국어", quote: "생기부 도우미가 정말 똑똑해요.\n관찰 기록만 넣으면 자연스러운 문장이 나와요." },
-  { name: "정하늘 선생님", role: "초등학교 1학년 담임", quote: "자리 배치도 앱은\n학기 초의 구원자였어요." },
+  { name: "김O지 선생님", role: "초등학교 4학년 담임", quote: "수업 플래너랑 워크시트 생성기 덕분에\n매주 야근이 사라졌어요." },
+  { name: "박O호 선생님", role: "중학교 수학", quote: "퀴즈 메이커로 단원평가 만드는 시간이\n30분에서 5분으로 줄었어요." },
+  { name: "이O연 선생님", role: "고등학교 국어", quote: "생기부 도우미가 정말 똑똑해요.\n관찰 기록만 넣으면 자연스러운 문장이 나와요." },
+  { name: "정O늘 선생님", role: "초등학교 1학년 담임", quote: "자리 배치도 앱은\n학기 초의 구원자였어요." },
 ];
 
 export function Testimonials() {
