@@ -55,8 +55,8 @@ export function AppGallery() {
 
         {/* 필터 */}
         <div className="mt-12">
-          {/* 모바일: 가로 스크롤 / 데스크탑: 중앙 정렬 */}
-          <div className="hide-scrollbar -mx-6 flex overflow-x-auto px-6 md:mx-0 md:justify-center md:overflow-visible md:px-0">
+          {/* 모바일/데스크탑 모두 중앙 정렬 */}
+          <div className="hide-scrollbar flex justify-center overflow-x-auto">
             <div className="inline-flex shrink-0 gap-1 rounded-full border border-slate-200 p-1">
               {filters.map((f) => (
                 <button
