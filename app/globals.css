@@ -24,6 +24,26 @@ body {
 .marquee-left { animation: marquee-left 30s linear infinite; }
 .marquee-right { animation: marquee-right 30s linear infinite; }
 
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #a5b4fc 0%,
+    #f9a8d4 25%,
+    #fde68a 50%,
+    #f9a8d4 75%,
+    #a5b4fc 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 4s linear infinite;
+}
+
 .bg-radial-vignette {
   background: radial-gradient(
     ellipse at center,

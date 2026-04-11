@@ -117,7 +117,7 @@ export default function LoginPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl"
+              className="text-shimmer text-3xl font-extrabold tracking-tight md:text-4xl"
             >
               선생님의 숨어있는 60분!
             </motion.h2>
