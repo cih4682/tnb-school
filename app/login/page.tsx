@@ -108,29 +108,28 @@ export default function LoginPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-xl font-bold leading-relaxed text-white md:text-2xl"
           >
-            <motion.span
+            <motion.h2
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="block"
+              className="bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent md:text-4xl"
             >
               선생님의 숨어있는 60분!
-            </motion.span>
-            <motion.span
+            </motion.h2>
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="block"
+              className="mt-3 text-sm font-medium text-white/70 md:text-base"
             >
               교사버프가 찾아드립니다.
-            </motion.span>
-          </motion.h2>
+            </motion.p>
+          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
