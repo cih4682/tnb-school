@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
 function getInAppBrowser(): string | null {
@@ -100,10 +101,52 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 px-6">
-      <div className="w-full max-w-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-sm"
+      >
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-white">T&B School</h1>
-          <p className="mt-2 text-white/60">선생님 계정으로 로그인하세요</p>
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-xl font-bold leading-relaxed text-white md:text-2xl"
+          >
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="block"
+            >
+              선생님의 숨어있는 60분!
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="block"
+            >
+              교사버프가 찾아드립니다.
+            </motion.span>
+          </motion.h2>
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+            className="mt-10 text-3xl font-extrabold text-white"
+          >
+            T&B School
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.3 }}
+            className="mt-2 text-white/60"
+          >
+            선생님 계정으로 로그인하세요
+          </motion.p>
         </div>
 
         <div className="mt-10 space-y-3">
@@ -142,7 +185,7 @@ export default function LoginPage() {
             ← 홈으로 돌아가기
           </a>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
