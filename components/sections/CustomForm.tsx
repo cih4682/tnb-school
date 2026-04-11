@@ -95,7 +95,7 @@ export function CustomForm() {
             <AnimatePresence initial={false}>
               {messages.map((msg, idx) => (
                 <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm ${msg.from === "user" ? "rounded-br-md bg-indigo-600 text-white" : "rounded-bl-md bg-white/10 text-white/90"}`}>
+                  <div style={{ wordBreak: "keep-all" }} className={`max-w-[80%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm ${msg.from === "user" ? "rounded-br-md bg-indigo-600 text-white" : "rounded-bl-md bg-white/10 text-white/90"}`}>
                     {msg.text}
                   </div>
                 </motion.div>

@@ -157,9 +157,6 @@ export function Pricing() {
           </p>
         </motion.div>
 
-        <p className="mt-6 text-center text-xs text-white/30">
-          * 가격은 임시 표시이며, 추후 변경될 수 있습니다.
-        </p>
       </div>
     </section>
   );
