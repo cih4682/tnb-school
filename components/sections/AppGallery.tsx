@@ -62,7 +62,7 @@ export function AppGallery() {
                 <button
                   key={f.value}
                   onClick={() => setFilter(f.value)}
-                  className={`relative shrink-0 whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition ${
+                  className={`relative shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition md:px-5 md:py-2 md:text-sm ${
                     filter === f.value ? "text-white" : "text-slate-500 hover:text-slate-900"
                   }`}
                 >
@@ -169,21 +169,21 @@ function MarqueeRow({
         {items.map((app, i) => (
           <div
             key={`${app.id}-${i}`}
-            className={`flex w-[300px] shrink-0 items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md ${hoverBorder}`}
+            className={`flex w-[230px] shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 transition hover:shadow-md md:w-[300px] md:gap-4 md:p-5 ${hoverBorder}`}
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700">
-              <AppIcon name={app.iconName} className="h-5 w-5" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 md:h-11 md:w-11">
+              <AppIcon name={app.iconName} className="h-4 w-4 md:h-5 md:w-5" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="truncate text-sm font-bold">{app.name}</p>
+                <p className="truncate text-xs font-bold md:text-sm">{app.name}</p>
                 {app.isNew && (
                   <span className="shrink-0 rounded bg-slate-900 px-1.5 py-0.5 text-[9px] font-bold text-white">
                     NEW
                   </span>
                 )}
               </div>
-              <p className="mt-0.5 truncate text-xs text-slate-400">{app.description}</p>
+              <p className="mt-0.5 truncate text-[11px] text-slate-400 md:text-xs">{app.description}</p>
             </div>
           </div>
         ))}

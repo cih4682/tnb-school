@@ -53,7 +53,7 @@ export function Roadmap() {
           className="text-center"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Roadmap</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight">
             100명을 위한 로드맵!
           </h2>
           <p className="mt-3 text-sm text-slate-500">
@@ -61,7 +61,7 @@ export function Roadmap() {
           </p>
         </motion.div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-3 gap-2 md:mt-16 md:gap-6">
           {stages.map((s, i) => (
             <motion.div
               key={s.label}
@@ -70,16 +70,16 @@ export function Roadmap() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
               whileHover={{ y: -4 }}
-              className="rounded-2xl border border-slate-200 bg-white p-8 text-center transition-shadow hover:shadow-lg"
+              className="rounded-2xl border border-slate-200 bg-white p-3 text-center transition-shadow hover:shadow-lg md:p-8"
             >
-              <div className="flex items-baseline justify-center gap-1">
-                <span className="text-6xl font-extrabold tabular-nums tracking-tight md:text-7xl">
+              <div className="flex items-baseline justify-center gap-0.5 md:gap-1">
+                <span className="text-3xl font-extrabold tabular-nums tracking-tight md:text-7xl">
                   {counts[i]}
                 </span>
-                <span className="text-2xl font-bold text-slate-400">{s.suffix}</span>
+                <span className="text-sm font-bold text-slate-400 md:text-2xl">{s.suffix}</span>
               </div>
-              <p className="mt-4 text-sm font-semibold">{s.label}</p>
-              <p className="mt-1 text-xs text-slate-400">{s.desc}</p>
+              <p className="mt-2 text-xs font-semibold md:mt-4 md:text-sm">{s.label}</p>
+              <p className="mt-0.5 text-[10px] text-slate-400 md:mt-1 md:text-xs">{s.desc}</p>
             </motion.div>
           ))}
         </div>

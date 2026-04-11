@@ -25,9 +25,11 @@ export function AiCourse() {
             <p className="mt-6 leading-relaxed text-slate-500">
               선생님을 위한 실전 AI 활용 강의.
               <br />
-              수업 준비, 평가, 업무 자동화까지 —
+              수업 준비, 평가, 업무 자동화까지
               <br />
-              학교 현장에 바로 쓸 수 있는 인공지능 활용법을 알려드립니다.
+              학교 현장에 바로 쓸 수 있는
+              <br />
+              인공지능 활용법을 알려드립니다.
             </p>
 
             <motion.div
