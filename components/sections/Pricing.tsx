@@ -82,7 +82,7 @@ export function Pricing() {
               whileHover={{ scale: 1.04, y: -8 }}
               className={`relative cursor-pointer rounded-2xl p-8 transition-shadow ${
                 plan.featured
-                  ? "border-2 border-indigo-500/50 bg-white/[0.08] shadow-2xl shadow-indigo-500/10 backdrop-blur-sm hover:shadow-indigo-500/30"
+                  ? "border-shimmer pulse-glow bg-white/[0.08] backdrop-blur-sm"
                   : "border border-white/10 bg-white/[0.04] hover:border-white/25 hover:shadow-2xl hover:shadow-black/30"
               }`}
             >
