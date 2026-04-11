@@ -147,7 +147,10 @@ export function Pricing() {
           className="mx-auto mt-10 max-w-2xl rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.08] px-6 py-4 text-center backdrop-blur-sm"
         >
           <p className="text-sm text-white/80">
-            💡 베이직 1학기 = <span className="font-bold text-white">₩167,400</span> · 정회원 1학기 = <span className="font-bold text-white">₩99,000</span>
+            💡 베이직 1학기 = <span className="font-bold text-white">₩167,400</span>
+            <span className="hidden md:inline"> · </span>
+            <br className="md:hidden" />
+            정회원 1학기 = <span className="font-bold text-white">₩99,000</span>
           </p>
           <p className="mt-1 text-xs text-indigo-300">
             정회원이 <span className="font-bold">₩68,400 더 저렴</span>하면서 모든 앱을 사용할 수 있어요
