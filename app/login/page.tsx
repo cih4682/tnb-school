@@ -1,6 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+
+function isKakaoInApp() {
+  if (typeof window === "undefined") return false;
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.includes("kakaotalk");
+}
 
 async function signInWith(provider: "google" | "kakao") {
   await supabase.auth.signInWithOAuth({
@@ -12,6 +19,12 @@ async function signInWith(provider: "google" | "kakao") {
 }
 
 export default function LoginPage() {
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (isKakaoInApp()) setShowModal(true);
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 px-6">
       <div className="w-full max-w-sm">
@@ -74,6 +87,42 @@ export default function LoginPage() {
           </a>
         </div>
       </div>
+
+      {/* 카카오톡 인앱 브라우저 모달 */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white">
+            <div className="p-8 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+                <svg className="h-7 w-7 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </div>
+              <h3 className="mt-5 text-lg font-bold text-slate-900">
+                외부 브라우저로 열어주세요
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                카카오톡 내에서는 로그인이 제한됩니다.
+                <br />
+                아래 방법으로 브라우저를 변경해 주세요.
+              </p>
+              <div className="mt-6 rounded-xl bg-slate-50 px-5 py-4 text-left text-sm text-slate-700">
+                <p className="font-semibold">방법</p>
+                <p className="mt-2">우측 하단 <span className="font-bold">⋯</span> 메뉴</p>
+                <p>→ <span className="font-bold">"다른 브라우저로 열기"</span> 선택</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowModal(false)}
+              className="w-full border-t border-slate-100 py-4 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
