@@ -35,7 +35,7 @@ export function Hero() {
           >
             <span className="block leading-[1.3]">선생님의 하루에서</span>
             <span className="block bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text leading-[1.3] text-transparent">
-              사라진 30분을 되찾으세요.
+              사라진 60분을 되찾으세요.
             </span>
           </motion.h1>
 

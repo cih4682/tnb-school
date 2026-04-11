@@ -54,26 +54,29 @@ export function AppGallery() {
         </motion.div>
 
         {/* 필터 */}
-        <div className="mt-12 flex justify-center">
-          <div className="inline-flex gap-1 rounded-full border border-slate-200 p-1">
-            {filters.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => setFilter(f.value)}
-                className={`relative rounded-full px-5 py-2 text-sm font-medium transition ${
-                  filter === f.value ? "text-white" : "text-slate-500 hover:text-slate-900"
-                }`}
-              >
-                {filter === f.value && (
-                  <motion.span
-                    layoutId="pill"
-                    className="absolute inset-0 rounded-full bg-slate-900"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{f.label}</span>
-              </button>
-            ))}
+        <div className="mt-12">
+          {/* 모바일: 가로 스크롤 / 데스크탑: 중앙 정렬 */}
+          <div className="hide-scrollbar -mx-6 flex overflow-x-auto px-6 md:mx-0 md:justify-center md:overflow-visible md:px-0">
+            <div className="inline-flex shrink-0 gap-1 rounded-full border border-slate-200 p-1">
+              {filters.map((f) => (
+                <button
+                  key={f.value}
+                  onClick={() => setFilter(f.value)}
+                  className={`relative shrink-0 whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition ${
+                    filter === f.value ? "text-white" : "text-slate-500 hover:text-slate-900"
+                  }`}
+                >
+                  {filter === f.value && (
+                    <motion.span
+                      layoutId="pill"
+                      className="absolute inset-0 rounded-full bg-slate-900"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{f.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
