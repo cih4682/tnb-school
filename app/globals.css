@@ -21,8 +21,12 @@ body {
   0% { transform: translateX(-25%); }
   100% { transform: translateX(0); }
 }
-.marquee-left { animation: marquee-left 30s linear infinite; }
-.marquee-right { animation: marquee-right 30s linear infinite; }
+.marquee-left { animation: marquee-left 18s linear infinite; }
+.marquee-right { animation: marquee-right 18s linear infinite; }
+@media (min-width: 768px) {
+  .marquee-left { animation-duration: 30s; }
+  .marquee-right { animation-duration: 30s; }
+}
 
 @keyframes text-shimmer {
   0% { background-position: -200% center; }
