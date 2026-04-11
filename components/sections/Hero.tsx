@@ -22,9 +22,9 @@ export function Hero() {
       <div className="pointer-events-none absolute -left-40 top-20 h-[500px] w-[500px] rounded-full bg-brand-600/25 blur-[140px]" />
       <div className="pointer-events-none absolute -right-40 bottom-20 h-[500px] w-[500px] rounded-full bg-pink-600/15 blur-[140px]" />
 
-      <div className="relative z-10 mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-12 px-6 py-32 md:grid-cols-2">
-        {/* 좌: 카피 */}
-        <div className="text-white">
+      <div className="relative z-10 mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-8 px-6 py-24 md:grid-cols-2 md:gap-12 md:py-32">
+        {/* 좌: 카피 (모바일: 시계 아래로) */}
+        <div className="order-2 text-white md:order-1">
           <TypingBadge />
 
           <motion.h1
@@ -56,17 +56,21 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row"
+            className="mt-8 flex flex-row gap-2 md:mt-10 md:gap-3"
           >
-            <Button href="#apps">앱 둘러보기 →</Button>
-            <Button href="#pricing" variant="secondary">
+            <Button href="#apps" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
+              앱 둘러보기 →
+            </Button>
+            <Button href="#pricing" variant="secondary" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
               입학 안내 보기
             </Button>
           </motion.div>
         </div>
 
-        {/* 우: 거꾸로 도는 시계 */}
-        <ReverseClock />
+        {/* 우: 거꾸로 도는 시계 (모바일: 위로) */}
+        <div className="order-1 md:order-2">
+          <ReverseClock />
+        </div>
       </div>
 
       <motion.div

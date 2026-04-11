@@ -52,12 +52,12 @@ export function Roadmap() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Our Journey</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Roadmap</p>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-            100명의 선생님과 함께합니다
+            100명을 위한 로드맵!
           </h2>
           <p className="mt-3 text-sm text-slate-500">
-            선생님 한 분 한 분의 이야기에서 새로운 도구가 만들어집니다
+            AI는 도구일뿐... 경험만랩 선생님을 돕습니다.
           </p>
         </motion.div>
 
