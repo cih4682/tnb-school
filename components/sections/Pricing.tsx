@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const plans = [
   {
-    name: "베이직",
+    name: "BASIC",
     price: "₩27,900",
     unit: "/ 월",
     desc: "처음이라면 부담 없이",
@@ -20,7 +20,7 @@ const plans = [
     featured: false,
   },
   {
-    name: "정회원",
+    name: "PRO",
     price: "₩99,000",
     unit: "/ 학기 (6개월)",
     desc: "가장 인기 있는 플랜",
@@ -37,7 +37,7 @@ const plans = [
     featured: true,
   },
   {
-    name: "팀 플랜",
+    name: "TEAM",
     price: "단체 문의",
     unit: "",
     desc: "학교 · 단체 전용",
@@ -82,24 +82,22 @@ export function Pricing() {
               whileHover={{ scale: 1.04, y: -8 }}
               className={`relative cursor-pointer rounded-2xl p-8 transition-shadow ${
                 plan.featured
-                  ? "border-2 border-indigo-500/50 bg-white/[0.08] shadow-2xl shadow-indigo-500/10 backdrop-blur-sm hover:shadow-indigo-500/30 md:-mt-4 md:mb-[-16px] md:py-10"
+                  ? "border-2 border-indigo-500/50 bg-white/[0.08] shadow-2xl shadow-indigo-500/10 backdrop-blur-sm hover:shadow-indigo-500/30"
                   : "border border-white/10 bg-white/[0.04] hover:border-white/25 hover:shadow-2xl hover:shadow-black/30"
               }`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                <p className="text-lg font-extrabold tracking-[0.15em] text-indigo-400">
                   {plan.name}
                 </p>
                 {plan.badge && (
-                  <span className="text-shimmer text-xs font-bold tracking-wide">
+                  <span className="text-shimmer text-base font-extrabold tracking-wide">
                     ⭐ {plan.badge}
                   </span>
                 )}
               </div>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className={`font-extrabold tracking-tight text-white ${
-                  plan.featured ? "text-4xl" : "text-3xl"
-                }`}>
+                <span className="text-3xl font-extrabold tracking-tight text-white">
                   {plan.price}
                 </span>
                 {plan.unit && <span className="text-sm text-white/40">{plan.unit}</span>}
