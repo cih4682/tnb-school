@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { APP_GOAL } from "@/data/apps";
 
 function useCountUp(target: number, inView: boolean, duration = 1500) {
   const [n, setN] = useState(0);
@@ -22,14 +21,15 @@ function useCountUp(target: number, inView: boolean, duration = 1500) {
   return n;
 }
 
-const released = 10;
-const inProgress = 5;
-const planned = APP_GOAL - released - inProgress;
+const TEACHER_GOAL = 100;
+const helped = 7;
+const ongoing = 3;
+const waiting = TEACHER_GOAL - helped - ongoing;
 
 const stages = [
-  { label: "출시 완료", target: released, desc: "지금 바로 사용 가능", duration: 1200 },
-  { label: "개발 중", target: inProgress, desc: "이번 분기 출시 예정", duration: 1000 },
-  { label: "출시 예정", target: planned, desc: "100개 목표를 향해", duration: 1800 },
+  { label: "함께한 선생님", target: helped, desc: "이미 도와드린 선생님", duration: 1200, suffix: "명" },
+  { label: "진행 중", target: ongoing, desc: "현재 상담·제작 중", duration: 1000, suffix: "명" },
+  { label: "다음 주인공", target: waiting, desc: "함께할 자리를 기다려요", duration: 1800, suffix: "명" },
 ];
 
 export function Roadmap() {
@@ -52,8 +52,13 @@ export function Roadmap() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Roadmap</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">100개를 향한 로드맵</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Our Journey</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+            100명의 선생님과 함께합니다
+          </h2>
+          <p className="mt-3 text-sm text-slate-500">
+            선생님 한 분 한 분의 이야기에서 새로운 도구가 만들어집니다
+          </p>
         </motion.div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -67,9 +72,12 @@ export function Roadmap() {
               whileHover={{ y: -4 }}
               className="rounded-2xl border border-slate-200 bg-white p-8 text-center transition-shadow hover:shadow-lg"
             >
-              <span className="text-6xl font-extrabold tabular-nums tracking-tight md:text-7xl">
-                {counts[i]}
-              </span>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-6xl font-extrabold tabular-nums tracking-tight md:text-7xl">
+                  {counts[i]}
+                </span>
+                <span className="text-2xl font-bold text-slate-400">{s.suffix}</span>
+              </div>
               <p className="mt-4 text-sm font-semibold">{s.label}</p>
               <p className="mt-1 text-xs text-slate-400">{s.desc}</p>
             </motion.div>
@@ -86,14 +94,14 @@ export function Roadmap() {
           <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
             <motion.div
               initial={{ width: 0 }}
-              animate={inView ? { width: `${(released / APP_GOAL) * 100}%` } : {}}
+              animate={inView ? { width: `${(helped / TEACHER_GOAL) * 100}%` } : {}}
               transition={{ duration: 1.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="h-full rounded-full bg-slate-900"
             />
           </div>
           <div className="mt-2 flex justify-between text-xs text-slate-400">
-            <span>0</span>
-            <span>100개 목표</span>
+            <span>0명</span>
+            <span>100명 목표</span>
           </div>
         </motion.div>
       </div>
