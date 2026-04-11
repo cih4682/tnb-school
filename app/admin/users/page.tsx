@@ -20,9 +20,10 @@ interface ManagedApp {
 }
 
 const PLANS = [
-  { value: "free", label: "무료" },
-  { value: "standard", label: "정회원" },
-  { value: "premium", label: "프리미엄" },
+  { value: "free", label: "FREE" },
+  { value: "basic", label: "BASIC" },
+  { value: "pro", label: "PRO" },
+  { value: "team", label: "TEAM" },
 ];
 
 export default function AdminUsers() {
@@ -124,8 +125,9 @@ export default function AdminUsers() {
                     <p className="truncate text-xs text-slate-400">{u.email}</p>
                   </div>
                   <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                    u.plan === "premium" ? "bg-purple-50 text-purple-600" :
-                    u.plan === "standard" ? "bg-blue-50 text-blue-600" :
+                    u.plan === "team" ? "bg-amber-50 text-amber-600" :
+                    u.plan === "pro" ? "bg-purple-50 text-purple-600" :
+                    u.plan === "basic" ? "bg-blue-50 text-blue-600" :
                     "bg-slate-100 text-slate-500"
                   }`}>
                     {PLANS.find((p) => p.value === u.plan)?.label}

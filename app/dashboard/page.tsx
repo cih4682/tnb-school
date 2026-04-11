@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
   // 카테고리별 그룹
   const categories = [...new Set(allApps.map((a) => a.category))];
-  const isPremium = profile?.plan === "premium";
+  const isPremium = profile?.plan === "pro" || profile?.plan === "team";
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -95,7 +95,7 @@ export default function DashboardPage() {
           </h1>
           <p className="mt-1 text-white/50">
             플랜: <span className="font-medium text-white/70">
-              {profile?.plan === "premium" ? "프리미엄" : profile?.plan === "standard" ? "정회원" : "무료"}
+              {profile?.plan === "team" ? "TEAM" : profile?.plan === "pro" ? "PRO" : profile?.plan === "basic" ? "BASIC" : "FREE"}
             </span>
           </p>
         </div>
