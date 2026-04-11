@@ -79,21 +79,23 @@ export function Pricing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.12 }}
-              className={`relative rounded-2xl p-8 ${
+              whileHover={{ scale: 1.04, y: -8 }}
+              className={`relative cursor-pointer rounded-2xl p-8 transition-shadow ${
                 plan.featured
-                  ? "border-2 border-indigo-500/50 bg-white/[0.08] shadow-2xl shadow-indigo-500/10 backdrop-blur-sm md:-mt-4 md:mb-[-16px] md:py-10"
-                  : "border border-white/10 bg-white/[0.04]"
+                  ? "border-2 border-indigo-500/50 bg-white/[0.08] shadow-2xl shadow-indigo-500/10 backdrop-blur-sm hover:shadow-indigo-500/30 md:-mt-4 md:mb-[-16px] md:py-10"
+                  : "border border-white/10 bg-white/[0.04] hover:border-white/25 hover:shadow-2xl hover:shadow-black/30"
               }`}
             >
-              {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-indigo-500 px-4 py-1 text-xs font-bold text-white">
-                  {plan.badge}
-                </span>
-              )}
-
-              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
-                {plan.name}
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                  {plan.name}
+                </p>
+                {plan.badge && (
+                  <span className="text-shimmer text-xs font-bold tracking-wide">
+                    ⭐ {plan.badge}
+                  </span>
+                )}
+              </div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className={`font-extrabold tracking-tight text-white ${
                   plan.featured ? "text-4xl" : "text-3xl"
