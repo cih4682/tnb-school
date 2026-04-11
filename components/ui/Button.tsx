@@ -19,7 +19,7 @@ export function Button({ variant = "primary", className = "", ...props }: Props)
   return (
     <Link
       {...props}
-      className={`inline-flex items-center justify-center rounded-full font-medium transition ${className.includes("px-") ? "" : "px-6"} ${className.includes("py-") ? "" : "py-3"} ${styles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-2xl font-medium transition ${className.includes("px-") ? "" : "px-6"} ${className.includes("py-") ? "" : "py-3"} ${styles[variant]} ${className}`}
     />
   );
 }

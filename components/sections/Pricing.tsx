@@ -47,8 +47,7 @@ const plans = [
       "10명 이상 · 10% 할인",
       "30명 이상 · 20% 할인",
       "50명 이상 · 30% 할인",
-      "관리자 대시보드 무료 제공",
-      "세금계산서 발행",
+      "1회 인공지능 연수 제공",
     ],
     cta: "상담 문의",
     featured: false,
@@ -147,7 +146,7 @@ export function Pricing() {
           className="mx-auto mt-10 max-w-2xl rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.08] px-6 py-4 text-center backdrop-blur-sm"
         >
           <p className="text-sm text-white/80">
-            💡 베이직 1학기 = <span className="font-bold text-white">₩167,400</span>
+            베이직 1학기 = <span className="font-bold text-white">₩167,400</span>
             <span className="hidden md:inline"> · </span>
             <br className="md:hidden" />
             정회원 1학기 = <span className="font-bold text-white">₩99,000</span>
