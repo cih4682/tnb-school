@@ -23,8 +23,8 @@ export function Hero() {
       <div className="pointer-events-none absolute -right-40 bottom-20 h-[500px] w-[500px] rounded-full bg-pink-600/15 blur-[140px]" />
 
       <div className="relative z-10 mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-8 px-6 py-24 md:grid-cols-2 md:gap-12 md:py-32">
-        {/* 좌: 카피 (모바일: 시계 아래로) */}
-        <div className="order-2 text-white md:order-1">
+        {/* 좌: 카피 */}
+        <div className="text-white">
           <TypingBadge />
 
           <motion.h1
@@ -52,11 +52,16 @@ export function Hero() {
             선생님은 가장 중요한 일에 집중하세요.
           </motion.p>
 
+          {/* 모바일 전용: 본문과 버튼 사이에 시계 */}
+          <div className="my-8 md:hidden">
+            <ReverseClock />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-8 flex flex-row gap-2 md:mt-10 md:gap-3"
+            className="flex flex-row gap-2 md:mt-10 md:gap-3"
           >
             <Button href="#apps" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
               앱 둘러보기 →
@@ -67,8 +72,8 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* 우: 거꾸로 도는 시계 (모바일: 위로) */}
-        <div className="order-1 md:order-2">
+        {/* 우: 데스크탑 전용 시계 */}
+        <div className="hidden md:block">
           <ReverseClock />
         </div>
       </div>
