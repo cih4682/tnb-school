@@ -9,7 +9,7 @@
 
   const FONT = '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif'
   const LOGIN_URL = 'https://teacherbuff.com/login'
-  const PRICING_URL = 'https://teacherbuff.com/#pricing'
+  const PRICING_URL = 'https://teacherbuff.com/#pro-plan'
   const HOME_URL = 'https://teacherbuff.com'
 
   // Pretendard 폰트 로드
