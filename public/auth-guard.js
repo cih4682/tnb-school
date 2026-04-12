@@ -88,20 +88,28 @@
   }
 
   // 2. profiles 조회
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from('profiles')
     .select('plan, role')
     .eq('user_id', user.id)
     .single()
 
-  // 3. profile 없음 → 회원가입 필요
+  // 3. profile 없으면 자동 생성
   if (!profile) {
-    showScreen(
-      '회원가입이 필요합니다',
-      'T&B School 홈페이지에서 먼저 가입해 주세요',
-      `<p style="margin-top:8px;font-size:14px;color:rgba(255,255,255,0.5)">가입 후 다시 이 앱에 접속하면 됩니다</p>
-       <a href="${LOGIN_URL}" style="display:inline-block;margin-top:32px;padding:14px 36px;background:white;color:#0f172a;text-decoration:none;border-radius:999px;font-size:14px;font-weight:600;font-family:${FONT}">홈페이지에서 가입하기</a>`
-    )
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || '익명'
+    await supabase.from('profiles').insert({
+      user_id: user.id,
+      name: name,
+      email: user.email || '',
+    })
+    // 다시 조회
+    const res = await supabase.from('profiles').select('plan, role').eq('user_id', user.id).single()
+    profile = res.data
+  }
+
+  if (!profile) {
+    // 그래도 없으면 (RLS 등 문제) → 홈으로
+    window.location.href = HOME_URL
     return
   }
 
