@@ -77,10 +77,21 @@ export default function AdminUsers() {
 
   async function confirmDelete() {
     if (!deleteTarget) return;
-    await supabase.from("user_apps").delete().eq("user_id", deleteTarget);
-    await supabase.from("profiles").delete().eq("user_id", deleteTarget);
-    setUsers(users.filter((u) => u.user_id !== deleteTarget));
-    if (selected?.user_id === deleteTarget) setSelected(null);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/admin/delete-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ userId: deleteTarget }),
+    });
+    if (res.ok) {
+      setUsers(users.filter((u) => u.user_id !== deleteTarget));
+      if (selected?.user_id === deleteTarget) setSelected(null);
+    } else {
+      alert("삭제에 실패했습니다.");
+    }
     setDeleteTarget(null);
   }
 
