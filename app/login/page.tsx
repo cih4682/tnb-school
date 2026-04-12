@@ -162,7 +162,7 @@ export default function LoginPage() {
         <div className="mt-10 space-y-3">
           <button
             onClick={() => signInWith("google")}
-            className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 font-medium text-slate-800 shadow-sm transition hover:bg-slate-50"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 font-medium text-slate-800 shadow-sm transition hover:bg-slate-50"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
           <button
             onClick={() => signInWith("kakao")}
-            className="flex w-full items-center gap-3 rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium text-[#191919] shadow-sm transition hover:bg-[#FADA0A]"
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium text-[#191919] shadow-sm transition hover:bg-[#FADA0A]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M12 3C6.48 3 2 6.58 2 10.94c0 2.8 1.86 5.27 4.66 6.67-.15.56-.96 3.6-.99 3.83 0 0-.02.17.09.23.11.07.24.02.24.02.32-.04 3.7-2.44 4.28-2.85.56.08 1.14.12 1.72.12 5.52 0 10-3.58 10-7.94S17.52 3 12 3z" fill="#191919" />
