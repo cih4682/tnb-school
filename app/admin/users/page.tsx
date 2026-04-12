@@ -73,12 +73,15 @@ export default function AdminUsers() {
     if (selected?.user_id === userId) setSelected({ ...selected, plan });
   }
 
-  async function deleteUser(userId: string) {
-    if (!confirm("이 사용자를 삭제하시겠습니까?\n프로필, 앱 권한이 모두 삭제됩니다.")) return;
-    await supabase.from("user_apps").delete().eq("user_id", userId);
-    await supabase.from("profiles").delete().eq("user_id", userId);
-    setUsers(users.filter((u) => u.user_id !== userId));
-    if (selected?.user_id === userId) setSelected(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    await supabase.from("user_apps").delete().eq("user_id", deleteTarget);
+    await supabase.from("profiles").delete().eq("user_id", deleteTarget);
+    setUsers(users.filter((u) => u.user_id !== deleteTarget));
+    if (selected?.user_id === deleteTarget) setSelected(null);
+    setDeleteTarget(null);
   }
 
   async function grantAll() {
@@ -159,7 +162,7 @@ export default function AdminUsers() {
                   <p className="text-sm text-slate-400">{selected.email}</p>
                 </div>
                 <button
-                  onClick={() => deleteUser(selected.user_id)}
+                  onClick={() => setDeleteTarget(selected.user_id)}
                   className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 transition hover:bg-red-50"
                 >
                   삭제
@@ -217,6 +220,37 @@ export default function AdminUsers() {
           )}
         </div>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="p-8 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
+                <svg className="h-7 w-7 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </div>
+              <h3 className="mt-5 text-lg font-bold text-slate-900">사용자를 삭제하시겠습니까?</h3>
+              <p className="mt-2 text-sm text-slate-500">프로필과 앱 권한이 모두 삭제됩니다.<br/>이 작업은 되돌릴 수 없습니다.</p>
+            </div>
+            <div className="flex border-t border-slate-100">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 py-4 text-sm font-medium text-slate-500 transition hover:bg-slate-50"
+              >
+                취소
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 border-l border-slate-100 py-4 text-sm font-semibold text-red-500 transition hover:bg-red-50"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
