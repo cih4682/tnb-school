@@ -95,7 +95,7 @@ export default function DashboardPage() {
                       }`}
                     >
                       <h3 className="text-sm font-bold">{app.name}</h3>
-                      <p className="mt-1 text-xs text-slate-400">{app.description}</p>
+                      <p className="mt-1 whitespace-pre-line text-xs text-slate-400">{app.description}</p>
                       {granted ? (
                         <a
                           href={app.url}
