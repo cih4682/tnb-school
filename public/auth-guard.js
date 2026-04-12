@@ -59,12 +59,30 @@
     document.body.appendChild(overlay)
   }
 
-  // 세션 확인
-  const { data: { user } } = await supabase.auth.getUser()
+  // 세션 확인 (getSession은 URL 해시 토큰도 자동 처리)
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
+
+  // URL에 해시 토큰이 있으면 처리 완료까지 대기
+  if (!user && window.location.hash.includes('access_token')) {
+    // OAuth 리다이렉트 직후 — 세션 처리 대기
+    await new Promise(resolve => {
+      supabase.auth.onAuthStateChange((event, sess) => {
+        if (event === 'SIGNED_IN' && sess) {
+          resolve(sess)
+        }
+      })
+      // 5초 안에 안 되면 타임아웃
+      setTimeout(resolve, 5000)
+    })
+    // 페이지 새로고침으로 깨끗하게 시작 (해시 제거)
+    window.location.href = window.location.origin + window.location.pathname
+    return
+  }
 
   // 1. 로그인 안 됨 → teacherbuff.com/login으로 이동 (redirect 포함)
   if (!user) {
-    const redirect = encodeURIComponent(window.location.href)
+    const redirect = encodeURIComponent(window.location.origin + window.location.pathname)
     window.location.href = LOGIN_URL + '?redirect=' + redirect
     return
   }
