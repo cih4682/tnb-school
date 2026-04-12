@@ -97,14 +97,26 @@ export default function DashboardPage() {
                       <h3 className="text-sm font-bold">{app.name}</h3>
                       <p className="mt-1 whitespace-pre-line text-xs text-slate-400">{app.description}</p>
                       {granted ? (
-                        <a
-                          href={app.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-4 block w-full rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
-                        >
-                          사용하기
-                        </a>
+                        <div className="mt-4 flex gap-2">
+                          <a
+                            href={app.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
+                          >
+                            사용하기
+                          </a>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(app.url);
+                              alert("링크가 복사되었습니다!");
+                            }}
+                            className="rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-500 transition hover:bg-slate-50"
+                            title="링크 복사"
+                          >
+                            📋
+                          </button>
+                        </div>
                       ) : (
                         <Link
                           href="/#pricing"
