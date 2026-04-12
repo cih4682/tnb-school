@@ -73,6 +73,14 @@ export default function AdminUsers() {
     if (selected?.user_id === userId) setSelected({ ...selected, plan });
   }
 
+  async function deleteUser(userId: string) {
+    if (!confirm("이 사용자를 삭제하시겠습니까?\n프로필, 앱 권한이 모두 삭제됩니다.")) return;
+    await supabase.from("user_apps").delete().eq("user_id", userId);
+    await supabase.from("profiles").delete().eq("user_id", userId);
+    setUsers(users.filter((u) => u.user_id !== userId));
+    if (selected?.user_id === userId) setSelected(null);
+  }
+
   async function grantAll() {
     if (!selected) return;
     for (const app of apps) {
@@ -145,8 +153,18 @@ export default function AdminUsers() {
         <div className="w-[360px] shrink-0">
           {selected ? (
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
-              <h2 className="text-lg font-bold">{selected.name}</h2>
-              <p className="text-sm text-slate-400">{selected.email}</p>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-lg font-bold">{selected.name}</h2>
+                  <p className="text-sm text-slate-400">{selected.email}</p>
+                </div>
+                <button
+                  onClick={() => deleteUser(selected.user_id)}
+                  className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 transition hover:bg-red-50"
+                >
+                  삭제
+                </button>
+              </div>
 
               <div className="mt-4">
                 <label className="mb-1 block text-xs font-semibold text-slate-500">플랜</label>
