@@ -40,11 +40,22 @@ function redirectToExternalBrowser() {
   }
 }
 
+function getRedirectUrl() {
+  if (typeof window === "undefined") return "/";
+  const params = new URLSearchParams(window.location.search);
+  return params.get("redirect") || "/";
+}
+
 async function signInWith(provider: "google" | "kakao") {
+  const redirect = getRedirectUrl();
+  const redirectTo = redirect.startsWith("http")
+    ? redirect
+    : `${window.location.origin}${redirect}`;
+
   await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo,
     },
   });
 }
