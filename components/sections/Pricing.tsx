@@ -80,6 +80,7 @@ export function Pricing() {
               transition={{ duration: 0.5, delay: i * 0.12 }}
               whileHover={{ scale: 1.04, y: -8 }}
               id={plan.featured ? "pro-plan" : undefined}
+              style={plan.featured ? { scrollMarginTop: '80px' } : undefined}
               className={`relative cursor-pointer rounded-2xl p-8 transition-shadow ${
                 plan.featured
                   ? "border-shimmer pulse-glow bg-white/[0.08] backdrop-blur-sm"

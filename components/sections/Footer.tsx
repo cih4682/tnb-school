@@ -27,7 +27,7 @@ export function Footer() {
             className="mt-10"
           >
             <a
-              href="#pricing"
+              href="#pro-plan"
               className="relative inline-block rounded-full bg-slate-900 px-8 py-4 text-sm font-semibold text-white transition hover:bg-slate-800"
             >
               <span className="absolute inset-0 animate-ping rounded-full bg-slate-700 opacity-30" style={{ animationDuration: "2.5s" }} />

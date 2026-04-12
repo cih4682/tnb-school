@@ -66,7 +66,7 @@ export function Hero() {
             <Button href="#apps" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
               앱 둘러보기 →
             </Button>
-            <Button href="#pricing" variant="secondary" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
+            <Button href="#pro-plan" variant="secondary" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
               입학 안내 보기
             </Button>
           </motion.div>
