@@ -26,7 +26,6 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allApps, setAllApps] = useState<ManagedApp[]>([]);
   const [grantedIds, setGrantedIds] = useState<Set<string>>(new Set());
-  const [activeApp, setActiveApp] = useState<ManagedApp | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,30 +52,6 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-slate-400">불러오는 중...</p>
-      </div>
-    );
-  }
-
-  // iframe 모드
-  if (activeApp) {
-    return (
-      <div className="flex h-screen flex-col">
-        <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setActiveApp(null)}
-              className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
-            >
-              ← 돌아가기
-            </button>
-            <span className="text-sm font-bold">{activeApp.name}</span>
-          </div>
-        </div>
-        <iframe
-          src={activeApp.url}
-          className="flex-1 border-0"
-          allow="clipboard-write; camera; microphone"
-        />
       </div>
     );
   }
@@ -122,12 +97,14 @@ export default function DashboardPage() {
                       <h3 className="text-sm font-bold">{app.name}</h3>
                       <p className="mt-1 text-xs text-slate-400">{app.description}</p>
                       {granted ? (
-                        <button
-                          onClick={() => setActiveApp(app)}
-                          className="mt-4 w-full rounded-lg bg-slate-900 py-2 text-xs font-semibold text-white hover:bg-slate-800"
+                        <a
+                          href={app.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-4 block w-full rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
                         >
                           사용하기
-                        </button>
+                        </a>
                       ) : (
                         <Link
                           href="/#pricing"
