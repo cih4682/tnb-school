@@ -122,7 +122,7 @@ export default function AdminApps() {
             </div>
             <div className="sm:col-span-2">
               <label className="mb-1 block text-xs font-semibold text-slate-500">설명</label>
-              <input value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400" />
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400" />
             </div>
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-500">상태</label>
