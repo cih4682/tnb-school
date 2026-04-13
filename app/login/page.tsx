@@ -9,8 +9,9 @@ function getInAppBrowser(): string | null {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes("kakaotalk")) return "kakaotalk";
   if (ua.includes("naver")) return "naver";
-  if (ua.includes("instagram")) return "instagram";
+  if (ua.includes("instagram") || ua.includes("barcelona")) return "instagram";
   if (ua.includes("fbav") || ua.includes("fban")) return "facebook";
+  if (ua.includes("threads")) return "threads";
   if (ua.includes("line/")) return "line";
   return null;
 }
