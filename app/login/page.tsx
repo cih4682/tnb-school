@@ -79,32 +79,68 @@ export default function LoginPage() {
   if (inApp && tried) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 px-6">
-        <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white">
-          <div className="p-8 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-              <svg className="h-7 w-7 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+        <div className="w-full max-w-sm">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-white/10"
+            >
+              <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
               </svg>
-            </div>
-            <h3 className="mt-5 text-lg font-bold text-slate-900">
-              외부 브라우저로 열어주세요
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-500">
-              현재 브라우저에서는 로그인이 제한됩니다.
-            </p>
-            <div className="mt-6 rounded-xl bg-slate-50 px-5 py-4 text-left text-sm text-slate-700">
-              <p className="font-semibold">방법</p>
-              <p className="mt-2">우측 하단 <span className="font-bold">⋯</span> 메뉴</p>
-              <p>→ <span className="font-bold">"다른 브라우저로 열기"</span> 선택</p>
-            </div>
-            <button
+            </motion.div>
+            <motion.h3
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="mt-6 text-xl font-bold text-white"
+            >
+              외부 브라우저에서 열어주세요
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mt-3 text-sm leading-relaxed text-white/60"
+            >
+              보안 정책으로 인해<br />현재 브라우저에서는 로그인이 제한됩니다.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.45 }}
+              className="mt-8 rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-5 text-left"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/40">방법</p>
+              <p className="mt-3 text-sm text-white/80">
+                우측 상단 <span className="font-bold text-white">⋯</span> 또는 <span className="font-bold text-white">더보기</span> 메뉴
+              </p>
+              <p className="mt-1 text-sm text-white/80">
+                → <span className="font-bold text-white">"다른 브라우저로 열기"</span> 선택
+              </p>
+            </motion.div>
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
               onClick={redirectToExternalBrowser}
-              className="mt-6 w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="mt-6 w-full rounded-2xl bg-white py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-white/90"
             >
               브라우저로 열기 다시 시도
-            </button>
+            </motion.button>
+            <motion.a
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              href="/"
+              className="mt-4 block text-xs text-white/30 transition hover:text-white/50"
+            >
+              홈으로 돌아가기
+            </motion.a>
           </div>
         </div>
       </div>
