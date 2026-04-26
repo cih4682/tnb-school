@@ -100,7 +100,7 @@ export function Roadmap() {
             />
           </div>
           <div className="mt-2 flex justify-between text-xs text-slate-400">
-            <span>0명</span>
+            <span>{helped}명</span>
             <span>100명 목표</span>
           </div>
         </motion.div>
