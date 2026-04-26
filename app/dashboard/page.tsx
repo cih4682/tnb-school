@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
@@ -27,6 +28,13 @@ export default function DashboardPage() {
   const [allApps, setAllApps] = useState<ManagedApp[]>([]);
   const [grantedIds, setGrantedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  function handleCopy(appId: string, url: string) {
+    navigator.clipboard.writeText(url);
+    setCopiedId(appId);
+    setTimeout(() => setCopiedId(null), 2000);
+  }
 
   useEffect(() => {
     async function load() {
@@ -106,16 +114,38 @@ export default function DashboardPage() {
                           >
                             사용하기
                           </a>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(app.url);
-                              alert("링크가 복사되었습니다!");
-                            }}
-                            className="rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-500 transition hover:bg-slate-50"
-                            title="링크 복사"
-                          >
-                            📋
-                          </button>
+                          <div className="group relative">
+                            <button
+                              onClick={() => handleCopy(app.id, app.url)}
+                              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                              aria-label="링크 복사"
+                            >
+                              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+                                <rect width="13" height="13" x="9" y="9" rx="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                              </svg>
+                            </button>
+                            <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                              링크 복사
+                              <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                            </div>
+                            <AnimatePresence>
+                              {copiedId === app.id && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                                  className="absolute bottom-full left-1/2 z-20 mb-2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg"
+                                >
+                                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="m9 12 2 2 4-4" />
+                                  </svg>
+                                  복사 완료
+                                  <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-emerald-500" />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         </div>
                       ) : (
                         <Link
