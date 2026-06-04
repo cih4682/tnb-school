@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ProfileSync } from "@/components/ProfileSync";
 
 const SITE_URL = "https://teacherbuff.com";
 const SITE_NAME = "T&B School | 티처버프";
@@ -202,7 +203,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <ProfileSync />
+        {children}
+      </body>
     </html>
   );
 }
