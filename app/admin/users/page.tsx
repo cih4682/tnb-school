@@ -46,8 +46,17 @@ export default function AdminUsers() {
       }),
       supabase.from("managed_apps").select("id, name, category").order("sort_order"),
     ]);
-    const uJson = uRes.ok ? await uRes.json() : { users: [] };
-    setUsers(uJson.users || []);
+    if (uRes.ok) {
+      const uJson = await uRes.json();
+      setUsers(uJson.users || []);
+    } else {
+      // service key 미설정 등으로 API 실패 시 profiles 직접 조회로 폴백 (빈 화면 회귀 방지)
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      setUsers(data || []);
+    }
     setApps(a.data || []);
   }
 
