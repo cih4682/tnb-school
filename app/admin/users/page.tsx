@@ -36,11 +36,18 @@ export default function AdminUsers() {
   useEffect(() => { load(); }, []);
 
   async function load() {
-    const [u, a] = await Promise.all([
-      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+    // 가입자 명단은 auth.users 가 진실원천이다. profiles 만 읽으면
+    // 프로필 행이 안 생긴 가입자가 누락되므로 서버 API 로 병합 조회한다.
+    const { data: { session } } = await supabase.auth.getSession();
+    const [uRes, a] = await Promise.all([
+      fetch("/api/admin/list-users", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      }),
       supabase.from("managed_apps").select("id, name, category").order("sort_order"),
     ]);
-    setUsers(u.data || []);
+    const uJson = uRes.ok ? await uRes.json() : { users: [] };
+    setUsers(uJson.users || []);
     setApps(a.data || []);
   }
 

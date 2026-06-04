@@ -7,7 +7,7 @@ create table if not exists profiles (
   name text not null default '익명',
   email text,
   role text not null default 'user' check (role in ('user', 'admin')),
-  plan text not null default 'free' check (plan in ('free', 'standard', 'premium')),
+  plan text not null default 'free' check (plan in ('free', 'basic', 'pro', 'team')),
   created_at timestamptz default now()
 );
 
