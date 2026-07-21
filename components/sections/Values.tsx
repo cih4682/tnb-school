@@ -102,11 +102,10 @@ export function Values() {
             >
               {/* 아래로 퍼지는 빛 (부채꼴 — 멀어질수록 훨씬 더 넓게, 경계선 없음) */}
               <div
-                className="pointer-events-none absolute left-1/2 top-[54%] h-[46rem] w-[48rem] -translate-x-1/2 transition-opacity duration-300"
+                className="pointer-events-none absolute left-1/2 top-[54%] h-[22rem] w-[24rem] -translate-x-1/2 transition-opacity duration-300 md:h-[46rem] md:w-[48rem]"
                 style={{
-                  background: isMobile
-                    ? "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 132.5deg, rgba(253,224,120,0.20) 164deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 196deg, transparent 227.5deg, transparent 360deg)"
-                    : "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 137.5deg, rgba(253,224,120,0.20) 166deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 194deg, transparent 222.5deg, transparent 360deg)",
+                  background:
+                    "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 137.5deg, rgba(253,224,120,0.20) 166deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 194deg, transparent 222.5deg, transparent 360deg)",
                   WebkitMaskImage:
                     "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
                   maskImage:
