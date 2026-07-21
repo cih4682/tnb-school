@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 const plans = [
   {
     name: "INDIVIDUAL",
-    price: "₩27,900",
-    unit: "/ 월",
+    price: "10,000원~",
+    unit: "/ 월,상시",
     desc: "혼자서도 큰 힘이 됩니다",
     badge: null,
     benefits: [
@@ -22,9 +23,9 @@ const plans = [
   },
   {
     name: "CORPORATE",
-    price: "₩99,000",
-    unit: "/ 학기 (6개월)",
-    desc: "함께하면 더 멀리 갑니다.",
+    price: "후원문의",
+    unit: "",
+    desc: "기업 맞춤",
     badge: "추천",
     benefits: [
       "개인 후원 혜택 전부 포함",
@@ -91,12 +92,33 @@ export function Pricing() {
                 <p className="text-lg font-extrabold tracking-[0.15em] text-indigo-400">
                   {plan.name}
                 </p>
-                {plan.badge && (
-                  <span className="text-shimmer text-base font-extrabold tracking-wide">
-                    ⭐ {plan.badge}
-                  </span>
-                )}
               </div>
+              {plan.badge && (
+                <>
+                  <Image
+                    src="/tnb.png"
+                    alt="후원 뱃지"
+                    width={72}
+                    height={72}
+                    className="absolute right-3 top-3 h-16 w-16 rotate-6 drop-shadow-lg"
+                  />
+                  <span className="pointer-events-none absolute right-[6rem] top-6 -rotate-6 whitespace-nowrap font-hand text-xl leading-none text-amber-300">
+                    후원뱃지
+                  </span>
+                  <svg
+                    className="pointer-events-none absolute right-[4.6rem] top-[2.2rem] h-5 w-6 text-amber-300"
+                    viewBox="0 0 24 18"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M2 13 C 8 12, 13 8, 20 4" />
+                    <path d="M14 3 L 21 3.5 L 19 9" />
+                  </svg>
+                </>
+              )}
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-3xl font-extrabold tracking-tight text-white">
                   {plan.price}
