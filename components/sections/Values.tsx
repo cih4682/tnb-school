@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, MouseEvent, TouchEvent } from "react";
+import { useRef, useState, useEffect, MouseEvent } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -50,13 +50,6 @@ export function Values() {
     pointTo(e.clientX, e.clientY);
   }
 
-  function handleTouch(e: TouchEvent<HTMLDivElement>) {
-    const t = e.touches[0];
-    if (!t) return;
-    setLit(true);
-    pointTo(t.clientX, t.clientY);
-  }
-
   // 램프 꺾임: 왼쪽 카드 → 왼쪽, 오른쪽 카드 → 오른쪽 (모바일 30°, 데스크탑 40°)
   const lampRot =
     lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 25 : 40) : 0;
@@ -92,12 +85,6 @@ export function Values() {
                   setActiveIdx(null);
                 }
           }
-          onTouchStart={handleTouch}
-          onTouchMove={handleTouch}
-          onTouchEnd={() => {
-            setLit(false);
-            setActiveIdx(null);
-          }}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -153,6 +140,12 @@ export function Values() {
               return (
                 <div
                   key={v.title}
+                  onClick={() => {
+                    if (isMobile) {
+                      setActiveIdx(i);
+                      setLit(true);
+                    }
+                  }}
                   className={`text-center transition-all duration-500 ${
                     on ? "scale-[1.04] opacity-100" : "opacity-100 md:opacity-[0.12]"
                   }`}
