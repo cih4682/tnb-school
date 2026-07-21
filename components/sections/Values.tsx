@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, MouseEvent } from "react";
+import { useRef, useState, useEffect, MouseEvent, TouchEvent } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -17,7 +17,7 @@ const values = [
   },
   {
     title: "함께 만들어요",
-    desc: "스스로 필요한 앱을 만들고 싶을 땐,\n'티프'가 알려드려요.",
+    desc: "필요한 앱을 만들 땐,\n'티프'가 도와드려요.",
     icon: "sliders",
   },
 ];
@@ -27,18 +27,39 @@ export function Values() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [lit, setLit] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  function handleMove(e: MouseEvent<HTMLDivElement>) {
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  function pointTo(clientX: number, clientY: number) {
     const el = stageRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    setPos({ x, y: e.clientY - r.top });
+    const x = clientX - r.left;
+    setPos({ x, y: clientY - r.top });
     setActiveIdx(Math.min(values.length - 1, Math.max(0, Math.floor(x / (r.width / values.length)))));
   }
 
-  // 램프 꺾임: 왼쪽 카드 → 왼쪽으로, 오른쪽 카드 → 오른쪽으로 (중앙 기준 회전)
-  const lampRot = lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * 40 : 0;
+  function handleMove(e: MouseEvent<HTMLDivElement>) {
+    pointTo(e.clientX, e.clientY);
+  }
+
+  function handleTouch(e: TouchEvent<HTMLDivElement>) {
+    const t = e.touches[0];
+    if (!t) return;
+    setLit(true);
+    pointTo(t.clientX, t.clientY);
+  }
+
+  // 램프 꺾임: 왼쪽 카드 → 왼쪽, 오른쪽 카드 → 오른쪽 (모바일 30°, 데스크탑 40°)
+  const lampRot =
+    lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 30 : 40) : 0;
 
   return (
     <section className="bg-white py-20 md:py-36">
@@ -53,7 +74,7 @@ export function Values() {
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
             For Teachers
           </p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+          <h2 className="mt-4 text-[1.7rem] font-extrabold tracking-tight sm:text-3xl md:text-4xl">
             선생님들이 직접 만들어갑니다.
           </h2>
         </motion.div>
@@ -64,6 +85,12 @@ export function Values() {
           onMouseMove={handleMove}
           onMouseEnter={() => setLit(true)}
           onMouseLeave={() => {
+            setLit(false);
+            setActiveIdx(null);
+          }}
+          onTouchStart={handleTouch}
+          onTouchMove={handleTouch}
+          onTouchEnd={() => {
             setLit(false);
             setActiveIdx(null);
           }}
