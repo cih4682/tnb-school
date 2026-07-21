@@ -248,10 +248,10 @@ function DoorCard({
 
       {/* 라벨 */}
       <div className="mt-10 text-center">
-        <h3 className="text-lg font-bold text-white">{room.label}</h3>
-        <p className="mt-1 text-xs text-slate-400">{room.tagline}</p>
+        <h3 className="text-xl font-bold text-white">{room.label}</h3>
+        <p className="mt-1 text-sm text-slate-400">{room.tagline}</p>
         <span
-          className="mt-3 inline-block text-[11px] font-semibold"
+          className="mt-3 inline-block text-[13px] font-semibold"
           style={{ color: `rgb(${glow})` }}
         >
           {locked ? "곧 열립니다" : "들어가 보기 →"}
