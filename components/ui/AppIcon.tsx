@@ -1,7 +1,7 @@
 import {
   IconCalendar, IconPresentation, IconFileEdit, IconMessageQuestion,
   IconChartBar, IconClipboardCheck, IconLayoutGrid, IconEye,
-  IconBrush, IconNotebookPen,
+  IconBrush, IconNotebookPen, IconCompass,
 } from "./Icons";
 
 const map: Record<string, React.FC<{ className?: string }>> = {
@@ -15,6 +15,7 @@ const map: Record<string, React.FC<{ className?: string }>> = {
   search: IconEye,
   palette: IconBrush,
   pen: IconNotebookPen,
+  compass: IconCompass,
 };
 
 export function AppIcon({ name, className = "h-6 w-6" }: { name: string; className?: string }) {

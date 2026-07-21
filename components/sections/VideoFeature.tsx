@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 export function VideoFeature() {
@@ -7,26 +8,17 @@ export function VideoFeature() {
     <section className="relative overflow-hidden border-y border-slate-100 bg-white py-20 md:py-36">
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
-          {/* 좌: 영상 (커튼 효과) */}
-          <motion.div
-            initial={{ clipPath: "inset(0 50% 0 50%)" }}
-            whileInView={{ clipPath: "inset(0 0% 0 0%)" }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="overflow-hidden rounded-2xl border border-slate-200">
-              <video
-                src="/school.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className="aspect-video w-full object-cover"
-              />
-            </div>
-          </motion.div>
+          {/* 좌: 이미지 (애니메이션 없이 바로 표시) */}
+          <div className="overflow-hidden rounded-2xl border border-slate-200">
+            <Image
+              src="/image/tb7.png"
+              alt="T&B School 티처버프 마스코트들이 수업·평가·업무를 돕는 모습"
+              width={1600}
+              height={900}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="aspect-video w-full object-cover"
+            />
+          </div>
 
           {/* 우: 텍스트 + 형광펜 효과 */}
           <div>
@@ -88,9 +80,7 @@ export function VideoFeature() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="mt-4 leading-relaxed text-slate-600"
             >
-              T&B School은 그 시간을 되돌려 드리기 위해 시작됐어요.
-              <br />
-              앱 하나하나 선생님의 입장을 생각하며 만들었습니다.
+              T&B School은 그 시간을 되돌려 드리기 위해 시작되었습니다.
             </motion.p>
 
             <motion.div

@@ -3,8 +3,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Values } from "@/components/sections/Values";
 import { VideoFeature } from "@/components/sections/VideoFeature";
 import { Counter } from "@/components/sections/Counter";
-import { AppGallery } from "@/components/sections/AppGallery";
-import { Roadmap } from "@/components/sections/Roadmap";
+import { RoomGallery } from "@/components/sections/RoomGallery";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
 import { AiCourse } from "@/components/sections/AiCourse";
@@ -20,8 +19,7 @@ export default function HomePage() {
       <Values />
       <VideoFeature />
       <Counter />
-      <AppGallery />
-      <Roadmap />
+      <RoomGallery />
       <Testimonials />
       <Pricing />
       <AiCourse />

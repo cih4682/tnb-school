@@ -41,7 +41,7 @@ const concerns = [
     solution: "조건만 설정하면 자동 배치. 공정하고 빠르게.",
   },
   {
-    worry: "퀴즈 만들 시간이 없어요",
+    worry: "매일 반복되는 업무에 너무 힘들어요",
     detail: "단원평가, 쪽지시험 문제 하나하나 만드는 게 고역이에요.",
     app: "퀴즈 메이커",
     appIcon: "circleHelp",
@@ -53,7 +53,7 @@ export function Counter() {
   const [active, setActive] = useState<number | null>(null);
 
   return (
-    <section className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 py-20 md:py-28">
+    <section className="bg-slate-950 py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -85,7 +85,7 @@ export function Counter() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.06 }}
                 onClick={() => setActive(isActive ? null : i)}
-                className={`rounded-2xl border p-6 text-left transition ${
+                className={`glow-border rounded-2xl border p-6 text-left transition ${
                   isActive
                     ? "border-white/30 bg-white/10"
                     : "border-white/10 bg-white/[0.04] hover:border-white/20"

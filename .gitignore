@@ -4,6 +4,9 @@ out
 .env.local
 .env*.local
 
+# typescript build cache
+tsconfig.tsbuildinfo
+
 # large video files
 t&b.mp4
 school.mp4

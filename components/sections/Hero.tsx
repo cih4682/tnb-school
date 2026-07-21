@@ -45,11 +45,11 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="mt-6 max-w-md text-sm leading-[1.9] text-white/80 sm:text-base md:mt-8 md:text-lg"
           >
-            반복되는 행정업무와 자료만들기는
+            반복되는 업무는 줄이고,
             <br />
-            T&B School이 맡겠습니다.
+            학생과 수업에 더 집중할 수 있도록.
             <br />
-            선생님은 가장 중요한 일에 집중하세요.
+            Teacher Buff가 선생님의 하루를 돕습니다.
           </motion.p>
 
           {/* 모바일 전용: 본문과 버튼 사이에 시계 */}
@@ -67,7 +67,7 @@ export function Hero() {
               앱 둘러보기 →
             </Button>
             <Button href="#pro-plan" variant="secondary" className="flex-1 px-4 py-3 text-sm md:flex-initial md:px-6 md:py-3 md:text-base">
-              입학 안내 보기
+              이 공간 응원하기
             </Button>
           </motion.div>
         </div>

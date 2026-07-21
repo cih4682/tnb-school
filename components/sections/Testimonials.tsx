@@ -4,16 +4,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
-  { name: "김O지 선생님", role: "초등학교 4학년 담임", quote: "수업 플래너랑 워크시트 생성기 덕분에\n매주 야근이 사라졌어요." },
-  { name: "박O호 선생님", role: "중학교 수학", quote: "퀴즈 메이커로 단원평가 만드는 시간이\n30분에서 5분으로 줄었어요." },
-  { name: "이O연 선생님", role: "고등학교 국어", quote: "생기부 도우미가 정말 똑똑해요.\n관찰 기록만 넣으면 자연스러운 문장이 나와요." },
-  { name: "정O늘 선생님", role: "초등학교 1학년 담임", quote: "자리 배치도 앱은\n학기 초의 구원자였어요." },
+  { name: "최OO 선생님", role: "고등학교 체육", quote: "많은 걸 약속드리진 못합니다.\n그저 선생님의 하루에 작은 여유가 생기길 바랍니다." },
 ];
 
 export function Testimonials() {
   const [i, setI] = useState(0);
 
   useEffect(() => {
+    if (testimonials.length <= 1) return;
     const t = setInterval(() => setI((p) => (p + 1) % testimonials.length), 5000);
     return () => clearInterval(t);
   }, []);
@@ -52,17 +50,19 @@ export function Testimonials() {
           </AnimatePresence>
         </div>
 
-        <div className="mt-10 flex justify-center gap-2">
-          {testimonials.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setI(idx)}
-              className={`h-1.5 rounded-full transition-all ${
-                i === idx ? "w-8 bg-slate-900" : "w-1.5 bg-slate-200"
-              }`}
-            />
-          ))}
-        </div>
+        {testimonials.length > 1 && (
+          <div className="mt-10 flex justify-center gap-2">
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setI(idx)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === idx ? "w-8 bg-slate-900" : "w-1.5 bg-slate-200"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

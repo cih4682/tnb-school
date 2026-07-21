@@ -4,50 +4,50 @@ import { motion } from "framer-motion";
 
 const plans = [
   {
-    name: "BASIC",
+    name: "INDIVIDUAL",
     price: "₩27,900",
     unit: "/ 월",
-    desc: "처음이라면 부담 없이",
+    desc: "혼자서도 큰 힘이 됩니다",
     badge: null,
     benefits: [
-      "원하는 앱 3개 선택 사용",
-      "앱 미리보기",
-      "커뮤니티 읽기 · 댓글",
-      "언제든 해지 / 업그레이드",
-      "월 자동 결제",
+      "후원자 명단에 이름 등재",
+      "새 앱 소식 가장 먼저 받기",
+      "후원자 전용 커뮤니티 초대",
+      "원하는 앱 기능 제안하기",
+      "기부금영수증 발급 · 소득공제 (준비 중)",
+      "후원자 전용 뱃지",
     ],
-    cta: "시작하기",
+    cta: "개인으로 후원하기",
     featured: false,
   },
   {
-    name: "PRO",
+    name: "CORPORATE",
     price: "₩99,000",
     unit: "/ 학기 (6개월)",
-    desc: "가장 인기 있는 플랜",
+    desc: "함께하면 더 멀리 갑니다.",
     badge: "추천",
     benefits: [
-      "모든 앱 사용",
-      "신규 추가되는 앱 자동 포함",
-      "커스텀 앱 제작 우선 신청권",
-      "선생님 전용 커뮤니티 초대",
-      "월 1회 신규 앱 라이브 데모",
-      "베타 앱 우선 체험",
+      "개인 후원 혜택 전부 포함",
+      "기업 로고 홈페이지 노출",
+      "CSR · ESG 사회공헌 실적 활용",
+      "감사패 · 후원 인증서 제공",
+      "협회 대회 현장 부스 운영",
+      "분기별 후원 사용 리포트",
     ],
-    cta: "지금 입학하기",
+    cta: "기업으로 후원하기",
     featured: true,
   },
   {
-    name: "TEAM",
-    price: "단체 문의",
+    name: "CUSTOM",
+    price: "제작 문의",
     unit: "",
-    desc: "학교 · 단체 전용",
+    desc: "원하는 앱을 맞춤 제작해 보세요.",
     badge: null,
     benefits: [
-      "정회원 혜택 전부 포함",
-      "10명 이상 · 10% 할인",
-      "30명 이상 · 20% 할인",
-      "50명 이상 · 30% 할인",
-      "1회 인공지능 연수 제공",
+      "원하는 교사 앱 맞춤 제작",
+      "기능 · 디자인 1:1 상담",
+      "제작 범위 · 일정 안내",
+      "완성 후 유지 · 업데이트 지원",
     ],
     cta: "상담 문의",
     featured: false,
@@ -65,9 +65,9 @@ export function Pricing() {
           transition={{ duration: 0.7 }}
           className="text-center"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Pricing</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white">입학 안내</h2>
-          <p className="mt-3 text-white/50">선생님의 상황에 맞는 플랜을 선택하세요</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Support</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white">후원 안내</h2>
+          <p className="mt-3 text-white/50">선생님을 위한 도구, 여러분의 후원으로 함께 만들어가요</p>
         </motion.div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -81,7 +81,7 @@ export function Pricing() {
               whileHover={{ scale: 1.04, y: -8 }}
               id={plan.featured ? "pro-plan" : undefined}
               style={plan.featured ? { scrollMarginTop: '80px' } : undefined}
-              className={`relative cursor-pointer rounded-2xl p-8 transition-shadow ${
+              className={`relative flex cursor-pointer flex-col rounded-2xl p-8 transition-shadow ${
                 plan.featured
                   ? "border-shimmer pulse-glow bg-white/[0.08] backdrop-blur-sm"
                   : "border border-white/10 bg-white/[0.04] hover:border-white/25 hover:shadow-2xl hover:shadow-black/30"
@@ -107,8 +107,11 @@ export function Pricing() {
 
               <div className="my-6 h-px bg-white/10" />
 
-              <ul className="space-y-3">
-                {plan.benefits.map((b, idx) => (
+              <ul className="flex-1 space-y-3">
+                {plan.benefits.map((b, idx) => {
+                  const soon = b.includes("(준비 중)");
+                  const label = b.replace(" (준비 중)", "");
+                  return (
                   <motion.li
                     key={b}
                     initial={{ opacity: 0, x: -12 }}
@@ -120,9 +123,17 @@ export function Pricing() {
                     <svg className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <path d="m9 12 2 2 4-4" />
                     </svg>
-                    <span className={`leading-relaxed ${b === "모든 앱 사용" ? "font-extrabold text-white" : "text-white/70"}`}>{b}</span>
+                    <span className={`leading-relaxed ${label === "개인 후원 혜택 전부 포함" ? "font-extrabold text-white" : "text-white/70"}`}>
+                      {label}
+                    </span>
+                    {soon && (
+                      <span className="ml-auto shrink-0 rounded bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/60">
+                        준비중
+                      </span>
+                    )}
                   </motion.li>
-                ))}
+                  );
+                })}
               </ul>
 
               <a
@@ -148,13 +159,10 @@ export function Pricing() {
           className="mx-auto mt-10 max-w-2xl rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.08] px-6 py-4 text-center backdrop-blur-sm"
         >
           <p className="text-sm text-white/80">
-            베이직 1학기 = <span className="font-bold text-white">₩167,400</span>
-            <span className="hidden md:inline"> · </span>
-            <br className="md:hidden" />
-            정회원 1학기 = <span className="font-bold text-white">₩99,000</span>
+            티처버프는 <span className="font-bold text-white">사단법인 세종넷볼 협회</span>의 인공지능 활용팀입니다.
           </p>
-          <p className="mt-1 text-xs text-indigo-300">
-            정회원이 <span className="font-bold">₩68,400 더 저렴</span>하면서 모든 앱을 사용할 수 있어요
+          <p className="mt-2 text-xs leading-relaxed text-indigo-300">
+            여러분의 후원은 스포츠 대회 추진 · 생활체육 활성화 · 새로운 교사 앱 제작 · 장학재단 지원에 함께 쓰입니다.
           </p>
         </motion.div>
 

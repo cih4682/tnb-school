@@ -2,13 +2,15 @@ export type Category =
   | "lesson-prep"
   | "assessment"
   | "student-management"
-  | "material";
+  | "material"
+  | "career";
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   "lesson-prep": "수업 준비",
   assessment: "평가",
   "student-management": "학생 관리",
   material: "업무 관리",
+  career: "진로 지도",
 };
 
 export interface App {
@@ -94,5 +96,13 @@ export const apps: App[] = [
     category: "material",
     description: "관찰 기록을 문장으로 다듬어 줍니다.",
     iconName: "pen",
+  },
+  {
+    id: "college-counsel",
+    name: "대입상담",
+    category: "career",
+    description: "학생 성적·활동을 바탕으로 맞춤 대입 전략을 함께 정리해요.",
+    iconName: "compass",
+    isNew: true,
   },
 ];

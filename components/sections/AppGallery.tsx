@@ -20,6 +20,7 @@ const categoryDots: Record<Category, string> = {
   assessment: "bg-rose-500",
   "student-management": "bg-emerald-500",
   material: "bg-amber-500",
+  career: "bg-violet-500",
 };
 
 const categoryHoverBorder: Record<Category, string> = {
@@ -27,6 +28,7 @@ const categoryHoverBorder: Record<Category, string> = {
   assessment: "hover:border-rose-400",
   "student-management": "hover:border-emerald-400",
   material: "hover:border-amber-400",
+  career: "hover:border-violet-400",
 };
 
 const categories: Category[] = ["lesson-prep", "assessment", "student-management", "material"];
