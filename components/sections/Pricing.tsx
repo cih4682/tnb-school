@@ -159,7 +159,7 @@ export function Pricing() {
           className="mx-auto mt-10 max-w-2xl rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.08] px-6 py-4 text-center backdrop-blur-sm"
         >
           <p className="text-sm text-white/80">
-            티처버프는 <span className="font-bold text-white">사단법인 세종넷볼 협회</span>의 인공지능 활용팀입니다.
+            티처버프는 <span className="font-bold text-white">'SJNF'</span>의 인공지능 활용팀입니다.
           </p>
           <p className="mt-2 text-xs leading-relaxed text-indigo-300">
             여러분의 후원은 스포츠 대회 추진 · 생활체육 활성화 · 새로운 교사 앱 제작 · 장학재단 지원에 함께 쓰입니다.
