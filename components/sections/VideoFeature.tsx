@@ -62,7 +62,8 @@ export function VideoFeature() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-6 text-lg leading-relaxed text-slate-600"
             >
-              매일 반복되는 행정 업무, 자료 만들기, 평가 정리…
+              매일 반복되는 행정 업무, 자료 만들기, 평가 정리…{" "}
+              <br className="md:hidden" />
               정작 가장 중요한{" "}
               <span className="relative inline-block">
                 <Highlight delay={1.2} color="bg-amber-200/70" />
@@ -70,7 +71,9 @@ export function VideoFeature() {
                   아이들과 마주하는 시간
                 </span>
               </span>
-              이 줄어들고 있습니다.
+              이{" "}
+              <br className="md:hidden" />
+              줄어들고 있습니다.
             </motion.p>
 
             <motion.p
@@ -80,7 +83,9 @@ export function VideoFeature() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="mt-4 leading-relaxed text-slate-600"
             >
-              T&B School은 그 시간을 되돌려 드리기 위해 시작되었습니다.
+              T&B School은 그 시간을 되돌려 드리기 위해{" "}
+              <br className="md:hidden" />
+              시작되었습니다.
             </motion.p>
 
             <motion.div
