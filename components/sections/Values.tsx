@@ -52,7 +52,7 @@ export function Values() {
 
   // 램프 꺾임: 왼쪽 카드 → 왼쪽, 오른쪽 카드 → 오른쪽 (모바일 30°, 데스크탑 40°)
   const lampRot =
-    lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 25 : 40) : 0;
+    lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 20 : 40) : 0;
 
   return (
     <section className="bg-white py-20 md:py-36">
@@ -104,8 +104,9 @@ export function Values() {
               <div
                 className="pointer-events-none absolute left-1/2 top-[54%] h-[46rem] w-[48rem] -translate-x-1/2 transition-opacity duration-300"
                 style={{
-                  background:
-                    "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 137.5deg, rgba(253,224,120,0.20) 166deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 194deg, transparent 222.5deg, transparent 360deg)",
+                  background: isMobile
+                    ? "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 132.5deg, rgba(253,224,120,0.20) 164deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 196deg, transparent 227.5deg, transparent 360deg)"
+                    : "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 137.5deg, rgba(253,224,120,0.20) 166deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 194deg, transparent 222.5deg, transparent 360deg)",
                   WebkitMaskImage:
                     "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
                   maskImage:
