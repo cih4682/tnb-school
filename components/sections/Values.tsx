@@ -155,7 +155,9 @@ export function Values() {
                 >
                   <div
                     className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-500 sm:h-16 sm:w-16 md:h-20 md:w-20 ${
-                      on ? "border-amber-300/50 text-white" : "border-white/20 text-white/80"
+                      on
+                        ? "border-amber-300/60 text-white shadow-[0_0_24px_rgba(253,224,120,0.35)]"
+                        : "border-amber-200/40 text-white md:border-white/20 md:text-white/80"
                     }`}
                   >
                     {v.icon === "gauge" && <GaugeIcon />}
