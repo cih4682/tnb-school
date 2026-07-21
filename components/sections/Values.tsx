@@ -59,7 +59,7 @@ export function Values() {
 
   // 램프 꺾임: 왼쪽 카드 → 왼쪽, 오른쪽 카드 → 오른쪽 (모바일 30°, 데스크탑 40°)
   const lampRot =
-    lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 30 : 40) : 0;
+    lit && activeIdx !== null ? ((values.length - 1) / 2 - activeIdx) * (isMobile ? 25 : 40) : 0;
 
   return (
     <section className="bg-white py-20 md:py-36">
@@ -99,7 +99,7 @@ export function Values() {
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1 }}
           className="relative mt-12 overflow-hidden rounded-3xl bg-gradient-to-b from-[#0a0d16] to-black px-4 pb-16 pt-6 sm:px-6 md:mt-16 md:pb-20"
-          style={{ ["--x" as string]: `${pos.x}px`, ["--y" as string]: `${pos.y}px` }}
+          style={{ ["--x" as string]: `${pos.x}px`, ["--y" as string]: `${pos.y}px`, touchAction: "pan-y" }}
         >
           {/* 램프 (박스 안 상단, 커서 쪽으로 꺾임) */}
           <div className="relative z-10 mx-auto w-40 md:w-48">
