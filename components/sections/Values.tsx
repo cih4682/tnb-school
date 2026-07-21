@@ -82,12 +82,16 @@ export function Values() {
         {/* 어두운 골목 무대 — 램프 + 카드가 한 박스, 빛 닿는 곳만 드러남 */}
         <motion.div
           ref={stageRef}
-          onMouseMove={handleMove}
-          onMouseEnter={() => setLit(true)}
-          onMouseLeave={() => {
-            setLit(false);
-            setActiveIdx(null);
-          }}
+          onMouseMove={isMobile ? undefined : handleMove}
+          onMouseEnter={isMobile ? undefined : () => setLit(true)}
+          onMouseLeave={
+            isMobile
+              ? undefined
+              : () => {
+                  setLit(false);
+                  setActiveIdx(null);
+                }
+          }
           onTouchStart={handleTouch}
           onTouchMove={handleTouch}
           onTouchEnd={() => {
