@@ -106,11 +106,13 @@ export function Values() {
                 style={{
                   background:
                     "conic-gradient(from 0deg at 50% 0%, transparent 0deg, transparent 137.5deg, rgba(253,224,120,0.20) 166deg, rgba(255,235,160,0.38) 180deg, rgba(253,224,120,0.20) 194deg, transparent 222.5deg, transparent 360deg)",
-                  WebkitMaskImage:
-                    "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
-                  maskImage:
-                    "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
-                  filter: "blur(18px)",
+                  WebkitMaskImage: isMobile
+                    ? "linear-gradient(to bottom, #000 0%, #000 38%, transparent 95%)"
+                    : "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
+                  maskImage: isMobile
+                    ? "linear-gradient(to bottom, #000 0%, #000 38%, transparent 95%)"
+                    : "radial-gradient(ellipse 96% 96% at 50% 0%, #000 3%, rgba(0,0,0,0.42) 48%, transparent 94%)",
+                  filter: isMobile ? "blur(9px)" : "blur(18px)",
                   opacity: lit ? 0.9 : 0.08,
                 }}
               />
