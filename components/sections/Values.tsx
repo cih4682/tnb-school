@@ -71,7 +71,7 @@ export function Values() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="relative mt-12 overflow-hidden rounded-3xl bg-gradient-to-b from-[#0a0d16] to-black px-6 pb-16 pt-6 md:mt-16 md:pb-20"
+          className="relative mt-12 overflow-hidden rounded-3xl bg-gradient-to-b from-[#0a0d16] to-black px-4 pb-16 pt-6 sm:px-6 md:mt-16 md:pb-20"
           style={{ ["--x" as string]: `${pos.x}px`, ["--y" as string]: `${pos.y}px` }}
         >
           {/* 램프 (박스 안 상단, 커서 쪽으로 꺾임) */}
@@ -116,18 +116,18 @@ export function Values() {
           </div>
 
           {/* 카드 — 기본은 어둠, 빛이 닿는(활성) 카드만 드러남 */}
-          <div className="relative z-10 mt-6 grid gap-14 md:mt-8 md:grid-cols-3 md:gap-8">
+          <div className="relative z-10 mt-6 grid grid-cols-3 gap-2 sm:gap-6 md:mt-8 md:gap-8">
             {values.map((v, i) => {
               const on = lit && activeIdx === i;
               return (
                 <div
                   key={v.title}
                   className={`text-center transition-all duration-500 ${
-                    on ? "scale-[1.04] opacity-100" : "opacity-[0.12]"
+                    on ? "scale-[1.04] opacity-100" : "opacity-100 md:opacity-[0.12]"
                   }`}
                 >
                   <div
-                    className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full border transition-all duration-500 ${
+                    className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-500 sm:h-16 sm:w-16 md:h-20 md:w-20 ${
                       on ? "border-amber-300/50 text-white" : "border-white/20 text-white/80"
                     }`}
                   >
@@ -135,10 +135,10 @@ export function Values() {
                     {v.icon === "check" && <CheckIcon />}
                     {v.icon === "sliders" && <SlidersIcon />}
                   </div>
-                  <h3 className="mt-7 text-lg font-bold tracking-tight text-white">
+                  <h3 className="mt-3 text-xs font-bold tracking-tight text-white sm:mt-5 sm:text-base md:mt-7 md:text-lg">
                     {v.title}
                   </h3>
-                  <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-white/75">
+                  <p className="mt-1.5 whitespace-pre-line text-[10px] leading-relaxed text-white/75 sm:mt-2 sm:text-sm md:mt-3 md:text-[15px]">
                     {v.desc}
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export function Values() {
 
 function GaugeIcon() {
   return (
-    <svg viewBox="0 0 40 40" fill="none" className="h-10 w-10">
+    <svg viewBox="0 0 40 40" fill="none" className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10">
       <circle cx="20" cy="22" r="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="66 22" />
       <motion.path
         d="M20 22l5-9"
@@ -173,7 +173,7 @@ function GaugeIcon() {
 
 function CheckIcon() {
   return (
-    <svg viewBox="0 0 40 40" fill="none" className="h-10 w-10">
+    <svg viewBox="0 0 40 40" fill="none" className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10">
       <circle cx="20" cy="20" r="14" stroke="currentColor" strokeWidth="1.5" />
       <motion.path
         d="M13 20l4 4 10-10"
@@ -192,7 +192,7 @@ function CheckIcon() {
 
 function SlidersIcon() {
   return (
-    <svg viewBox="0 0 40 40" fill="none" className="h-10 w-10">
+    <svg viewBox="0 0 40 40" fill="none" className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10">
       <line x1="8" y1="12" x2="32" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <line x1="8" y1="28" x2="32" y2="28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
