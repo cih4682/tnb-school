@@ -13,7 +13,7 @@ export function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="text-2xl font-extrabold leading-[1.45] tracking-tight sm:text-3xl sm:leading-[1.85] md:text-5xl"
+            className="text-2xl font-extrabold leading-[1.45] tracking-tight sm:text-3xl sm:leading-[2] md:text-5xl"
           >
             아이들과의 시간,
             <br />
