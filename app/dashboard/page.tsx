@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
-import { ROOM_ORDER, ROOM_LABELS, ROOM_CATEGORIES, roomOfCategory } from "@/data/rooms";
+import { ROOM_ORDER, ROOM_LABELS, ROOM_CATEGORIES, roomOfCategory, normalizeUrl } from "@/data/rooms";
 
 interface ManagedApp {
   id: string;
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                       {granted ? (
                         <div className="mt-4 flex gap-2">
                           <a
-                            href={app.url}
+                            href={normalizeUrl(app.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
@@ -120,7 +120,7 @@ export default function DashboardPage() {
                           </a>
                           <div className="group relative">
                             <button
-                              onClick={() => handleCopy(app.id, app.url)}
+                              onClick={() => handleCopy(app.id, normalizeUrl(app.url) || app.url)}
                               className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
                               aria-label="링크 복사"
                             >

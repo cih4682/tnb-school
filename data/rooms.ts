@@ -60,6 +60,17 @@ interface ManagedAppRow {
   is_new?: boolean | null;
 }
 
+/* 링크 정규화: 프로토콜이 없으면 https:// 를 붙인다.
+   (admin에 "www.naver.com" 처럼 저장되면 상대경로로 해석돼 404가 나므로) */
+export function normalizeUrl(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  const trimmed = url.trim();
+  if (!trimmed) return undefined;
+  // 이미 프로토콜/앵커/메일 등이면 그대로
+  if (/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
 /* managed_apps 로우 → RoomApp 변환 */
 export function toRoomApp(r: ManagedAppRow): RoomApp {
   return {
@@ -71,7 +82,7 @@ export function toRoomApp(r: ManagedAppRow): RoomApp {
     details: r.details && r.details.length ? r.details : undefined,
     profileImg: r.profile_img || undefined,
     video: r.video_url || undefined,
-    url: r.url || undefined,
+    url: normalizeUrl(r.url),
     iconName: r.icon || undefined,
     isNew: r.is_new || undefined,
   };
