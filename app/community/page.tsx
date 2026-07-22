@@ -79,12 +79,12 @@ export default function CommunityPage() {
       <div className="mx-auto max-w-4xl px-6 py-10">
         {/* 카테고리 + 검색 + 글쓰기 */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-1 overflow-x-auto rounded-full border border-slate-200 p-1">
+          <div className="flex gap-1 overflow-x-auto rounded-xl border border-slate-200 p-1">
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => setCategory(c)}
-                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                className={`whitespace-nowrap rounded-lg px-4 py-1.5 text-sm font-medium transition ${
                   category === c
                     ? "bg-slate-900 text-white"
                     : "text-slate-500 hover:text-slate-900"
