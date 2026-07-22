@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const plans = [
   {
     name: "INDIVIDUAL",
-    price: "10,000원~",
+    price: "0원~",
     unit: "/ 월,상시",
     desc: "혼자서도 큰 힘이 됩니다",
     badge: null,
