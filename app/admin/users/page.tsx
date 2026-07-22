@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { TIERS, getTier } from "@/data/tiers";
 
 interface Profile {
   id: string;
@@ -13,25 +14,10 @@ interface Profile {
   created_at: string;
 }
 
-interface ManagedApp {
-  id: string;
-  name: string;
-  category: string;
-}
-
-const PLANS = [
-  { value: "free", label: "FREE" },
-  { value: "basic", label: "BASIC" },
-  { value: "pro", label: "PRO" },
-  { value: "team", label: "TEAM" },
-];
-
 export default function AdminUsers() {
   const [users, setUsers] = useState<Profile[]>([]);
-  const [apps, setApps] = useState<ManagedApp[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Profile | null>(null);
-  const [userAppIds, setUserAppIds] = useState<Set<string>>(new Set());
 
   useEffect(() => { load(); }, []);
 
@@ -39,13 +25,10 @@ export default function AdminUsers() {
     // 가입자 명단은 auth.users 가 진실원천이다. profiles 만 읽으면
     // 프로필 행이 안 생긴 가입자가 누락되므로 서버 API 로 병합 조회한다.
     const { data: { session } } = await supabase.auth.getSession();
-    const [uRes, a] = await Promise.all([
-      fetch("/api/admin/list-users", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      }),
-      supabase.from("managed_apps").select("id, name, category").order("sort_order"),
-    ]);
+    const uRes = await fetch("/api/admin/list-users", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     if (uRes.ok) {
       const uJson = await uRes.json();
       setUsers(uJson.users || []);
@@ -57,33 +40,9 @@ export default function AdminUsers() {
         .order("created_at", { ascending: false });
       setUsers(data || []);
     }
-    setApps(a.data || []);
   }
 
-  async function selectUser(user: Profile) {
-    setSelected(user);
-    const { data } = await supabase
-      .from("user_apps")
-      .select("app_id")
-      .eq("user_id", user.user_id);
-    setUserAppIds(new Set((data || []).map((d) => d.app_id)));
-  }
-
-  async function toggleApp(appId: string) {
-    if (!selected) return;
-    const newSet = new Set(userAppIds);
-
-    if (newSet.has(appId)) {
-      await supabase.from("user_apps").delete().match({ user_id: selected.user_id, app_id: appId });
-      newSet.delete(appId);
-    } else {
-      await supabase.from("user_apps").insert({ user_id: selected.user_id, app_id: appId });
-      newSet.add(appId);
-    }
-    setUserAppIds(newSet);
-  }
-
-  async function changePlan(userId: string, plan: string) {
+  async function changeTier(userId: string, plan: string) {
     await supabase.from("profiles").update({ plan }).eq("user_id", userId);
     setUsers(users.map((u) => u.user_id === userId ? { ...u, plan } : u));
     if (selected?.user_id === userId) setSelected({ ...selected, plan });
@@ -111,22 +70,6 @@ export default function AdminUsers() {
     setDeleteTarget(null);
   }
 
-  async function grantAll() {
-    if (!selected) return;
-    for (const app of apps) {
-      if (!userAppIds.has(app.id)) {
-        await supabase.from("user_apps").insert({ user_id: selected.user_id, app_id: app.id });
-      }
-    }
-    setUserAppIds(new Set(apps.map((a) => a.id)));
-  }
-
-  async function revokeAll() {
-    if (!selected) return;
-    await supabase.from("user_apps").delete().eq("user_id", selected.user_id);
-    setUserAppIds(new Set());
-  }
-
   const filtered = search
     ? users.filter((u) =>
         u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -137,6 +80,9 @@ export default function AdminUsers() {
   return (
     <div>
       <h1 className="text-2xl font-extrabold">사용자 관리</h1>
+      <p className="mt-1 text-sm text-slate-400">
+        모든 가입자는 전체 앱을 사용할 수 있어요. 등급은 후원에 대한 감사 표시입니다.
+      </p>
 
       <div className="mt-6 flex gap-4">
         {/* 좌: 사용자 목록 */}
@@ -150,28 +96,26 @@ export default function AdminUsers() {
 
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
             <div className="max-h-[600px] overflow-y-auto divide-y divide-slate-50">
-              {filtered.map((u) => (
-                <button
-                  key={u.id}
-                  onClick={() => selectUser(u)}
-                  className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50 ${
-                    selected?.user_id === u.user_id ? "bg-slate-50" : ""
-                  }`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{u.name}</p>
-                    <p className="truncate text-xs text-slate-400">{u.email}</p>
-                  </div>
-                  <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                    u.plan === "team" ? "bg-amber-50 text-amber-600" :
-                    u.plan === "pro" ? "bg-purple-50 text-purple-600" :
-                    u.plan === "basic" ? "bg-blue-50 text-blue-600" :
-                    "bg-slate-100 text-slate-500"
-                  }`}>
-                    {PLANS.find((p) => p.value === u.plan)?.label}
-                  </span>
-                </button>
-              ))}
+              {filtered.map((u) => {
+                const t = getTier(u.plan);
+                return (
+                  <button
+                    key={u.id}
+                    onClick={() => setSelected(u)}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50 ${
+                      selected?.user_id === u.user_id ? "bg-slate-50" : ""
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{u.name}</p>
+                      <p className="truncate text-xs text-slate-400">{u.email}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${t.chip}`}>
+                      {t.badge && t.emoji ? `${t.emoji} ` : ""}{t.label}
+                    </span>
+                  </button>
+                );
+              })}
               {filtered.length === 0 && (
                 <p className="py-10 text-center text-sm text-slate-400">사용자가 없어요.</p>
               )}
@@ -197,47 +141,21 @@ export default function AdminUsers() {
               </div>
 
               <div className="mt-4">
-                <label className="mb-1 block text-xs font-semibold text-slate-500">플랜</label>
+                <label className="mb-1 block text-xs font-semibold text-slate-500">후원 등급</label>
                 <select
-                  value={selected.plan}
-                  onChange={(e) => changePlan(selected.user_id, e.target.value)}
+                  value={getTier(selected.plan).value}
+                  onChange={(e) => changeTier(selected.user_id, e.target.value)}
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none"
                 >
-                  {PLANS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                  {TIERS.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.badge && t.emoji ? `${t.emoji} ` : ""}{t.label}
+                    </option>
+                  ))}
                 </select>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold text-slate-500">앱 권한 ({userAppIds.size}/{apps.length})</p>
-                  <div className="flex gap-2">
-                    <button onClick={grantAll} className="text-[10px] text-blue-500 hover:underline">전체 ON</button>
-                    <button onClick={revokeAll} className="text-[10px] text-red-400 hover:underline">전체 OFF</button>
-                  </div>
-                </div>
-
-                <div className="mt-3 max-h-[400px] space-y-1 overflow-y-auto">
-                  {apps.map((app) => {
-                    const granted = userAppIds.has(app.id);
-                    return (
-                      <button
-                        key={app.id}
-                        onClick={() => toggleApp(app.id)}
-                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
-                          granted ? "bg-emerald-50" : "hover:bg-slate-50"
-                        }`}
-                      >
-                        <div>
-                          <span className="font-medium">{app.name}</span>
-                          <span className="ml-2 text-xs text-slate-400">{app.category}</span>
-                        </div>
-                        <span className={`text-xs font-bold ${granted ? "text-emerald-600" : "text-slate-300"}`}>
-                          {granted ? "ON" : "OFF"}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <p className="mt-2 text-xs text-slate-400">
+                  후원이 확인되면 등급을 올려주세요. 앱 사용에는 영향을 주지 않아요.
+                </p>
               </div>
             </div>
           ) : (
@@ -259,7 +177,7 @@ export default function AdminUsers() {
                 </svg>
               </div>
               <h3 className="mt-5 text-lg font-bold text-slate-900">사용자를 삭제하시겠습니까?</h3>
-              <p className="mt-2 text-sm text-slate-500">프로필과 앱 권한이 모두 삭제됩니다.<br/>이 작업은 되돌릴 수 없습니다.</p>
+              <p className="mt-2 text-sm text-slate-500">프로필이 삭제됩니다.<br/>이 작업은 되돌릴 수 없습니다.</p>
             </div>
             <div className="flex border-t border-slate-100">
               <button

@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { ROOM_ORDER, ROOM_LABELS, ROOM_CATEGORIES, roomOfCategory, normalizeUrl } from "@/data/rooms";
+import { getTier } from "@/data/tiers";
 
 interface ManagedApp {
   id: string;
@@ -27,7 +28,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allApps, setAllApps] = useState<ManagedApp[]>([]);
-  const [grantedIds, setGrantedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -43,15 +43,13 @@ export default function DashboardPage() {
       if (!u) { router.push("/login"); return; }
       setUser(u);
 
-      const [profileRes, appsRes, grantsRes] = await Promise.all([
+      const [profileRes, appsRes] = await Promise.all([
         supabase.from("profiles").select("name, plan").eq("user_id", u.id).single(),
         supabase.from("managed_apps").select("*").eq("status", "active").order("sort_order"),
-        supabase.from("user_apps").select("app_id").eq("user_id", u.id),
       ]);
 
       setProfile(profileRes.data);
       setAllApps(appsRes.data || []);
-      setGrantedIds(new Set((grantsRes.data || []).map((g) => g.app_id)));
       setLoading(false);
     }
     load();
@@ -65,7 +63,7 @@ export default function DashboardPage() {
     );
   }
 
-  const isPremium = profile?.plan === "pro" || profile?.plan === "team";
+  const tier = getTier(profile?.plan);
   // 3개 방으로 그룹 (+ 기타)
   const groups: { label: string; apps: ManagedApp[] }[] = ROOM_ORDER.map((id) => ({
     label: ROOM_LABELS[id],
@@ -82,11 +80,15 @@ export default function DashboardPage() {
           <h1 className="mt-4 text-2xl font-extrabold text-white">
             안녕하세요, {profile?.name || "선생님"}!
           </h1>
-          <p className="mt-1 text-white/50">
-            플랜: <span className="font-medium text-white/70">
-              {profile?.plan === "team" ? "TEAM" : profile?.plan === "pro" ? "PRO" : profile?.plan === "basic" ? "BASIC" : "FREE"}
-            </span>
-          </p>
+          {tier.badge ? (
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white ring-1 ring-white/15">
+              <span>{tier.emoji}</span>
+              <span>{tier.label}</span>
+              <span className="font-normal text-white/50">· 후원해주셔서 감사합니다</span>
+            </div>
+          ) : (
+            <p className="mt-1 text-white/50">모든 앱을 자유롭게 사용하실 수 있어요.</p>
+          )}
         </div>
       </header>
 
@@ -95,73 +97,57 @@ export default function DashboardPage() {
             <div key={g.label} className="mb-10">
               <h2 className="mb-4 text-sm font-bold text-slate-700">{g.label}</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {g.apps.map((app) => {
-                  const granted = isPremium || grantedIds.has(app.id);
-                  return (
+                {g.apps.map((app) => (
                     <div
                       key={app.id}
-                      className={`rounded-2xl border p-5 transition ${
-                        granted
-                          ? "border-slate-200 bg-white hover:shadow-md"
-                          : "border-slate-100 bg-slate-50 opacity-60"
-                      }`}
+                      className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md"
                     >
                       <h3 className="text-sm font-bold">{app.name}</h3>
                       <p className="mt-1 whitespace-pre-line text-xs text-slate-400">{app.description}</p>
-                      {granted ? (
-                        <div className="mt-4 flex gap-2">
-                          <a
-                            href={normalizeUrl(app.url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
-                          >
-                            사용하기
-                          </a>
-                          <div className="group relative">
-                            <button
-                              onClick={() => handleCopy(app.id, normalizeUrl(app.url) || app.url)}
-                              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
-                              aria-label="링크 복사"
-                            >
-                              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-                                <rect width="13" height="13" x="9" y="9" rx="2" />
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                              </svg>
-                            </button>
-                            <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                              링크 복사
-                              <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
-                            </div>
-                            <AnimatePresence>
-                              {copiedId === app.id && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 4, scale: 0.95 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: -4, scale: 0.95 }}
-                                  className="absolute bottom-full left-1/2 z-20 mb-2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg"
-                                >
-                                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="m9 12 2 2 4-4" />
-                                  </svg>
-                                  복사 완료
-                                  <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-emerald-500" />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                      ) : (
-                        <Link
-                          href="/#pricing"
-                          className="mt-4 block w-full rounded-lg border border-slate-200 py-2 text-center text-xs font-medium text-slate-400"
+                      <div className="mt-4 flex gap-2">
+                        <a
+                          href={normalizeUrl(app.url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-800"
                         >
-                          🔒 입학하면 사용 가능
-                        </Link>
-                      )}
+                          사용하기
+                        </a>
+                        <div className="group relative">
+                          <button
+                            onClick={() => handleCopy(app.id, normalizeUrl(app.url) || app.url)}
+                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                            aria-label="링크 복사"
+                          >
+                            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+                              <rect width="13" height="13" x="9" y="9" rx="2" />
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                          </button>
+                          <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                            링크 복사
+                            <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                          </div>
+                          <AnimatePresence>
+                            {copiedId === app.id && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                                className="absolute bottom-full left-1/2 z-20 mb-2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg"
+                              >
+                                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                복사 완료
+                                <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-emerald-500" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </div>
                     </div>
-                  );
-                })}
+                ))}
               </div>
             </div>
         ))}
