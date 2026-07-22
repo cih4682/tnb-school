@@ -286,6 +286,10 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
       (filter === "all" || a.category === filter) &&
       (q === "" || a.name.includes(q) || a.description.includes(q))
   );
+  // 피처드(KICK!) = 기본 화면에서 영상 있는 첫 앱
+  const showFeatured = filter === "all" && q === "";
+  const featured = showFeatured ? list.find((a) => a.video) : null;
+  const gridList = filtered.filter((a) => a.id !== featured?.id);
   async function handleCopy(id: string, url: string) {
     try {
       await navigator.clipboard.writeText(url);
@@ -313,6 +317,61 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
         </h3>
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/50">{room.intro}</p>
       </div>
+
+      {/* KICK! 피처드 배너 (영상 있는 앱) */}
+      {featured && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="mt-8 overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/10 to-white/[0.02]"
+        >
+          <div className="flex flex-col md:flex-row">
+            {/* 왼쪽: 정보 */}
+            <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
+              <span className="inline-flex w-fit items-center gap-1 rounded-lg bg-emerald-500 px-2.5 py-1 text-xs font-black italic tracking-wider text-white shadow-lg shadow-emerald-500/30">
+                🔥 KICK!
+              </span>
+              <h4 className="mt-3 text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
+              <p className="mt-1 text-xs font-medium text-emerald-300/80">{featured.category}</p>
+              <p className="mt-3 text-sm leading-relaxed text-white/70">
+                {featured.longDescription ?? featured.description}
+              </p>
+              {featured.details && featured.details.length > 0 && (
+                <ul className="mt-3 space-y-1.5">
+                  {featured.details.slice(0, 3).map((d) => (
+                    <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {featured.url && (
+                <a
+                  href={featured.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex w-fit rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+                >
+                  앱 열기 →
+                </a>
+              )}
+            </div>
+            {/* 오른쪽: 영상 */}
+            <div className="md:w-1/2">
+              <video
+                src={featured.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="aspect-video h-full w-full bg-black object-cover md:aspect-auto"
+              />
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* 카테고리 칩 + 검색 */}
       <div className="mt-8 flex flex-wrap items-center gap-2">
@@ -345,7 +404,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
 
       {/* 리치 앱 카드 */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        {filtered.map((app, i) => (
+        {gridList.map((app, i) => (
           <motion.div
             key={app.id}
             initial={{ opacity: 0, y: 16 }}
@@ -432,7 +491,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
             )}
           </motion.div>
         ))}
-        {filtered.length === 0 && (
+        {gridList.length === 0 && !featured && (
           <p className="col-span-full py-8 text-center text-sm text-white/50">검색 결과가 없어요</p>
         )}
       </div>
