@@ -102,21 +102,9 @@ export function Pricing() {
                     height={72}
                     className="absolute right-3 top-3 h-16 w-16 rotate-6 drop-shadow-lg"
                   />
-                  <span className="pointer-events-none absolute right-[6rem] top-6 -rotate-6 whitespace-nowrap font-hand text-xl leading-none text-amber-300">
+                  <span className="pointer-events-none absolute right-[4.3rem] top-0 -rotate-12 whitespace-nowrap font-hand text-xl leading-none text-amber-300">
                     후원뱃지
                   </span>
-                  <svg
-                    className="pointer-events-none absolute right-[4.6rem] top-[2.2rem] h-5 w-6 text-amber-300"
-                    viewBox="0 0 24 18"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M2 13 C 8 12, 13 8, 20 4" />
-                    <path d="M14 3 L 21 3.5 L 19 9" />
-                  </svg>
                 </>
               )}
               <div className="mt-4 flex items-baseline gap-1">
