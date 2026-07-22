@@ -310,8 +310,8 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
       {/* 헤더 — 볼드 텍스트아트 */}
       <div className="text-center">
         <h3
-          className="bg-gradient-to-b from-white via-emerald-50 to-emerald-300 bg-clip-text text-5xl font-black tracking-tight text-transparent md:text-6xl"
-          style={{ filter: "drop-shadow(0 6px 26px rgba(52,211,153,0.35))" }}
+          className="text-5xl font-black tracking-tight text-white md:text-6xl"
+          style={{ filter: "drop-shadow(0 6px 22px rgba(52,211,153,0.22))" }}
         >
           {room.label}
         </h3>
@@ -327,12 +327,9 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           className="mt-8 overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/10 to-white/[0.02]"
         >
           <div className="flex flex-col md:flex-row">
-            {/* 왼쪽: 정보 */}
-            <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
-              <span className="inline-flex w-fit items-center gap-1 rounded-lg bg-emerald-500 px-2.5 py-1 text-xs font-black italic tracking-wider text-white shadow-lg shadow-emerald-500/30">
-                🔥 KICK!
-              </span>
-              <h4 className="mt-3 text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
+            {/* 왼쪽: 정보 (+ 복사 버튼 우상단) */}
+            <div className="relative flex flex-col justify-center p-6 md:w-1/2 md:p-8">
+              <h4 className="text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
               <p className="mt-1 text-xs font-medium text-emerald-300/80">{featured.category}</p>
               <p className="mt-3 text-sm leading-relaxed text-white/70">
                 {featured.longDescription ?? featured.description}
@@ -357,17 +354,46 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                   앱 열기 →
                 </a>
               )}
+              {featured.url && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopy(featured.id, featured.url!);
+                  }}
+                  className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
+                  aria-label="링크 복사"
+                  title="링크 복사"
+                >
+                  {copiedId === featured.id ? (
+                    <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                  )}
+                </button>
+              )}
             </div>
-            {/* 오른쪽: 영상 */}
-            <div className="md:w-1/2">
-              <video
-                src={featured.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="aspect-video h-full w-full bg-black object-cover md:aspect-auto"
-              />
+            {/* 오른쪽: KICK! 라벨(우측 정렬) + 16:9 영상 박스 */}
+            <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
+              <div className="flex justify-end">
+                <span className="rounded-lg bg-emerald-500 px-2.5 py-1 text-xs font-black italic tracking-wider text-white shadow-lg shadow-emerald-500/30">
+                  KICK!
+                </span>
+              </div>
+              <div className="mt-3 aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-white/10">
+                <video
+                  src={featured.video}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </motion.div>
