@@ -265,7 +265,9 @@ function DoorCard({
 const CHALK = "#f3f2ea";
 function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
   const rots = [-1.6, 1.2, -1, 1.5];
+  const [detail, setDetail] = useState<App | null>(null);
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, scale: 0.96, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -351,11 +353,12 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
             {list.map((app, i) => (
               <motion.div
                 key={app.id}
+                onClick={() => setDetail(app)}
                 initial={{ opacity: 0, y: 16, rotate: rots[i % 4] }}
                 animate={{ opacity: 1, y: 0, rotate: rots[i % 4] }}
                 transition={{ delay: 1.15 + i * 0.14, duration: 0.5, ease: "easeOut" }}
                 whileHover={{ rotate: 0, scale: 1.02 }}
-                className="rounded-lg border-2 p-5"
+                className="cursor-pointer rounded-lg border-2 p-5"
                 style={{ borderColor: "rgba(243,242,234,0.28)", color: CHALK }}
               >
                 <div className="flex items-center gap-3">
@@ -407,6 +410,101 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
           />
         </div>
       </div>
+    </motion.div>
+
+    <AnimatePresence>
+      {detail && <AppDetailModal app={detail} onClose={() => setDetail(null)} />}
+    </AnimatePresence>
+    </>
+  );
+}
+
+/* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
+function AppDetailModal({ app, onClose }: { app: App; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[110] flex items-center justify-center p-4"
+    >
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 10 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0e1f1a] shadow-2xl"
+      >
+        {app.video ? (
+          <video
+            src={app.video}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="aspect-video w-full bg-black object-cover"
+          />
+        ) : (
+          <div className="flex aspect-video w-full items-center justify-center bg-white/5 text-sm text-white/40">
+            설명 영상 준비 중
+          </div>
+        )}
+
+        <div className="p-6">
+          <div className="flex items-center gap-3">
+            {app.profileImg && (
+              <Image
+                src={app.profileImg}
+                alt={app.name}
+                width={56}
+                height={56}
+                className="h-14 w-14 shrink-0 rounded-full border-2 border-white/15 object-cover"
+              />
+            )}
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="text-xl font-bold text-white">{app.name}</h4>
+                {app.isNew && (
+                  <span className="rounded bg-emerald-400 px-1.5 py-0.5 text-[10px] font-bold text-[#0b1120]">
+                    NEW
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-white/40">{CATEGORY_LABELS[app.category]}</p>
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-white/70">{app.description}</p>
+
+          {app.url ? (
+            <a
+              href={app.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 block w-full rounded-full bg-emerald-500 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-emerald-400"
+            >
+              앱 열기 →
+            </a>
+          ) : (
+            <div className="mt-6 block w-full rounded-full border border-white/15 py-3.5 text-center text-sm text-white/40">
+              준비 중
+            </div>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-black/60"
+          aria-label="닫기"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </motion.div>
     </motion.div>
   );
 }

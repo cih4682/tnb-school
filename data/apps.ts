@@ -20,6 +20,9 @@ export interface App {
   description: string;
   iconName: string;
   isNew?: boolean;
+  profileImg?: string; // 앱 프로필/아이콘 이미지
+  video?: string; // 설명 영상 (10초)
+  url?: string; // 실제 앱 주소
 }
 
 export const APP_GOAL = 100;
@@ -31,6 +34,9 @@ export const apps: App[] = [
     category: "lesson-prep",
     description: "주간 수업 계획을 드래그앤드롭으로 정리해요.",
     iconName: "calendar",
+    profileImg: "/app/edumemo_2.png",
+    video: "/app/edumemo_1.mp4",
+    url: "https://www.naver.com",
   },
   {
     id: "slide-maker",
