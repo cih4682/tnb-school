@@ -266,6 +266,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
   const [detail, setDetail] = useState<App | null>(null);
   const [filter, setFilter] = useState<"all" | Category>("all");
   const [query, setQuery] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const cats = Array.from(new Set(list.map((a) => a.category)));
   const q = query.trim();
   const filtered = list.filter(
@@ -273,6 +274,15 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
       (filter === "all" || a.category === filter) &&
       (q === "" || a.name.includes(q) || a.description.includes(q))
   );
+  async function handleCopy(id: string, url: string) {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 1500);
+    } catch {
+      /* clipboard 미지원 무시 */
+    }
+  }
   return (
     <>
     <motion.div
@@ -325,63 +335,91 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
       {/* 리치 앱 카드 */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         {filtered.map((app, i) => (
-          <motion.button
+          <motion.div
             key={app.id}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.06, duration: 0.4 }}
-            onClick={() => setDetail(app)}
-            className="group flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-emerald-400/50 hover:bg-white/[0.06]"
+            className="relative"
           >
-            {/* 상단: 프로필 + 이름/카테고리 */}
-            <div className="flex items-center gap-4">
-              {app.profileImg ? (
-                <Image
-                  src={app.profileImg}
-                  alt={app.name}
-                  width={64}
-                  height={64}
-                  className="h-16 w-16 shrink-0 rounded-2xl object-cover ring-1 ring-white/10"
-                />
-              ) : (
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/20">
-                  <AppIcon name={app.iconName} className="h-8 w-8" />
+            <button
+              onClick={() => setDetail(app)}
+              className="group flex h-full w-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-emerald-400/50 hover:bg-white/[0.06]"
+            >
+              {/* 상단: 프로필 + 이름/카테고리 */}
+              <div className="flex items-center gap-4 pr-9">
+                {app.profileImg ? (
+                  <Image
+                    src={app.profileImg}
+                    alt={app.name}
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 shrink-0 rounded-2xl object-cover ring-1 ring-white/10"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <AppIcon name={app.iconName} className="h-8 w-8" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h4 className="truncate text-lg font-bold text-white">{app.name}</h4>
+                    {app.isNew && (
+                      <span className="shrink-0 rounded bg-emerald-400 px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]">
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-0.5 text-xs font-medium text-emerald-300/80">
+                    {CATEGORY_LABELS[app.category]}
+                  </p>
                 </div>
-              )}
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <h4 className="truncate text-lg font-bold text-white">{app.name}</h4>
-                  {app.isNew && (
-                    <span className="shrink-0 rounded bg-emerald-400 px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]">
-                      NEW
-                    </span>
-                  )}
-                </div>
-                <p className="mt-0.5 text-xs font-medium text-emerald-300/80">
-                  {CATEGORY_LABELS[app.category]}
-                </p>
               </div>
-            </div>
 
-            {/* 하단: 상세 설명 (프로필 아래, 왼쪽 정렬) */}
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
-              {app.longDescription ?? app.description}
-            </p>
-            {app.details && app.details.length > 0 && (
-              <ul className="mt-3 space-y-1.5">
-                {app.details.map((d) => (
-                  <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
-                    <span>{d}</span>
-                  </li>
-                ))}
-              </ul>
+              {/* 하단: 상세 설명 (프로필 아래, 왼쪽 정렬) */}
+              <p className="mt-4 text-sm leading-relaxed text-white/70">
+                {app.longDescription ?? app.description}
+              </p>
+              {app.details && app.details.length > 0 && (
+                <ul className="mt-3 space-y-1.5">
+                  {app.details.map((d) => (
+                    <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 transition group-hover:opacity-100">
+                자세히 보기 →
+              </span>
+            </button>
+
+            {/* 링크 복사 버튼 (카드 우상단) */}
+            {app.url && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopy(app.id, app.url!);
+                }}
+                className="absolute right-3.5 top-3.5 flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
+                aria-label="링크 복사"
+                title="링크 복사"
+              >
+                {copiedId === app.id ? (
+                  <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                    <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                  </svg>
+                )}
+              </button>
             )}
-
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 transition group-hover:opacity-100">
-              자세히 보기 →
-            </span>
-          </motion.button>
+          </motion.div>
         ))}
         {filtered.length === 0 && (
           <p className="col-span-full py-8 text-center text-sm text-white/50">검색 결과가 없어요</p>
