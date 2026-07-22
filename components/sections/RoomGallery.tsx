@@ -318,13 +318,42 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/50">{room.intro}</p>
       </div>
 
+      {/* 카테고리 칩 + 검색 */}
+      <div className="mt-8 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setFilter("all")}
+          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+            filter === "all" ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
+          }`}
+        >
+          전체
+        </button>
+        {cats.map((c) => (
+          <button
+            key={c}
+            onClick={() => setFilter(c)}
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+              filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            {c}
+          </button>
+        ))}
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="도구 검색"
+          className="ml-auto w-28 rounded-lg border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
+        />
+      </div>
+
       {/* KICK! 피처드 배너 (영상 있는 앱) */}
       {featured && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="mt-8 overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/10 to-white/[0.02]"
+          className="mt-5 overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/10 to-white/[0.02]"
         >
           <div className="flex flex-col md:flex-row">
             {/* 왼쪽: 정보 (+ 복사 버튼 우상단) */}
@@ -354,32 +383,32 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                   앱 열기 →
                 </a>
               )}
-              {featured.url && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCopy(featured.id, featured.url!);
-                  }}
-                  className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
-                  aria-label="링크 복사"
-                  title="링크 복사"
-                >
-                  {copiedId === featured.id ? (
-                    <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                      <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                    </svg>
-                  )}
-                </button>
-              )}
             </div>
-            {/* 오른쪽: KICK! 라벨(우측 정렬) + 16:9 영상 박스 */}
+            {/* 오른쪽: (복사 + KICK!) 우측 정렬 + 16:9 영상 박스 */}
             <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
-              <div className="flex justify-end">
+              <div className="flex items-center justify-end gap-2">
+                {featured.url && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopy(featured.id, featured.url!);
+                    }}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
+                    aria-label="링크 복사"
+                    title="링크 복사"
+                  >
+                    {copiedId === featured.id ? (
+                      <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                      </svg>
+                    )}
+                  </button>
+                )}
                 <span className="rounded-lg bg-emerald-500 px-2.5 py-1 text-xs font-black italic tracking-wider text-white shadow-lg shadow-emerald-500/30">
                   KICK!
                 </span>
@@ -398,35 +427,6 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           </div>
         </motion.div>
       )}
-
-      {/* 카테고리 칩 + 검색 */}
-      <div className="mt-8 flex flex-wrap items-center gap-2">
-        <button
-          onClick={() => setFilter("all")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-            filter === "all" ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
-          }`}
-        >
-          전체
-        </button>
-        {cats.map((c) => (
-          <button
-            key={c}
-            onClick={() => setFilter(c)}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-              filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="도구 검색"
-          className="ml-auto w-28 rounded-lg border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
-        />
-      </div>
 
       {/* 리치 앱 카드 */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
