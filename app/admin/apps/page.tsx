@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { CATEGORY_GROUPS } from "@/data/rooms";
 
 interface ManagedApp {
   id: string;
@@ -19,7 +20,6 @@ interface ManagedApp {
   sort_order: number;
 }
 
-const CATEGORIES = ["수업 준비", "평가", "학생 관리", "업무 관리", "진로", "기타"];
 const ICONS = [
   "calendar", "slides", "fileText", "circleHelp", "barChart",
   "checkCircle", "chair", "search", "palette", "pen", "compass",
@@ -177,8 +177,12 @@ export default function AdminApps() {
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-500">카테고리 (→ 방 배정)</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputCls}>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                {CATEGORY_GROUPS.map((g) => (
+                  <optgroup key={g.room} label={g.room}>
+                    {g.cats.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>

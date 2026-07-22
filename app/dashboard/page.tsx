@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
+import { ROOM_ORDER, ROOM_LABELS, ROOM_CATEGORIES, roomOfCategory } from "@/data/rooms";
 
 interface ManagedApp {
   id: string;
@@ -64,9 +65,14 @@ export default function DashboardPage() {
     );
   }
 
-  // 카테고리별 그룹
-  const categories = [...new Set(allApps.map((a) => a.category))];
   const isPremium = profile?.plan === "pro" || profile?.plan === "team";
+  // 3개 방으로 그룹 (+ 기타)
+  const groups: { label: string; apps: ManagedApp[] }[] = ROOM_ORDER.map((id) => ({
+    label: ROOM_LABELS[id],
+    apps: allApps.filter((a) => ROOM_CATEGORIES[id].includes(a.category)),
+  })).filter((g) => g.apps.length > 0);
+  const otherApps = allApps.filter((a) => roomOfCategory(a.category) === null);
+  if (otherApps.length) groups.push({ label: "기타", apps: otherApps });
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -85,13 +91,11 @@ export default function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-5xl px-6 py-10">
-        {categories.map((cat) => {
-          const catApps = allApps.filter((a) => a.category === cat);
-          return (
-            <div key={cat} className="mb-10">
-              <h2 className="mb-4 text-sm font-bold text-slate-700">{cat}</h2>
+        {groups.map((g) => (
+            <div key={g.label} className="mb-10">
+              <h2 className="mb-4 text-sm font-bold text-slate-700">{g.label}</h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {catApps.map((app) => {
+                {g.apps.map((app) => {
                   const granted = isPremium || grantedIds.has(app.id);
                   return (
                     <div
@@ -160,8 +164,7 @@ export default function DashboardPage() {
                 })}
               </div>
             </div>
-          );
-        })}
+        ))}
 
         {allApps.length === 0 && (
           <div className="py-20 text-center text-slate-400">

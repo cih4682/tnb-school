@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { apps, CATEGORY_LABELS, Category, App } from "@/data/apps";
+import { supabase } from "@/lib/supabase";
+import { RoomApp, toRoomApp, ROOM_CATEGORIES } from "@/data/rooms";
 import { AppIcon } from "../ui/AppIcon";
 
 /* ── 방 정의 ─────────────────────────────────────────────
@@ -16,7 +17,7 @@ interface Room {
   label: string;
   tagline: string;
   intro: string;
-  categories: Category[];
+  categories: string[];
   glow: string; // "r, g, b"
   door: string; // 문짝 베이스 색
   light: string; // 문틈/포인트 빛
@@ -30,7 +31,7 @@ const ROOMS: Room[] = [
     label: "수업의 방",
     tagline: "가르치는 모든 순간",
     intro: "수업을 준비하고 평가하는 도구들이 이 방에 놓여 있어요.",
-    categories: ["lesson-prep", "assessment"],
+    categories: ROOM_CATEGORIES.class,
     glow: "52, 211, 153",
     door: "#1f6b52",
     light: "#6ee7b7",
@@ -41,7 +42,7 @@ const ROOMS: Room[] = [
     label: "업무의 방",
     tagline: "행정과 기록의 자리",
     intro: "학생 관리와 반복되는 업무를 덜어주는 도구들이 모여 있어요.",
-    categories: ["student-management", "material"],
+    categories: ROOM_CATEGORIES.work,
     glow: "251, 191, 36",
     door: "#7c5a2e",
     light: "#fcd34d",
@@ -52,7 +53,7 @@ const ROOMS: Room[] = [
     label: "진로의 방",
     tagline: "아이들의 내일을 그리다",
     intro: "성적을 넘어, 아이의 진로를 함께 그리는 도구들이 놓이기 시작한 방이에요.",
-    categories: ["career"],
+    categories: ROOM_CATEGORIES.career,
     glow: "167, 139, 250",
     door: "#3b2f6b",
     light: "#c4b5fd",
@@ -60,12 +61,23 @@ const ROOMS: Room[] = [
   },
 ];
 
-function roomApps(room: Room) {
-  return apps.filter((a) => room.categories.includes(a.category));
-}
-
 export function RoomGallery() {
   const [active, setActive] = useState<Room | null>(null);
+  const [apps, setApps] = useState<RoomApp[]>([]);
+
+  // 관리자(managed_apps)에서 활성 앱 불러오기
+  useEffect(() => {
+    supabase
+      .from("managed_apps")
+      .select("*")
+      .eq("status", "active")
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => setApps((data || []).map(toRoomApp)));
+  }, []);
+
+  const listForActive = active
+    ? apps.filter((a) => active.categories.includes(a.category))
+    : [];
 
   // 방이 열리면 배경 스크롤 잠금 + ESC 로 닫기
   useEffect(() => {
@@ -136,7 +148,7 @@ export function RoomGallery() {
 
       {/* 방 내부 오버레이 */}
       <AnimatePresence>
-        {active && <RoomInterior room={active} onClose={() => setActive(null)} />}
+        {active && <RoomInterior room={active} list={listForActive} onClose={() => setActive(null)} />}
       </AnimatePresence>
     </section>
   );
@@ -262,9 +274,9 @@ function DoorCard({
 }
 
 /* ── 수업의 방: 앱 카드 섹션 ─────────────────────────── */
-function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
-  const [detail, setDetail] = useState<App | null>(null);
-  const [filter, setFilter] = useState<"all" | Category>("all");
+function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
+  const [detail, setDetail] = useState<RoomApp | null>(null);
+  const [filter, setFilter] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const cats = Array.from(new Set(list.map((a) => a.category)));
@@ -321,7 +333,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
               filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
             }`}
           >
-            {CATEGORY_LABELS[c]}
+            {c}
           </button>
         ))}
         <input
@@ -358,7 +370,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
                   />
                 ) : (
                   <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/20">
-                    <AppIcon name={app.iconName} className="h-8 w-8" />
+                    <AppIcon name={app.iconName || "calendar"} className="h-8 w-8" />
                   </div>
                 )}
                 <div className="min-w-0">
@@ -371,7 +383,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
                     )}
                   </div>
                   <p className="mt-0.5 text-xs font-medium text-emerald-300/80">
-                    {CATEGORY_LABELS[app.category]}
+                    {app.category}
                   </p>
                 </div>
               </div>
@@ -435,7 +447,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
 }
 
 /* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
-function AppDetailModal({ app, onClose }: { app: App; onClose: () => void }) {
+function AppDetailModal({ app, onClose }: { app: RoomApp; onClose: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -487,7 +499,7 @@ function AppDetailModal({ app, onClose }: { app: App; onClose: () => void }) {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-white/40">{CATEGORY_LABELS[app.category]}</p>
+              <p className="text-xs text-white/40">{app.category}</p>
             </div>
           </div>
 
@@ -525,8 +537,7 @@ function AppDetailModal({ app, onClose }: { app: App; onClose: () => void }) {
 }
 
 /* ── 방 내부 (문 열림 → 공개) ─────────────────────────── */
-function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
-  const list = roomApps(room);
+function RoomInterior({ room, list, onClose }: { room: Room; list: RoomApp[]; onClose: () => void }) {
   const isEmpty = list.length === 0;
   const { glow, door, light } = room;
 
@@ -617,7 +628,7 @@ function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white"
                 style={{ background: `rgba(${glow},0.18)`, color: light }}
               >
-                <AppIcon name={app.iconName} className="h-6 w-6" />
+                <AppIcon name={app.iconName || "calendar"} className="h-6 w-6" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -632,7 +643,7 @@ function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
                   )}
                 </div>
                 <p className="mt-0.5 text-[11px] text-slate-500">
-                  {CATEGORY_LABELS[app.category]}
+                  {app.category}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-400">
                   {app.description}
