@@ -14,6 +14,33 @@ const steps = [
 
 interface Message { from: "bot" | "user"; text: string }
 
+/* 단계별 입력 검증 — 형식이 안 맞으면 다시 작성 요청 메시지를 반환 (통과 시 null) */
+function validateStep(step: number, value: string): string | null {
+  const v = value.trim();
+  switch (step) {
+    case 0: // 이름
+      if (v.length < 2) return "성함을 정확히 입력해 주세요. (2글자 이상)";
+      if (/\d/.test(v)) return "성함에 숫자가 들어간 것 같아요. 이름을 다시 입력해 주세요.";
+      return null;
+    case 1: { // 전화번호
+      const digits = v.replace(/[^0-9]/g, "");
+      if (digits.length < 9 || digits.length > 11)
+        return "전화번호 형식이 올바르지 않아요. 예: 010-1234-5678 처럼 다시 입력해 주세요.";
+      return null;
+    }
+    case 2: // 이메일
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))
+        return "이메일 형식이 올바르지 않아요. 예: name@example.com 처럼 다시 입력해 주세요.";
+      return null;
+    case 3: // 요청 내용
+      if (v.length < 10)
+        return "어떤 앱이 필요하신지 조금만 더 자세히 설명해 주세요. (10자 이상)";
+      return null;
+    default:
+      return null;
+  }
+}
+
 export function CustomForm() {
   const [step, setStep] = useState(0);
   const [input, setInput] = useState("");
@@ -30,23 +57,33 @@ export function CustomForm() {
 
   async function handleSend() {
     if (!input.trim()) return;
+    const value = input.trim();
     const newMessages = [...messages, { from: "user" as const, text: input }];
 
-    // 입력값 저장
-    const updatedData = { ...formData };
-    if (step === 0) updatedData.name = input.trim();
-    if (step === 1) updatedData.phone = input.trim();
-    if (step === 2) updatedData.email = input.trim();
-    if (step === 3) updatedData.request = input.trim();
-    setFormData(updatedData);
-
-    // 개인정보 동의 체크
-    if (step === 4 && input.trim() !== "동의") {
-      newMessages.push({ from: "bot", text: "'동의'를 정확히 입력해 주세요." });
+    // 형식 검증 — 안 맞으면 다시 작성 요청하고 단계 유지
+    const err = validateStep(step, value);
+    if (err) {
+      newMessages.push({ from: "bot", text: err });
       setMessages(newMessages);
       setInput("");
       return;
     }
+
+    // 개인정보 동의 체크
+    if (step === 4 && value !== "동의") {
+      newMessages.push({ from: "bot", text: "'동의'를 정확히 입력해 주셔야 신청이 완료됩니다. 동의하시면 '동의'라고 다시 입력해 주세요." });
+      setMessages(newMessages);
+      setInput("");
+      return;
+    }
+
+    // 검증 통과 후 입력값 저장
+    const updatedData = { ...formData };
+    if (step === 0) updatedData.name = value;
+    if (step === 1) updatedData.phone = value;
+    if (step === 2) updatedData.email = value;
+    if (step === 3) updatedData.request = value;
+    setFormData(updatedData);
 
     if (step < steps.length - 1) {
       const next = step + 1;
