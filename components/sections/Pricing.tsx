@@ -24,8 +24,8 @@ const plans = [
   {
     name: "CORPORATE",
     price: "후원문의",
-    unit: "",
-    desc: "기업 맞춤",
+    unit: "/ 기업맞춤",
+    desc: "함께하면 더 멀리 갈 수 있습니다.",
     badge: "추천",
     benefits: [
       "개인 후원 혜택 전부 포함",
@@ -102,7 +102,7 @@ export function Pricing() {
                     height={72}
                     className="absolute right-3 top-3 h-16 w-16 rotate-6 drop-shadow-lg"
                   />
-                  <span className="pointer-events-none absolute right-[4.3rem] top-0 -rotate-12 whitespace-nowrap font-hand text-xl leading-none text-amber-300">
+                  <span className="pointer-events-none absolute right-[3.7rem] top-1 -rotate-12 whitespace-nowrap font-hand text-xl leading-none text-amber-300">
                     후원뱃지
                   </span>
                 </>
