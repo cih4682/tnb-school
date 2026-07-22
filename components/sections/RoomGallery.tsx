@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { apps, CATEGORY_LABELS, Category } from "@/data/apps";
+import { apps, CATEGORY_LABELS, Category, App } from "@/data/apps";
 import { AppIcon } from "../ui/AppIcon";
 
 /* ── 방 정의 ─────────────────────────────────────────────
@@ -261,6 +261,156 @@ function DoorCard({
   );
 }
 
+/* ── 수업의 방: 초록 칠판 교실 ─────────────────────────── */
+const CHALK = "#f3f2ea";
+function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
+  const rots = [-1.6, 1.2, -1, 1.5];
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, y: 24 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
+      className="relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto px-3 py-8 md:py-12"
+    >
+      {/* 나무 프레임 */}
+      <div
+        className="rounded-2xl p-2.5 md:p-3.5"
+        style={{
+          background:
+            "repeating-linear-gradient(115deg,#7a5330 0 7px,#6b4629 7px 14px), linear-gradient(135deg,#8a6239,#5a3d22)",
+          backgroundBlendMode: "overlay",
+          boxShadow:
+            "0 40px 80px -24px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.18), inset 0 -4px 8px rgba(0,0,0,0.45)",
+        }}
+      >
+        {/* 칠판 */}
+        <div
+          className="relative overflow-hidden rounded-lg px-6 py-10 md:px-12 md:py-14"
+          style={{
+            background: "radial-gradient(130% 120% at 28% 8%, #204237, #163126 58%, #0f251e)",
+            boxShadow: "inset 0 0 90px rgba(0,0,0,0.6)",
+          }}
+        >
+          {/* 지우개 자국 텍스처 */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              opacity: 0.07,
+              background:
+                "radial-gradient(50% 34% at 18% 26%,#fff,transparent 62%),radial-gradient(44% 26% at 82% 64%,#fff,transparent 62%),radial-gradient(38% 44% at 62% 14%,#fff,transparent 62%),radial-gradient(40% 30% at 40% 86%,#fff,transparent 62%)",
+            }}
+          />
+
+          {/* 헤더 */}
+          <div className="relative text-center" style={{ color: CHALK }}>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.85, duration: 0.4 }}
+              className="font-hand inline-block -rotate-2 rounded-[42%] border-2 border-dashed px-4 py-0.5 text-lg"
+              style={{ borderColor: "rgba(243,242,234,0.45)" }}
+            >
+              ✎ {list.length}개의 도구
+            </motion.span>
+
+            <motion.h3
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              transition={{ delay: 0.95, duration: 0.9, ease: "easeInOut" }}
+              className="font-hand mt-3 text-5xl leading-none md:text-6xl"
+              style={{ textShadow: "0 0 1px rgba(255,255,255,0.4)" }}
+            >
+              {room.label}
+            </motion.h3>
+
+            <svg className="mx-auto mt-1 h-4 w-60" viewBox="0 0 240 16" fill="none" style={{ color: CHALK }}>
+              <motion.path
+                d="M4 9 C 60 3, 120 13, 176 6 S 232 9, 236 8"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.85 }}
+                transition={{ delay: 1.7, duration: 0.7 }}
+              />
+            </svg>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.9, duration: 0.5 }}
+              className="font-hand mx-auto mt-3 max-w-md text-xl"
+              style={{ color: "rgba(243,242,234,0.72)" }}
+            >
+              {room.intro}
+            </motion.p>
+          </div>
+
+          {/* 앱 노트 */}
+          <div className="relative mt-11 grid gap-5 sm:grid-cols-2">
+            {list.map((app, i) => (
+              <motion.div
+                key={app.id}
+                initial={{ opacity: 0, y: 16, rotate: rots[i % 4] }}
+                animate={{ opacity: 1, y: 0, rotate: rots[i % 4] }}
+                transition={{ delay: 1.15 + i * 0.14, duration: 0.5, ease: "easeOut" }}
+                whileHover={{ rotate: 0, scale: 1.02 }}
+                className="rounded-lg border-2 p-5"
+                style={{ borderColor: "rgba(243,242,234,0.28)", color: CHALK }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border-2"
+                    style={{ borderColor: "rgba(243,242,234,0.3)" }}
+                  >
+                    <AppIcon name={app.iconName} className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-hand truncate text-2xl leading-none">{app.name}</h4>
+                      {app.isNew && (
+                        <span
+                          className="font-hand shrink-0 -rotate-6 rounded-full border-2 border-dashed px-1.5 text-xs"
+                          style={{ borderColor: "rgba(243,242,234,0.5)" }}
+                        >
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <p className="font-hand text-base leading-none" style={{ color: "rgba(243,242,234,0.5)" }}>
+                      {CATEGORY_LABELS[app.category]}
+                    </p>
+                  </div>
+                </div>
+                <p className="font-hand mt-2.5 text-lg leading-snug" style={{ color: "rgba(243,242,234,0.72)" }}>
+                  {app.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* 분필 받침대 */}
+        <div
+          className="mt-2.5 flex items-center gap-3 rounded-lg px-5 py-2"
+          style={{
+            background: "linear-gradient(180deg,#6d4a2b,#4f3520)",
+            boxShadow: "inset 0 2px 2px rgba(255,255,255,0.12), inset 0 -3px 5px rgba(0,0,0,0.4)",
+          }}
+        >
+          <span className="h-2 w-12 rounded-full" style={{ background: "#f3f2ea" }} />
+          <span className="h-2 w-9 rounded-full" style={{ background: "#f7d9a0" }} />
+          <span className="h-2 w-10 rounded-full" style={{ background: "#f3b6c2" }} />
+          <span
+            className="ml-auto h-4 w-14 rounded-[3px]"
+            style={{ background: "linear-gradient(180deg,#3a5f52,#26443a)", boxShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 /* ── 방 내부 (문 열림 → 공개) ─────────────────────────── */
 function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
   const list = roomApps(room);
@@ -286,6 +436,9 @@ function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
       />
 
       {/* 방 안 콘텐츠 (문 열린 뒤 등장) */}
+      {room.id === "class" && !isEmpty ? (
+        <ClassChalkboard room={room} list={list} />
+      ) : (
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -377,6 +530,7 @@ function RoomInterior({ room, onClose }: { room: Room; onClose: () => void }) {
         </div>
         )}
       </motion.div>
+      )}
 
       {/* 문짝 두 짝 — 열리며 방을 공개 */}
       <DoorHalf side="left" door={door} glow={glow} />
