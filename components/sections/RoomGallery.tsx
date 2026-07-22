@@ -273,8 +273,8 @@ function DoorCard({
   );
 }
 
-/* ── 수업의 방: 앱 카드 섹션 ─────────────────────────── */
-function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
+/* ── 방 쇼케이스: 앱 카드 섹션 (세 방 공통, 방 색상 적용) ─── */
+function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
   const [detail, setDetail] = useState<RoomApp | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [query, setQuery] = useState("");
@@ -299,19 +299,26 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
       /* clipboard 미지원 무시 */
     }
   }
+  // 방 고유 색상 → CSS 변수로 하위에 전달
+  const accentVars = {
+    "--glow": room.glow,
+    "--accent": `rgb(${room.glow})`,
+    "--light": room.light,
+  } as React.CSSProperties;
   return (
     <>
     <motion.div
       initial={{ opacity: 0, scale: 0.97, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.55, ease: "easeOut" }}
+      style={accentVars}
       className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto px-4 py-10 md:py-14"
     >
       {/* 헤더 — 볼드 텍스트아트 */}
       <div className="text-center">
         <h3
           className="text-5xl font-black tracking-tight text-white md:text-6xl"
-          style={{ filter: "drop-shadow(0 6px 22px rgba(52,211,153,0.22))" }}
+          style={{ filter: `drop-shadow(0 6px 22px rgba(${room.glow},0.22))` }}
         >
           {room.label}
         </h3>
@@ -322,8 +329,9 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
       <div className="mt-8 flex flex-wrap items-center gap-2">
         <button
           onClick={() => setFilter("all")}
+          style={filter === "all" ? { backgroundColor: "var(--accent)" } : undefined}
           className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-            filter === "all" ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
+            filter === "all" ? "text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
           }`}
         >
           전체
@@ -332,8 +340,9 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           <button
             key={c}
             onClick={() => setFilter(c)}
+            style={filter === c ? { backgroundColor: "var(--accent)" } : undefined}
             className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-              filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
+              filter === c ? "text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
             }`}
           >
             {c}
@@ -343,7 +352,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="도구 검색"
-          className="ml-auto w-28 rounded-lg border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
+          className="ml-auto w-28 rounded-lg border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/30 sm:w-44"
         />
       </div>
 
@@ -353,13 +362,17 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="mt-5 overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/10 to-white/[0.02]"
+          style={{
+            borderColor: `rgba(${room.glow},0.25)`,
+            background: `linear-gradient(to bottom right, rgba(${room.glow},0.1), rgba(255,255,255,0.02))`,
+          }}
+          className="mt-5 overflow-hidden rounded-3xl border"
         >
           <div className="flex flex-col md:flex-row">
-            {/* 왼쪽: 정보 (+ 복사 버튼 우상단) */}
+            {/* 왼쪽: 정보 */}
             <div className="relative flex flex-col justify-center p-6 md:w-1/2 md:p-8">
               <h4 className="text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
-              <p className="mt-1 text-xs font-medium text-emerald-300/80">{featured.category}</p>
+              <p className="mt-1 text-xs font-medium" style={{ color: "var(--light)" }}>{featured.category}</p>
               <p className="mt-3 text-sm leading-relaxed text-white/70">
                 {featured.longDescription ?? featured.description}
               </p>
@@ -367,7 +380,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                 <ul className="mt-3 space-y-1.5">
                   {featured.details.slice(0, 3).map((d) => (
                     <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: `rgba(${room.glow},0.7)` }} />
                       <span>{d}</span>
                     </li>
                   ))}
@@ -378,7 +391,8 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                   href={featured.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex w-fit rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+                  style={{ backgroundColor: "var(--accent)" }}
+                  className="mt-5 inline-flex w-fit rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
                 >
                   앱 열기 →
                 </a>
@@ -398,7 +412,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                     title="링크 복사"
                   >
                     {copiedId === featured.id ? (
-                      <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg className="h-4 w-4" style={{ color: "var(--light)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M5 13l4 4L19 7" />
                       </svg>
                     ) : (
@@ -409,7 +423,10 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                     )}
                   </button>
                 )}
-                <span className="rounded-lg bg-emerald-500 px-2.5 py-1 text-xs font-black italic tracking-wider text-white shadow-lg shadow-emerald-500/30">
+                <span
+                  style={{ backgroundColor: "var(--accent)", boxShadow: `0 10px 15px -3px rgba(${room.glow},0.3)` }}
+                  className="rounded-lg px-2.5 py-1 text-xs font-black italic tracking-wider text-white"
+                >
                   KICK!
                 </span>
               </div>
@@ -440,7 +457,9 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           >
             <button
               onClick={() => setDetail(app)}
-              className="group flex h-full w-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-emerald-400/50 hover:bg-white/[0.06]"
+              className="group flex h-full w-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:bg-white/[0.06]"
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = `rgba(${room.glow},0.5)`)}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "")}
             >
               {/* 상단: 프로필 + 이름/카테고리 */}
               <div className="flex items-center gap-4 pr-9">
@@ -453,7 +472,10 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                     className="h-16 w-16 shrink-0 rounded-2xl object-cover ring-1 ring-white/10"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/20">
+                  <div
+                    className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl ring-1"
+                    style={{ backgroundColor: `rgba(${room.glow},0.15)`, color: "var(--light)", boxShadow: `inset 0 0 0 1px rgba(${room.glow},0.2)` }}
+                  >
                     <AppIcon name={app.iconName || "calendar"} className="h-8 w-8" />
                   </div>
                 )}
@@ -461,12 +483,12 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                   <div className="flex items-center gap-2">
                     <h4 className="truncate text-lg font-bold text-white">{app.name}</h4>
                     {app.isNew && (
-                      <span className="shrink-0 rounded bg-emerald-400 px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]">
+                      <span className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]" style={{ backgroundColor: "var(--light)" }}>
                         NEW
                       </span>
                     )}
                   </div>
-                  <p className="mt-0.5 text-xs font-medium text-emerald-300/80">
+                  <p className="mt-0.5 text-xs font-medium" style={{ color: "var(--light)" }}>
                     {app.category}
                   </p>
                 </div>
@@ -480,14 +502,14 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                 <ul className="mt-3 space-y-1.5">
                   {app.details.map((d) => (
                     <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: `rgba(${room.glow},0.7)` }} />
                       <span>{d}</span>
                     </li>
                   ))}
                 </ul>
               )}
 
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 transition group-hover:opacity-100">
+              <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold opacity-0 transition group-hover:opacity-100" style={{ color: "var(--light)" }}>
                 자세히 보기 →
               </span>
             </button>
@@ -504,7 +526,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
                 title="링크 복사"
               >
                 {copiedId === app.id ? (
-                  <svg className="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-4 w-4" style={{ color: "var(--light)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
@@ -524,14 +546,14 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
     </motion.div>
 
     <AnimatePresence>
-      {detail && <AppDetailModal app={detail} onClose={() => setDetail(null)} />}
+      {detail && <AppDetailModal app={detail} room={room} onClose={() => setDetail(null)} />}
     </AnimatePresence>
     </>
   );
 }
 
 /* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
-function AppDetailModal({ app, onClose }: { app: RoomApp; onClose: () => void }) {
+function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onClose: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -578,7 +600,7 @@ function AppDetailModal({ app, onClose }: { app: RoomApp; onClose: () => void })
               <div className="flex items-center gap-2">
                 <h4 className="text-xl font-bold text-white">{app.name}</h4>
                 {app.isNew && (
-                  <span className="rounded bg-emerald-400 px-1.5 py-0.5 text-[10px] font-bold text-[#0b1120]">
+                  <span className="rounded px-1.5 py-0.5 text-[10px] font-bold text-[#0b1120]" style={{ backgroundColor: room.light }}>
                     NEW
                   </span>
                 )}
@@ -594,7 +616,8 @@ function AppDetailModal({ app, onClose }: { app: RoomApp; onClose: () => void })
               href={app.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 block w-full rounded-full bg-emerald-500 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-emerald-400"
+              style={{ backgroundColor: `rgb(${room.glow})` }}
+              className="mt-6 block w-full rounded-full py-3.5 text-center text-sm font-semibold text-white transition hover:brightness-110"
             >
               앱 열기 →
             </a>
@@ -643,9 +666,9 @@ function RoomInterior({ room, list, onClose }: { room: Room; list: RoomApp[]; on
         onClick={onClose}
       />
 
-      {/* 방 안 콘텐츠 (문 열린 뒤 등장) */}
-      {room.id === "class" && !isEmpty ? (
-        <ClassChalkboard room={room} list={list} />
+      {/* 방 안 콘텐츠 (문 열린 뒤 등장) — 앱이 있으면 리치 쇼케이스 */}
+      {!isEmpty ? (
+        <RoomShowcase room={room} list={list} />
       ) : (
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 20 }}
