@@ -303,23 +303,22 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
       transition={{ delay: 0.5, duration: 0.55, ease: "easeOut" }}
       className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto px-4 py-10 md:py-14"
     >
-      {/* 헤더 */}
+      {/* 헤더 — 볼드 텍스트아트 */}
       <div className="text-center">
-        <span
-          className="inline-block rounded-full px-3 py-1 text-[11px] font-semibold"
-          style={{ background: "rgba(52,211,153,0.16)", color: "rgb(52,211,153)" }}
+        <h3
+          className="bg-gradient-to-b from-white via-emerald-50 to-emerald-300 bg-clip-text text-5xl font-black tracking-tight text-transparent md:text-6xl"
+          style={{ filter: "drop-shadow(0 6px 26px rgba(52,211,153,0.35))" }}
         >
-          {list.length}개의 도구
-        </span>
-        <h3 className="mt-4 text-3xl font-extrabold text-white md:text-4xl">{room.label}</h3>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/50">{room.intro}</p>
+          {room.label}
+        </h3>
+        <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/50">{room.intro}</p>
       </div>
 
       {/* 카테고리 칩 + 검색 */}
       <div className="mt-8 flex flex-wrap items-center gap-2">
         <button
           onClick={() => setFilter("all")}
-          className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
             filter === "all" ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
           }`}
         >
@@ -329,7 +328,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           <button
             key={c}
             onClick={() => setFilter(c)}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
               filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
             }`}
           >
@@ -340,7 +339,7 @@ function ClassChalkboard({ room, list }: { room: Room; list: RoomApp[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="도구 검색"
-          className="ml-auto w-28 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
+          className="ml-auto w-28 rounded-lg border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
         />
       </div>
 
