@@ -264,8 +264,21 @@ function DoorCard({
 /* ── 수업의 방: 초록 칠판 교실 ─────────────────────────── */
 const CHALK = "#f3f2ea";
 function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
-  const rots = [-1.6, 1.2, -1, 1.5];
   const [detail, setDetail] = useState<App | null>(null);
+  const [filter, setFilter] = useState<"all" | Category>("all");
+  const [query, setQuery] = useState("");
+  const cats = Array.from(new Set(list.map((a) => a.category)));
+  const q = query.trim();
+  const filtered = list.filter(
+    (a) =>
+      (filter === "all" || a.category === filter) &&
+      (q === "" || a.name.includes(q) || a.description.includes(q))
+  );
+  const board = [
+    { icon: "📌", title: "우리의 마음", lines: ["선생님의 하루가 조금 덜 고단하길,", "그만큼 아이들과의 시간이 늘어나길."] },
+    { icon: "📖", title: "이 방에는", lines: ["수업을 준비하고, 자료를 만들고,", "평가하는 — 선생님 곁의 도구들을 모았어요."] },
+    { icon: "📱", title: "앱처럼 쓰는 법", lines: ["· 안드로이드 → 크롬으로 열고 '홈 화면에 추가'", "· 아이폰 → 사파리로 열고 '홈 화면에 추가'"] },
+  ];
   return (
     <>
     <motion.div
@@ -309,17 +322,16 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.85, duration: 0.4 }}
-              className="font-hand inline-block -rotate-2 rounded-[42%] border-2 border-dashed px-4 py-0.5 text-lg"
-              style={{ borderColor: "rgba(243,242,234,0.45)" }}
+              className="font-hand text-lg"
             >
-              ✎ {list.length}개의 도구
+              ✎ 수업 계획표
             </motion.span>
 
             <motion.h3
               initial={{ clipPath: "inset(0 100% 0 0)" }}
               animate={{ clipPath: "inset(0 0% 0 0)" }}
               transition={{ delay: 0.95, duration: 0.9, ease: "easeInOut" }}
-              className="font-hand mt-3 text-5xl leading-none md:text-6xl"
+              className="font-hand mt-1 text-5xl leading-none md:text-6xl"
               style={{ textShadow: "0 0 1px rgba(255,255,255,0.4)" }}
             >
               {room.label}
@@ -333,63 +345,38 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
                 strokeLinecap="round"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 0.85 }}
-                transition={{ delay: 1.7, duration: 0.7 }}
+                transition={{ delay: 1.6, duration: 0.7 }}
               />
             </svg>
+          </div>
 
+          {/* 판서 */}
+          <div className="relative mx-auto mt-8 max-w-xl space-y-5 font-hand md:mt-10" style={{ color: CHALK }}>
+            {board.map((b, i) => (
+              <motion.div
+                key={b.title}
+                initial={{ opacity: 0, x: -14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.75 + i * 0.18, duration: 0.5 }}
+              >
+                <p className="text-2xl leading-none md:text-[1.7rem]">
+                  {b.icon} {b.title}
+                </p>
+                <div className="mt-1 pl-8 text-lg leading-snug md:text-xl" style={{ color: "rgba(243,242,234,0.72)" }}>
+                  {b.lines.map((ln) => (
+                    <p key={ln}>{ln}</p>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.9, duration: 0.5 }}
-              className="font-hand mx-auto mt-3 max-w-md text-xl"
-              style={{ color: "rgba(243,242,234,0.72)" }}
+              transition={{ delay: 2.35, duration: 0.5 }}
+              className="pt-1 text-center text-xl md:text-2xl"
             >
-              {room.intro}
+              ✅ 오늘의 도구 · 아래에서 골라 보세요 ↓
             </motion.p>
-          </div>
-
-          {/* 앱 노트 */}
-          <div className="relative mt-11 grid gap-5 sm:grid-cols-2">
-            {list.map((app, i) => (
-              <motion.div
-                key={app.id}
-                onClick={() => setDetail(app)}
-                initial={{ opacity: 0, y: 16, rotate: rots[i % 4] }}
-                animate={{ opacity: 1, y: 0, rotate: rots[i % 4] }}
-                transition={{ delay: 1.15 + i * 0.14, duration: 0.5, ease: "easeOut" }}
-                whileHover={{ rotate: 0, scale: 1.02 }}
-                className="cursor-pointer rounded-lg border-2 p-5"
-                style={{ borderColor: "rgba(243,242,234,0.28)", color: CHALK }}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border-2"
-                    style={{ borderColor: "rgba(243,242,234,0.3)" }}
-                  >
-                    <AppIcon name={app.iconName} className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-hand truncate text-2xl leading-none">{app.name}</h4>
-                      {app.isNew && (
-                        <span
-                          className="font-hand shrink-0 -rotate-6 rounded-full border-2 border-dashed px-1.5 text-xs"
-                          style={{ borderColor: "rgba(243,242,234,0.5)" }}
-                        >
-                          NEW
-                        </span>
-                      )}
-                    </div>
-                    <p className="font-hand text-base leading-none" style={{ color: "rgba(243,242,234,0.5)" }}>
-                      {CATEGORY_LABELS[app.category]}
-                    </p>
-                  </div>
-                </div>
-                <p className="font-hand mt-2.5 text-lg leading-snug" style={{ color: "rgba(243,242,234,0.72)" }}>
-                  {app.description}
-                </p>
-              </motion.div>
-            ))}
           </div>
         </div>
 
@@ -410,6 +397,90 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
           />
         </div>
       </div>
+
+      {/* ===== 책상: 앱 영역 ===== */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.4, duration: 0.5 }}
+        className="mt-5 rounded-2xl p-4 md:p-6"
+        style={{
+          background:
+            "repeating-linear-gradient(92deg,#8a5f37 0 26px,#835a34 26px 52px), linear-gradient(180deg,#8a5f37,#6f4a29)",
+          backgroundBlendMode: "overlay",
+          boxShadow:
+            "inset 0 2px 4px rgba(255,255,255,0.12), inset 0 -6px 14px rgba(0,0,0,0.4), 0 24px 40px -20px rgba(0,0,0,0.6)",
+        }}
+      >
+        {/* 카테고리 칩 + 검색 */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setFilter("all")}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+              filter === "all" ? "bg-white text-[#5a3d22]" : "bg-black/20 text-white/80 hover:bg-black/30"
+            }`}
+          >
+            전체
+          </button>
+          {cats.map((c) => (
+            <button
+              key={c}
+              onClick={() => setFilter(c)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                filter === c ? "bg-white text-[#5a3d22]" : "bg-black/20 text-white/80 hover:bg-black/30"
+              }`}
+            >
+              {CATEGORY_LABELS[c]}
+            </button>
+          ))}
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="도구 검색"
+            className="ml-auto w-28 rounded-full border border-black/10 bg-black/20 px-3 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/40 sm:w-40"
+          />
+        </div>
+
+        {/* 앱 카드 그리드 */}
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {filtered.map((app) => (
+            <button
+              key={app.id}
+              onClick={() => setDetail(app)}
+              className="flex items-start gap-3 rounded-xl border border-white/10 bg-[#0f2019] p-4 text-left transition hover:border-emerald-400/40 hover:bg-[#13291f]"
+            >
+              {app.profileImg ? (
+                <Image
+                  src={app.profileImg}
+                  alt={app.name}
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 shrink-0 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300">
+                  <AppIcon name={app.iconName} className="h-6 w-6" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h4 className="truncate font-bold text-white">{app.name}</h4>
+                  {app.isNew && (
+                    <span className="shrink-0 rounded bg-emerald-400 px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]">
+                      NEW
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-emerald-300/70">{CATEGORY_LABELS[app.category]}</p>
+                <p className="mt-1 text-xs leading-relaxed text-white/55">{app.description}</p>
+              </div>
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <p className="col-span-full py-6 text-center text-sm text-white/50">검색 결과가 없어요</p>
+          )}
+        </div>
+      </motion.div>
     </motion.div>
 
     <AnimatePresence>
