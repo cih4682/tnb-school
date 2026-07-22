@@ -261,8 +261,7 @@ function DoorCard({
   );
 }
 
-/* ── 수업의 방: 초록 칠판 교실 ─────────────────────────── */
-const CHALK = "#f3f2ea";
+/* ── 수업의 방: 앱 카드 섹션 ─────────────────────────── */
 function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
   const [detail, setDetail] = useState<App | null>(null);
   const [filter, setFilter] = useState<"all" | Category>("all");
@@ -274,213 +273,120 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
       (filter === "all" || a.category === filter) &&
       (q === "" || a.name.includes(q) || a.description.includes(q))
   );
-  const board = [
-    { icon: "📌", title: "우리의 마음", lines: ["선생님의 하루가 조금 덜 고단하길,", "그만큼 아이들과의 시간이 늘어나길."] },
-    { icon: "📖", title: "이 방에는", lines: ["수업을 준비하고, 자료를 만들고,", "평가하는 — 선생님 곁의 도구들을 모았어요."] },
-    { icon: "📱", title: "앱처럼 쓰는 법", lines: ["· 안드로이드 → 크롬으로 열고 '홈 화면에 추가'", "· 아이폰 → 사파리로 열고 '홈 화면에 추가'"] },
-  ];
   return (
     <>
     <motion.div
-      initial={{ opacity: 0, scale: 0.96, y: 24 }}
+      initial={{ opacity: 0, scale: 0.97, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
-      className="relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto px-3 py-8 md:py-12"
+      transition={{ delay: 0.5, duration: 0.55, ease: "easeOut" }}
+      className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto px-4 py-10 md:py-14"
     >
-      {/* 나무 프레임 */}
-      <div
-        className="rounded-2xl p-2.5 md:p-3.5"
-        style={{
-          background:
-            "repeating-linear-gradient(115deg,#7a5330 0 7px,#6b4629 7px 14px), linear-gradient(135deg,#8a6239,#5a3d22)",
-          backgroundBlendMode: "overlay",
-          boxShadow:
-            "0 40px 80px -24px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.18), inset 0 -4px 8px rgba(0,0,0,0.45)",
-        }}
-      >
-        {/* 칠판 */}
-        <div
-          className="relative overflow-hidden rounded-lg px-6 py-10 md:px-12 md:py-14"
-          style={{
-            background: "radial-gradient(130% 120% at 28% 8%, #204237, #163126 58%, #0f251e)",
-            boxShadow: "inset 0 0 90px rgba(0,0,0,0.6)",
-          }}
+      {/* 헤더 */}
+      <div className="text-center">
+        <span
+          className="inline-block rounded-full px-3 py-1 text-[11px] font-semibold"
+          style={{ background: "rgba(52,211,153,0.16)", color: "rgb(52,211,153)" }}
         >
-          {/* 지우개 자국 텍스처 */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              opacity: 0.07,
-              background:
-                "radial-gradient(50% 34% at 18% 26%,#fff,transparent 62%),radial-gradient(44% 26% at 82% 64%,#fff,transparent 62%),radial-gradient(38% 44% at 62% 14%,#fff,transparent 62%),radial-gradient(40% 30% at 40% 86%,#fff,transparent 62%)",
-            }}
-          />
-
-          {/* 헤더 */}
-          <div className="relative text-center" style={{ color: CHALK }}>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.85, duration: 0.4 }}
-              className="font-hand text-lg"
-            >
-              ✎ 수업 계획표
-            </motion.span>
-
-            <motion.h3
-              initial={{ clipPath: "inset(0 100% 0 0)" }}
-              animate={{ clipPath: "inset(0 0% 0 0)" }}
-              transition={{ delay: 0.95, duration: 0.9, ease: "easeInOut" }}
-              className="font-hand mt-1 text-5xl leading-none md:text-6xl"
-              style={{ textShadow: "0 0 1px rgba(255,255,255,0.4)" }}
-            >
-              {room.label}
-            </motion.h3>
-
-            <svg className="mx-auto mt-1 h-4 w-60" viewBox="0 0 240 16" fill="none" style={{ color: CHALK }}>
-              <motion.path
-                d="M4 9 C 60 3, 120 13, 176 6 S 232 9, 236 8"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.85 }}
-                transition={{ delay: 1.6, duration: 0.7 }}
-              />
-            </svg>
-          </div>
-
-          {/* 판서 */}
-          <div className="relative mx-auto mt-8 max-w-xl space-y-5 font-hand md:mt-10" style={{ color: CHALK }}>
-            {board.map((b, i) => (
-              <motion.div
-                key={b.title}
-                initial={{ opacity: 0, x: -14 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.75 + i * 0.18, duration: 0.5 }}
-              >
-                <p className="text-2xl leading-none md:text-[1.7rem]">
-                  {b.icon} {b.title}
-                </p>
-                <div className="mt-1 pl-8 text-lg leading-snug md:text-xl" style={{ color: "rgba(243,242,234,0.72)" }}>
-                  {b.lines.map((ln) => (
-                    <p key={ln}>{ln}</p>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.35, duration: 0.5 }}
-              className="pt-1 text-center text-xl md:text-2xl"
-            >
-              ✅ 오늘의 도구 · 아래에서 골라 보세요 ↓
-            </motion.p>
-          </div>
-        </div>
-
-        {/* 분필 받침대 */}
-        <div
-          className="mt-2.5 flex items-center gap-3 rounded-lg px-5 py-2"
-          style={{
-            background: "linear-gradient(180deg,#6d4a2b,#4f3520)",
-            boxShadow: "inset 0 2px 2px rgba(255,255,255,0.12), inset 0 -3px 5px rgba(0,0,0,0.4)",
-          }}
-        >
-          <span className="h-2.5 w-12 rounded-[2px]" style={{ background: "#f3f2ea" }} />
-          <span className="h-2.5 w-9 rounded-[2px]" style={{ background: "#f7d9a0" }} />
-          <span className="h-2.5 w-10 rounded-[2px]" style={{ background: "#f3b6c2" }} />
-          <span
-            className="ml-auto h-4 w-14 rounded-[3px]"
-            style={{ background: "linear-gradient(180deg,#3a5f52,#26443a)", boxShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
-          />
-        </div>
+          {list.length}개의 도구
+        </span>
+        <h3 className="mt-4 text-3xl font-extrabold text-white md:text-4xl">{room.label}</h3>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/50">{room.intro}</p>
       </div>
 
-      {/* ===== 책상: 앱 영역 ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.4, duration: 0.5 }}
-        className="mt-5 rounded-2xl p-4 md:p-6"
-        style={{
-          background:
-            "repeating-linear-gradient(92deg,#8a5f37 0 26px,#835a34 26px 52px), linear-gradient(180deg,#8a5f37,#6f4a29)",
-          backgroundBlendMode: "overlay",
-          boxShadow:
-            "inset 0 2px 4px rgba(255,255,255,0.12), inset 0 -6px 14px rgba(0,0,0,0.4), 0 24px 40px -20px rgba(0,0,0,0.6)",
-        }}
-      >
-        {/* 카테고리 칩 + 검색 */}
-        <div className="flex flex-wrap items-center gap-2">
+      {/* 카테고리 칩 + 검색 */}
+      <div className="mt-8 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setFilter("all")}
+          className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+            filter === "all" ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
+          }`}
+        >
+          전체
+        </button>
+        {cats.map((c) => (
           <button
-            onClick={() => setFilter("all")}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-              filter === "all" ? "bg-white text-[#5a3d22]" : "bg-black/20 text-white/80 hover:bg-black/30"
+            key={c}
+            onClick={() => setFilter(c)}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+              filter === c ? "bg-emerald-500 text-white" : "bg-white/5 text-white/70 hover:bg-white/10"
             }`}
           >
-            전체
+            {CATEGORY_LABELS[c]}
           </button>
-          {cats.map((c) => (
-            <button
-              key={c}
-              onClick={() => setFilter(c)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                filter === c ? "bg-white text-[#5a3d22]" : "bg-black/20 text-white/80 hover:bg-black/30"
-              }`}
-            >
-              {CATEGORY_LABELS[c]}
-            </button>
-          ))}
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="도구 검색"
-            className="ml-auto w-28 rounded-full border border-black/10 bg-black/20 px-3 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/40 sm:w-40"
-          />
-        </div>
+        ))}
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="도구 검색"
+          className="ml-auto w-28 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 sm:w-44"
+        />
+      </div>
 
-        {/* 앱 카드 그리드 */}
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {filtered.map((app) => (
-            <button
-              key={app.id}
-              onClick={() => setDetail(app)}
-              className="flex items-start gap-3 rounded-xl border border-white/10 bg-[#0f2019] p-4 text-left transition hover:border-emerald-400/40 hover:bg-[#13291f]"
-            >
+      {/* 리치 앱 카드 */}
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        {filtered.map((app, i) => (
+          <motion.button
+            key={app.id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 + i * 0.06, duration: 0.4 }}
+            onClick={() => setDetail(app)}
+            className="group flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-emerald-400/50 hover:bg-white/[0.06]"
+          >
+            {/* 상단: 프로필 + 이름/카테고리 */}
+            <div className="flex items-center gap-4">
               {app.profileImg ? (
                 <Image
                   src={app.profileImg}
                   alt={app.name}
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 shrink-0 rounded-lg object-cover"
+                  width={64}
+                  height={64}
+                  className="h-16 w-16 shrink-0 rounded-2xl object-cover ring-1 ring-white/10"
                 />
               ) : (
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300">
-                  <AppIcon name={app.iconName} className="h-6 w-6" />
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/20">
+                  <AppIcon name={app.iconName} className="h-8 w-8" />
                 </div>
               )}
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h4 className="truncate font-bold text-white">{app.name}</h4>
+                  <h4 className="truncate text-lg font-bold text-white">{app.name}</h4>
                   {app.isNew && (
                     <span className="shrink-0 rounded bg-emerald-400 px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]">
                       NEW
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-emerald-300/70">{CATEGORY_LABELS[app.category]}</p>
-                <p className="mt-1 text-xs leading-relaxed text-white/55">{app.description}</p>
+                <p className="mt-0.5 text-xs font-medium text-emerald-300/80">
+                  {CATEGORY_LABELS[app.category]}
+                </p>
               </div>
-            </button>
-          ))}
-          {filtered.length === 0 && (
-            <p className="col-span-full py-6 text-center text-sm text-white/50">검색 결과가 없어요</p>
-          )}
-        </div>
-      </motion.div>
+            </div>
+
+            {/* 하단: 상세 설명 (프로필 아래, 왼쪽 정렬) */}
+            <p className="mt-4 text-sm leading-relaxed text-white/70">
+              {app.longDescription ?? app.description}
+            </p>
+            {app.details && app.details.length > 0 && (
+              <ul className="mt-3 space-y-1.5">
+                {app.details.map((d) => (
+                  <li key={d} className="flex gap-2 text-[13px] leading-snug text-white/55">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70" />
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 opacity-0 transition group-hover:opacity-100">
+              자세히 보기 →
+            </span>
+          </motion.button>
+        ))}
+        {filtered.length === 0 && (
+          <p className="col-span-full py-8 text-center text-sm text-white/50">검색 결과가 없어요</p>
+        )}
+      </div>
     </motion.div>
 
     <AnimatePresence>

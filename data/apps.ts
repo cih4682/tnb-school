@@ -23,6 +23,8 @@ export interface App {
   profileImg?: string; // 앱 프로필/아이콘 이미지
   video?: string; // 설명 영상 (10초)
   url?: string; // 실제 앱 주소
+  longDescription?: string; // 카드용 상세 설명
+  details?: string[]; // 개조식 설명
 }
 
 export const APP_GOAL = 100;
@@ -37,6 +39,14 @@ export const apps: App[] = [
     profileImg: "/app/edumemo_2.png",
     video: "/app/edumemo_1.mp4",
     url: "https://www.naver.com",
+    longDescription:
+      "한 주의 수업을 요일·교시별로 한눈에 정리하는 도구예요. 계획을 드래그로 옮기고, 반복되는 수업은 복사해 빠르게 채워요.",
+    details: [
+      "요일·교시 시간표를 한눈에 관리",
+      "드래그앤드롭으로 자유롭게 이동",
+      "반복 수업은 복사해서 빠르게 입력",
+      "저장하면 언제 어디서나 다시 확인",
+    ],
   },
   {
     id: "slide-maker",
@@ -45,6 +55,13 @@ export const apps: App[] = [
     description: "주제만 입력하면 수업 슬라이드 초안이 완성됩니다.",
     iconName: "slides",
     isNew: true,
+    longDescription:
+      "주제만 입력하면 수업용 슬라이드 초안을 만들어줘요. 필요한 장만 골라 다듬으면 끝이에요.",
+    details: [
+      "주제·학년 입력으로 초안 자동 생성",
+      "필요한 슬라이드만 선택·편집",
+      "이미지와 도표 자동 배치",
+    ],
   },
   {
     id: "worksheet-gen",
@@ -59,6 +76,13 @@ export const apps: App[] = [
     category: "assessment",
     description: "객관식·주관식 문제를 한 번에 만들어요.",
     iconName: "circleHelp",
+    longDescription:
+      "단원만 고르면 객관식·주관식 문제를 한 번에 만들어줘요. 난이도와 유형도 조절할 수 있어요.",
+    details: [
+      "단원 선택으로 문제 자동 생성",
+      "난이도·문항 유형 조절",
+      "정답과 해설까지 함께 제공",
+    ],
   },
   {
     id: "rubric-builder",
@@ -66,6 +90,13 @@ export const apps: App[] = [
     category: "assessment",
     description: "수행평가 기준표를 클릭 몇 번으로 완성합니다.",
     iconName: "barChart",
+    longDescription:
+      "수행평가 기준표(루브릭)를 빠르게 만들어요. 평가 항목과 배점만 정하면 바로 완성돼요.",
+    details: [
+      "평가 항목 입력으로 기준표 완성",
+      "척도·배점 자유롭게 설정",
+      "학생 공유용으로 바로 내보내기",
+    ],
   },
   {
     id: "attendance",
