@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
 const links = [
-  { href: "#apps", label: "앱" },
+  { href: "#apps", label: "세 개의 방" },
   { href: "/dashboard", label: "대시보드" },
   { href: "#pro-plan", label: "후원 안내" },
   { href: "/community", label: "커뮤니티" },
