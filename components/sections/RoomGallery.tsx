@@ -398,9 +398,9 @@ function ClassChalkboard({ room, list }: { room: Room; list: App[] }) {
             boxShadow: "inset 0 2px 2px rgba(255,255,255,0.12), inset 0 -3px 5px rgba(0,0,0,0.4)",
           }}
         >
-          <span className="h-2 w-12 rounded-full" style={{ background: "#f3f2ea" }} />
-          <span className="h-2 w-9 rounded-full" style={{ background: "#f7d9a0" }} />
-          <span className="h-2 w-10 rounded-full" style={{ background: "#f3b6c2" }} />
+          <span className="h-2.5 w-12 rounded-[2px]" style={{ background: "#f3f2ea" }} />
+          <span className="h-2.5 w-9 rounded-[2px]" style={{ background: "#f7d9a0" }} />
+          <span className="h-2.5 w-10 rounded-[2px]" style={{ background: "#f3b6c2" }} />
           <span
             className="ml-auto h-4 w-14 rounded-[3px]"
             style={{ background: "linear-gradient(180deg,#3a5f52,#26443a)", boxShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
