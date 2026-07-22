@@ -82,7 +82,6 @@ export default function DashboardPage() {
           </h1>
           {tier.badge ? (
             <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white ring-1 ring-white/15">
-              <span>{tier.emoji}</span>
               <span>{tier.label}</span>
               <span className="font-normal text-white/50">· 후원해주셔서 감사합니다</span>
             </div>

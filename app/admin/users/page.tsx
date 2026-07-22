@@ -110,7 +110,7 @@ export default function AdminUsers() {
                       <p className="truncate text-sm font-semibold">{u.name}</p>
                       <p className="truncate text-xs text-slate-400">{u.email}</p>
                     </div>
-                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${t.chip}`}>
+                    <span className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-medium ${t.chip}`}>
                       {t.badge && t.emoji ? `${t.emoji} ` : ""}{t.label}
                     </span>
                   </button>

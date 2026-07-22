@@ -13,8 +13,8 @@ export interface Tier {
 
 export const TIERS: Tier[] = [
   { value: "member", label: "선생님", badge: false, chip: "bg-slate-100 text-slate-500" },
-  { value: "supporter", label: "개인 후원자", badge: true, emoji: "🦉", chip: "bg-emerald-50 text-emerald-600" },
-  { value: "corporate", label: "기업 후원자", badge: true, emoji: "🦉", chip: "bg-amber-50 text-amber-600" },
+  { value: "supporter", label: "개인 후원자", badge: true, chip: "bg-emerald-50 text-emerald-600" },
+  { value: "corporate", label: "기업 후원자", badge: true, chip: "bg-amber-50 text-amber-600" },
   { value: "partner", label: "파트너·단체", badge: false, chip: "bg-purple-50 text-purple-600" },
 ];
 
