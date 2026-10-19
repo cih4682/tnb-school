@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface Post {
   id: string;
@@ -37,6 +38,8 @@ export function PostDetail({
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDeletePost, setConfirmDeletePost] = useState(false);
+  const [confirmDeleteCommentId, setConfirmDeleteCommentId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -55,7 +58,6 @@ export function PostDetail({
   }
 
   async function handleDelete() {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
     await supabase.from("posts").delete().eq("id", post.id);
     router.push("/community");
   }
@@ -90,7 +92,6 @@ export function PostDetail({
   }
 
   async function handleDeleteComment(commentId: string) {
-    if (!confirm("댓글을 삭제하시겠습니까?")) return;
     await supabase.from("comments").delete().eq("id", commentId);
     setComments(comments.filter((c) => c.id !== commentId));
   }
@@ -139,7 +140,7 @@ export function PostDetail({
               수정
             </Link>
             <button
-              onClick={handleDelete}
+              onClick={() => setConfirmDeletePost(true)}
               className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition hover:border-red-300 hover:bg-red-50"
             >
               삭제
@@ -167,7 +168,7 @@ export function PostDetail({
                   </div>
                   {user?.id === c.author_id && (
                     <button
-                      onClick={() => handleDeleteComment(c.id)}
+                      onClick={() => setConfirmDeleteCommentId(c.id)}
                       className="text-xs text-slate-400 hover:text-red-500"
                     >
                       삭제
@@ -212,6 +213,28 @@ export function PostDetail({
           )}
         </div>
       </div>
+
+      <ConfirmModal
+        open={confirmDeletePost}
+        title="게시글 삭제"
+        message="정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        onConfirm={() => {
+          setConfirmDeletePost(false);
+          handleDelete();
+        }}
+        onCancel={() => setConfirmDeletePost(false)}
+      />
+
+      <ConfirmModal
+        open={!!confirmDeleteCommentId}
+        title="댓글 삭제"
+        message="댓글을 삭제하시겠습니까?"
+        onConfirm={() => {
+          if (confirmDeleteCommentId) handleDeleteComment(confirmDeleteCommentId);
+          setConfirmDeleteCommentId(null);
+        }}
+        onCancel={() => setConfirmDeleteCommentId(null)}
+      />
     </div>
   );
 }

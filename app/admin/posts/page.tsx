@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface Post {
   id: string;
@@ -13,6 +14,7 @@ interface Post {
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   useEffect(() => { load(); }, []);
 
@@ -25,7 +27,6 @@ export default function AdminPosts() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("이 게시글을 삭제하시겠습니까? 댓글도 함께 삭제됩니다.")) return;
     await supabase.from("posts").delete().eq("id", id);
     load();
   }
@@ -58,7 +59,7 @@ export default function AdminPosts() {
                 <td className="hidden px-4 py-3 text-slate-500 md:table-cell">{p.author_name}</td>
                 <td className="px-4 py-3 text-slate-400">{formatDate(p.created_at)}</td>
                 <td className="px-4 py-3">
-                  <button onClick={() => handleDelete(p.id)} className="text-xs text-red-400 hover:text-red-600">
+                  <button onClick={() => setDeleteTarget(p.id)} className="text-xs text-red-400 hover:text-red-600">
                     삭제
                   </button>
                 </td>
@@ -70,6 +71,17 @@ export default function AdminPosts() {
           </tbody>
         </table>
       </div>
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="게시글 삭제"
+        message="이 게시글을 삭제하시겠습니까? 댓글도 함께 삭제됩니다."
+        onConfirm={() => {
+          if (deleteTarget) handleDelete(deleteTarget);
+          setDeleteTarget(null);
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

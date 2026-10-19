@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CATEGORY_GROUPS } from "@/data/rooms";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface ManagedApp {
   id: string;
@@ -35,6 +36,7 @@ export default function AdminApps() {
   const [editing, setEditing] = useState<ManagedApp | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState<"" | "img" | "video">("");
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const [name, setName] = useState("");
   const [category, setCategory] = useState("수업 준비");
@@ -141,7 +143,6 @@ export default function AdminApps() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
     await supabase.from("managed_apps").delete().eq("id", id);
     load();
   }
@@ -343,7 +344,7 @@ export default function AdminApps() {
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <button onClick={() => openForm(app)} className="text-xs text-slate-500 hover:text-slate-900">수정</button>
-                    <button onClick={() => handleDelete(app.id)} className="text-xs text-red-400 hover:text-red-600">삭제</button>
+                    <button onClick={() => setDeleteTarget(app.id)} className="text-xs text-red-400 hover:text-red-600">삭제</button>
                   </div>
                 </td>
               </tr>
@@ -356,6 +357,17 @@ export default function AdminApps() {
           </tbody>
         </table>
       </div>
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="앱 삭제"
+        message="정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        onConfirm={() => {
+          if (deleteTarget) handleDelete(deleteTarget);
+          setDeleteTarget(null);
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
