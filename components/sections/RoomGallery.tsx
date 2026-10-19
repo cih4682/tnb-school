@@ -377,7 +377,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
             {/* 왼쪽: 정보 */}
             <div className="relative flex flex-col justify-center p-6 pb-0 md:w-1/2 md:p-8">
               <div className="flex items-center justify-between gap-2 md:block">
-                <h4 className="break-keep text-2xl font-extrabold text-white md:text-3xl [overflow-wrap:break-word]">{featured.name}</h4>
+                <h4 className="min-w-0 text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
                 {/* 모바일 전용: 앱 열기 + 링크 복사 + KICK! — 이름과 한 줄, 우측 정렬 */}
                 <div className="flex shrink-0 items-center gap-1.5 md:hidden">
                   {featured.url && (
@@ -702,7 +702,7 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
             )}
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h4 className="break-keep text-xl font-bold text-white [overflow-wrap:break-word]">{app.name}</h4>
+                <h4 className="text-xl font-bold text-white">{app.name}</h4>
                 {app.isNew && (
                   <span className="rounded px-1.5 py-0.5 text-[10px] font-bold text-[#0b1120]" style={{ backgroundColor: room.light }}>
                     NEW
