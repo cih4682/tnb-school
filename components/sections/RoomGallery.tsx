@@ -377,7 +377,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
             {/* 왼쪽: 정보 */}
             <div className="relative flex flex-col justify-center p-6 pb-0 md:w-1/2 md:p-8">
               <div className="flex items-center justify-between gap-2 md:block">
-                <h4 className="min-w-0 break-keep text-2xl font-extrabold text-white md:text-3xl [overflow-wrap:anywhere]">{featured.name}</h4>
+                <h4 className="min-w-0 break-keep text-2xl font-extrabold text-white md:text-3xl [overflow-wrap:anywhere]"><AppName name={featured.name} /></h4>
                 {/* 모바일 전용: 앱 열기 + 링크 복사 + KICK! — 이름과 한 줄, 우측 정렬 */}
                 <div className="flex shrink-0 items-center gap-1.5 md:hidden">
                   {featured.url && (
@@ -557,7 +557,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                 )}
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h4 className="min-w-0 break-keep text-lg font-bold text-white [overflow-wrap:anywhere]">{app.name}</h4>
+                    <h4 className="min-w-0 break-keep text-lg font-bold text-white [overflow-wrap:anywhere]"><AppName name={app.name} /></h4>
                     {app.isNew && (
                       <span className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold text-[#0b1120]" style={{ backgroundColor: "var(--light)" }}>
                         NEW
@@ -629,6 +629,26 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
 }
 
 /* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
+/* 앱 이름: 모바일에서는 띄어쓰기마다 강제 줄바꿈 (예: 특수학급 / 관찰일지), 데스크톱은 한 줄 */
+function AppName({ name }: { name: string }) {
+  const words = name.trim().split(/\s+/);
+  return (
+    <>
+      {words.map((w, i) => (
+        <span key={i}>
+          {i > 0 && (
+            <>
+              <br className="md:hidden" />
+              <span className="hidden md:inline"> </span>
+            </>
+          )}
+          {w}
+        </span>
+      ))}
+    </>
+  );
+}
+
 function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onClose: () => void }) {
   const [user, setUser] = useState<User | null>(null);
   const [resources, setResources] = useState<AppResource[]>([]);
@@ -702,7 +722,7 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
             )}
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h4 className="min-w-0 break-keep text-xl font-bold text-white [overflow-wrap:anywhere]">{app.name}</h4>
+                <h4 className="min-w-0 break-keep text-xl font-bold text-white [overflow-wrap:anywhere]"><AppName name={app.name} /></h4>
                 {app.isNew && (
                   <span className="rounded px-1.5 py-0.5 text-[10px] font-bold text-[#0b1120]" style={{ backgroundColor: room.light }}>
                     NEW
