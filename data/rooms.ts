@@ -71,6 +71,30 @@ export function normalizeUrl(url?: string | null): string | undefined {
   return `https://${trimmed}`;
 }
 
+export interface AppResource {
+  id: string;
+  fileName: string;
+  storagePath: string;
+  fileSize?: number;
+}
+
+interface ResourceRow {
+  id: string;
+  file_name: string;
+  storage_path: string;
+  file_size?: number | null;
+}
+
+/* resources 로우 → AppResource 변환 */
+export function toAppResource(r: ResourceRow): AppResource {
+  return {
+    id: r.id,
+    fileName: r.file_name,
+    storagePath: r.storage_path,
+    fileSize: r.file_size || undefined,
+  };
+}
+
 /* managed_apps 로우 → RoomApp 변환 */
 export function toRoomApp(r: ManagedAppRow): RoomApp {
   return {

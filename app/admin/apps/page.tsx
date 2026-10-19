@@ -21,6 +21,22 @@ interface ManagedApp {
   sort_order: number;
 }
 
+interface Resource {
+  id: string;
+  app_id: string;
+  file_name: string;
+  storage_path: string;
+  file_size: number | null;
+  created_at: string;
+}
+
+function formatFileSize(bytes: number | null) {
+  if (!bytes) return "";
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+}
+
 const ICONS = [
   "calendar", "slides", "fileText", "circleHelp", "barChart",
   "checkCircle", "chair", "search", "palette", "pen", "compass",
@@ -37,6 +53,9 @@ export default function AdminApps() {
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState<"" | "img" | "video">("");
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [uploadingResource, setUploadingResource] = useState(false);
+  const [deleteResourceTarget, setDeleteResourceTarget] = useState<Resource | null>(null);
 
   const [name, setName] = useState("");
   const [category, setCategory] = useState("수업 준비");
@@ -76,6 +95,7 @@ export default function AdminApps() {
       setIcon(app.icon || "calendar");
       setIsNew(!!app.is_new);
       setStatus(app.status);
+      loadResources(app.id);
     } else {
       setEditing(null);
       setName("");
@@ -89,8 +109,49 @@ export default function AdminApps() {
       setIcon("calendar");
       setIsNew(false);
       setStatus("active");
+      setResources([]);
     }
     setShowForm(true);
+  }
+
+  async function loadResources(appId: string) {
+    const { data } = await supabase
+      .from("resources")
+      .select("*")
+      .eq("app_id", appId)
+      .order("created_at", { ascending: false });
+    setResources(data || []);
+  }
+
+  async function uploadResource(file: File) {
+    if (!editing) return;
+    setUploadingResource(true);
+    const path = `${editing.id}/${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage
+      .from("resources")
+      .upload(path, file, { upsert: false });
+    if (error) {
+      alert("자료 업로드 실패: " + error.message);
+      setUploadingResource(false);
+      return;
+    }
+    const { error: insertError } = await supabase.from("resources").insert({
+      app_id: editing.id,
+      file_name: file.name,
+      storage_path: path,
+      file_size: file.size,
+    });
+    if (insertError) {
+      alert("자료 등록 실패: " + insertError.message);
+    }
+    await loadResources(editing.id);
+    setUploadingResource(false);
+  }
+
+  async function handleDeleteResource(r: Resource) {
+    await supabase.storage.from("resources").remove([r.storage_path]);
+    await supabase.from("resources").delete().eq("id", r.id);
+    if (editing) loadResources(editing.id);
   }
 
   async function uploadFile(file: File, kind: "img" | "video") {
@@ -282,6 +343,41 @@ export default function AdminApps() {
               <input id="isNew" type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} className="h-4 w-4" />
               <label htmlFor="isNew" className="text-sm text-slate-600">NEW 뱃지 표시</label>
             </div>
+
+            {/* 첨부 자료 (로그인 사용자 다운로드용) */}
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-500">첨부 자료 (로그인 사용자만 다운로드 가능)</label>
+              {editing ? (
+                <div className="space-y-2">
+                  {resources.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">
+                      <span className="truncate">
+                        {r.file_name}
+                        {r.file_size != null && <span className="ml-2 text-xs text-slate-400">{formatFileSize(r.file_size)}</span>}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteResourceTarget(r)}
+                        className="shrink-0 text-xs text-red-400 hover:text-red-600"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  ))}
+                  {resources.length === 0 && <p className="text-xs text-slate-400">등록된 자료가 없어요.</p>}
+                  <label className="mt-1 inline-block cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50">
+                    {uploadingResource ? "업로드 중…" : "파일 추가"}
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => e.target.files?.[0] && uploadResource(e.target.files[0])}
+                    />
+                  </label>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400">앱을 먼저 등록한 뒤 "수정"에서 자료를 추가할 수 있어요.</p>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-2">
@@ -367,6 +463,17 @@ export default function AdminApps() {
           setDeleteTarget(null);
         }}
         onCancel={() => setDeleteTarget(null)}
+      />
+
+      <ConfirmModal
+        open={!!deleteResourceTarget}
+        title="자료 삭제"
+        message={deleteResourceTarget ? `"${deleteResourceTarget.file_name}" 파일을 삭제하시겠습니까?` : ""}
+        onConfirm={() => {
+          if (deleteResourceTarget) handleDeleteResource(deleteResourceTarget);
+          setDeleteResourceTarget(null);
+        }}
+        onCancel={() => setDeleteResourceTarget(null)}
       />
     </div>
   );

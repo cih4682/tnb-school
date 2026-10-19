@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { RoomApp, toRoomApp, ROOM_CATEGORIES } from "@/data/rooms";
+import { RoomApp, toRoomApp, ROOM_CATEGORIES, AppResource, toAppResource } from "@/data/rooms";
+import type { User } from "@supabase/supabase-js";
 import { AppIcon } from "../ui/AppIcon";
 
 /* ── 방 정의 ─────────────────────────────────────────────
@@ -286,10 +287,13 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
       (filter === "all" || a.category === filter) &&
       (q === "" || a.name.includes(q) || a.description.includes(q))
   );
-  // 피처드(KICK!) = 기본 화면에서 영상 있는 첫 앱
+  // 피처드(KICK!) = 기본 화면에서 3개 — 영상 있는 앱 우선, 모자라면 나머지 앱으로 채움
   const showFeatured = filter === "all" && q === "";
-  const featured = showFeatured ? list.find((a) => a.video) : null;
-  const gridList = filtered.filter((a) => a.id !== featured?.id);
+  const featuredList = showFeatured
+    ? [...list.filter((a) => a.video), ...list.filter((a) => !a.video)].slice(0, 3)
+    : [];
+  const featuredIds = new Set(featuredList.map((a) => a.id));
+  const gridList = filtered.filter((a) => !featuredIds.has(a.id));
   async function handleCopy(id: string, url: string) {
     try {
       await navigator.clipboard.writeText(url);
@@ -356,12 +360,13 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
         />
       </div>
 
-      {/* KICK! 피처드 배너 (영상 있는 앱) */}
-      {featured && (
+      {/* KICK! 피처드 배너 (영상 있는 앱, 최대 3개) */}
+      {featuredList.map((featured, fi) => (
         <motion.div
+          key={featured.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+          transition={{ delay: 0.2 + fi * 0.08, duration: 0.5 }}
           style={{
             borderColor: `rgba(${room.glow},0.25)`,
             background: `linear-gradient(to bottom right, rgba(${room.glow},0.1), rgba(255,255,255,0.02))`,
@@ -475,20 +480,46 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                 </span>
               </div>
               <div className="mt-3 aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-white/10">
-                <video
-                  src={featured.video}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="h-full w-full object-cover"
-                />
+                {featured.video ? (
+                  <video
+                    src={featured.video}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  /* 영상 없는 앱: 프로필/아이콘으로 대체 */
+                  <div
+                    className="flex h-full w-full flex-col items-center justify-center gap-3"
+                    style={{ background: `radial-gradient(circle at center, rgba(${room.glow},0.18), rgba(255,255,255,0.02))` }}
+                  >
+                    {featured.profileImg ? (
+                      <Image
+                        src={featured.profileImg}
+                        alt={featured.name}
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
+                      />
+                    ) : (
+                      <div
+                        className="flex h-20 w-20 items-center justify-center rounded-2xl"
+                        style={{ backgroundColor: `rgba(${room.glow},0.15)`, color: "var(--light)", boxShadow: `inset 0 0 0 1px rgba(${room.glow},0.2)` }}
+                      >
+                        <AppIcon name={featured.iconName || "calendar"} className="h-10 w-10" />
+                      </div>
+                    )}
+                    <span className="text-xs text-white/40">설명 영상 준비 중</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </motion.div>
-      )}
+      ))}
 
       {/* 리치 앱 카드 */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -584,7 +615,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
             )}
           </motion.div>
         ))}
-        {gridList.length === 0 && !featured && (
+        {gridList.length === 0 && featuredList.length === 0 && (
           <p className="col-span-full py-8 text-center text-sm text-white/50">검색 결과가 없어요</p>
         )}
       </div>
@@ -599,6 +630,33 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
 
 /* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
 function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onClose: () => void }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [resources, setResources] = useState<AppResource[]>([]);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    supabase
+      .from("resources")
+      .select("*")
+      .eq("app_id", app.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setResources((data || []).map(toAppResource)));
+  }, [app.id]);
+
+  async function handleDownload(r: AppResource) {
+    setDownloadingId(r.id);
+    const { data, error } = await supabase.storage
+      .from("resources")
+      .createSignedUrl(r.storagePath, 60);
+    setDownloadingId(null);
+    if (error || !data) {
+      alert("다운로드에 실패했어요: " + (error?.message || ""));
+      return;
+    }
+    window.open(data.signedUrl, "_blank");
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -656,6 +714,37 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-white/70">{app.description}</p>
+
+          {resources.length > 0 && (
+            <div className="mt-5 border-t border-white/10 pt-4">
+              <p className="text-xs font-semibold text-white/40">첨부 자료</p>
+              <div className="mt-2 space-y-2">
+                {resources.map((r) => (
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5"
+                  >
+                    <span className="truncate text-sm text-white/80">{r.fileName}</span>
+                    {user ? (
+                      <button
+                        type="button"
+                        onClick={() => handleDownload(r)}
+                        disabled={downloadingId === r.id}
+                        className="shrink-0 text-xs font-semibold transition hover:brightness-110 disabled:opacity-50"
+                        style={{ color: room.light }}
+                      >
+                        {downloadingId === r.id ? "준비 중…" : "다운로드 →"}
+                      </button>
+                    ) : (
+                      <a href="/login" className="shrink-0 text-xs font-medium text-white/40 underline hover:text-white/60">
+                        로그인 후 다운로드
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {app.url ? (
             <a
