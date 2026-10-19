@@ -317,7 +317,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
       {/* 헤더 — 볼드 텍스트아트 */}
       <div className="text-center">
         <h3
-          className="text-5xl font-black tracking-tight text-white md:text-6xl"
+          className="text-4xl font-black tracking-tight text-white md:text-6xl"
           style={{ filter: `drop-shadow(0 6px 22px rgba(${room.glow},0.22))` }}
         >
           {room.label}
@@ -370,7 +370,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
         >
           <div className="flex flex-col md:flex-row">
             {/* 왼쪽: 정보 */}
-            <div className="relative flex flex-col justify-center p-6 md:w-1/2 md:p-8">
+            <div className="relative flex flex-col justify-center p-6 pb-0 md:w-1/2 md:p-8">
               <div className="flex items-center justify-between gap-2 md:block">
                 <h4 className="text-2xl font-extrabold text-white md:text-3xl">{featured.name}</h4>
                 {/* 모바일 전용: 앱 열기 + 링크 복사 + KICK! — 이름과 한 줄, 우측 정렬 */}
@@ -443,7 +443,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
               )}
             </div>
             {/* 오른쪽: (복사 + KICK!) 우측 정렬 + 16:9 영상 박스 — 데스크톱 전용 */}
-            <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
+            <div className="flex flex-col justify-center p-6 pt-0 pb-3 md:w-1/2 md:p-8">
               <div className="hidden items-center justify-end gap-2 md:flex">
                 {featured.url && (
                   <button
