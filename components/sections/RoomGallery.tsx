@@ -746,13 +746,25 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
             </div>
           )}
 
+          {app.downloadUrl && (
+            <a
+              href={app.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ borderColor: `rgba(${room.glow},0.5)`, color: room.light }}
+              className="mt-6 block w-full rounded-full border py-3.5 text-center text-sm font-semibold transition hover:bg-white/5"
+            >
+              자료 다운로드 ↓
+            </a>
+          )}
+
           {app.url ? (
             <a
               href={app.url}
               target="_blank"
               rel="noopener noreferrer"
               style={{ backgroundColor: `rgb(${room.glow})` }}
-              className="mt-6 block w-full rounded-full py-3.5 text-center text-sm font-semibold text-white transition hover:brightness-110"
+              className={`${app.downloadUrl ? "mt-3" : "mt-6"} block w-full rounded-full py-3.5 text-center text-sm font-semibold text-white transition hover:brightness-110`}
             >
               앱 열기 →
             </a>

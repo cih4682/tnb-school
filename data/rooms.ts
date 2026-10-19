@@ -42,6 +42,7 @@ export interface RoomApp {
   profileImg?: string;
   video?: string;
   url?: string;
+  downloadUrl?: string; // 외부 다운로드 링크(구글 드라이브 등) — 누구나 받을 수 있음
   iconName?: string;
   isNew?: boolean;
 }
@@ -56,6 +57,7 @@ interface ManagedAppRow {
   profile_img?: string | null;
   video_url?: string | null;
   url?: string | null;
+  download_url?: string | null;
   icon?: string | null;
   is_new?: boolean | null;
 }
@@ -107,6 +109,7 @@ export function toRoomApp(r: ManagedAppRow): RoomApp {
     profileImg: r.profile_img || undefined,
     video: r.video_url || undefined,
     url: normalizeUrl(r.url),
+    downloadUrl: normalizeUrl(r.download_url),
     iconName: r.icon || undefined,
     isNew: r.is_new || undefined,
   };

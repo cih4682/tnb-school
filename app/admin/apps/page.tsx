@@ -13,6 +13,7 @@ interface ManagedApp {
   long_description: string | null;
   details: string[] | null;
   url: string;
+  download_url?: string | null;
   profile_img: string | null;
   video_url: string | null;
   icon: string | null;
@@ -64,6 +65,7 @@ export default function AdminApps() {
   const [longDescription, setLongDescription] = useState("");
   const [detailsText, setDetailsText] = useState("");
   const [url, setUrl] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
   const [profileImg, setProfileImg] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [icon, setIcon] = useState("calendar");
@@ -91,6 +93,7 @@ export default function AdminApps() {
       setLongDescription(app.long_description || "");
       setDetailsText((app.details || []).join("\n"));
       setUrl(app.url || "");
+      setDownloadUrl(app.download_url || "");
       setProfileImg(app.profile_img || "");
       setVideoUrl(app.video_url || "");
       setIcon(app.icon || "calendar");
@@ -105,6 +108,7 @@ export default function AdminApps() {
       setLongDescription("");
       setDetailsText("");
       setUrl("");
+      setDownloadUrl("");
       setProfileImg("");
       setVideoUrl("");
       setIcon("calendar");
@@ -192,13 +196,15 @@ export default function AdminApps() {
       icon: icon || null,
       is_new: isNew,
       status,
+      // download_url 컬럼 추가 전에도 저장이 깨지지 않도록, 값이 있을 때만 포함
+      ...(downloadUrl || editing?.download_url ? { download_url: downloadUrl.trim() || null } : {}),
     };
-    if (editing) {
-      await supabase.from("managed_apps").update(payload).eq("id", editing.id);
-    } else {
-      await supabase
-        .from("managed_apps")
-        .insert({ ...payload, sort_order: apps.length });
+    const { error } = editing
+      ? await supabase.from("managed_apps").update(payload).eq("id", editing.id)
+      : await supabase.from("managed_apps").insert({ ...payload, sort_order: apps.length });
+    if (error) {
+      alert("저장 실패: " + error.message);
+      return;
     }
     setShowForm(false);
     load();
@@ -334,6 +340,16 @@ export default function AdminApps() {
             <div className="sm:col-span-2">
               <label className="mb-1 block text-xs font-semibold text-slate-500">앱 URL</label>
               <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://my-app.web.app" className={inputCls} />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-500">다운로드 링크 (누구나 다운로드 가능 — 구글 드라이브 등)</label>
+              <input
+                value={downloadUrl}
+                onChange={(e) => setDownloadUrl(e.target.value)}
+                placeholder="https://drive.google.com/file/d/..."
+                className={inputCls}
+              />
             </div>
 
             <div>
