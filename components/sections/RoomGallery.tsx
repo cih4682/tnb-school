@@ -392,15 +392,59 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ backgroundColor: "var(--accent)" }}
-                  className="mt-5 inline-flex w-fit rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+                  className="mt-5 hidden w-fit rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 md:inline-flex"
                 >
                   앱 열기 →
                 </a>
               )}
+              {/* 모바일 전용: 앱 열기 + 링크 복사 + KICK! 한 줄 */}
+              <div className="mt-5 flex items-center justify-between gap-2 md:hidden">
+                {featured.url && (
+                  <a
+                    href={featured.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ backgroundColor: "var(--accent)" }}
+                    className="inline-flex shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+                  >
+                    앱 열기 →
+                  </a>
+                )}
+                <div className="flex shrink-0 items-center gap-2">
+                  {featured.url && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCopy(featured.id, featured.url!);
+                      }}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
+                      aria-label="링크 복사"
+                      title="링크 복사"
+                    >
+                      {copiedId === featured.id ? (
+                        <svg className="h-4 w-4" style={{ color: "var(--light)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                          <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                  <span
+                    style={{ backgroundColor: "var(--accent)", boxShadow: `0 10px 15px -3px rgba(${room.glow},0.3)` }}
+                    className="rounded-lg px-2.5 py-1 text-xs font-black italic tracking-wider text-white"
+                  >
+                    KICK!
+                  </span>
+                </div>
+              </div>
             </div>
-            {/* 오른쪽: (복사 + KICK!) 우측 정렬 + 16:9 영상 박스 */}
+            {/* 오른쪽: (복사 + KICK!) 우측 정렬 + 16:9 영상 박스 — 데스크톱 전용 */}
             <div className="flex flex-col justify-center p-6 md:w-1/2 md:p-8">
-              <div className="flex items-center justify-end gap-2">
+              <div className="hidden items-center justify-end gap-2 md:flex">
                 {featured.url && (
                   <button
                     onClick={(e) => {
@@ -437,6 +481,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                   muted
                   loop
                   playsInline
+                  preload="auto"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -577,6 +622,7 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
             muted
             loop
             playsInline
+            preload="auto"
             className="aspect-video w-full bg-black object-cover"
           />
         ) : (
