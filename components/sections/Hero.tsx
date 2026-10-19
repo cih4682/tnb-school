@@ -31,7 +31,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="mt-6 text-2xl font-extrabold tracking-tight sm:text-3xl md:text-5xl"
+            className="mt-6 text-3xl font-extrabold tracking-tight md:text-5xl"
           >
             <span className="block leading-[1.3]">선생님의 하루에서</span>
             <span className="block bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-200 bg-clip-text leading-[1.3] text-transparent">
