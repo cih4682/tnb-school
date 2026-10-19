@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CATEGORY_GROUPS } from "@/data/rooms";
+import { CATEGORY_GROUPS, ROOM_LABELS, ROOM_ORDER, RoomId, roomOfCategory } from "@/data/rooms";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface ManagedApp {
@@ -56,6 +56,7 @@ export default function AdminApps() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [uploadingResource, setUploadingResource] = useState(false);
   const [deleteResourceTarget, setDeleteResourceTarget] = useState<Resource | null>(null);
+  const [roomFilter, setRoomFilter] = useState<"all" | RoomId>("all");
 
   const [name, setName] = useState("");
   const [category, setCategory] = useState("수업 준비");
@@ -207,6 +208,19 @@ export default function AdminApps() {
     await supabase.from("managed_apps").delete().eq("id", id);
     load();
   }
+
+  async function moveApp(list: ManagedApp[], index: number, direction: -1 | 1) {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const a = list[index];
+    const b = list[targetIndex];
+    await supabase.from("managed_apps").update({ sort_order: b.sort_order }).eq("id", a.id);
+    await supabase.from("managed_apps").update({ sort_order: a.sort_order }).eq("id", b.id);
+    load();
+  }
+
+  const filteredApps =
+    roomFilter === "all" ? apps : apps.filter((app) => roomOfCategory(app.category) === roomFilter);
 
   const inputCls =
     "w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400";
@@ -395,11 +409,38 @@ export default function AdminApps() {
         </form>
       )}
 
+      {/* 방 탭 */}
+      <div className="mt-6 flex flex-wrap gap-2">
+        <button
+          onClick={() => setRoomFilter("all")}
+          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+            roomFilter === "all" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:bg-slate-100"
+          }`}
+        >
+          전체 ({apps.length})
+        </button>
+        {ROOM_ORDER.map((roomId) => {
+          const count = apps.filter((app) => roomOfCategory(app.category) === roomId).length;
+          return (
+            <button
+              key={roomId}
+              onClick={() => setRoomFilter(roomId)}
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+                roomFilter === roomId ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:bg-slate-100"
+              }`}
+            >
+              {ROOM_LABELS[roomId]} ({count})
+            </button>
+          );
+        })}
+      </div>
+
       {/* 앱 목록 */}
-      <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 bg-slate-50">
             <tr>
+              <th className="w-16 px-4 py-3 font-semibold">순서</th>
               <th className="px-4 py-3 font-semibold">앱 이름</th>
               <th className="hidden px-4 py-3 font-semibold sm:table-cell">카테고리</th>
               <th className="hidden px-4 py-3 font-semibold md:table-cell">URL</th>
@@ -408,8 +449,28 @@ export default function AdminApps() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {apps.map((app) => (
+            {filteredApps.map((app, idx) => (
               <tr key={app.id} className="hover:bg-slate-50">
+                <td className="px-4 py-3">
+                  <div className="flex flex-col">
+                    <button
+                      onClick={() => moveApp(filteredApps, idx, -1)}
+                      disabled={idx === 0}
+                      className="text-slate-400 hover:text-slate-900 disabled:opacity-20"
+                      aria-label="위로"
+                    >
+                      ▲
+                    </button>
+                    <button
+                      onClick={() => moveApp(filteredApps, idx, 1)}
+                      disabled={idx === filteredApps.length - 1}
+                      className="text-slate-400 hover:text-slate-900 disabled:opacity-20"
+                      aria-label="아래로"
+                    >
+                      ▼
+                    </button>
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-medium">
                   <div className="flex items-center gap-2">
                     {app.profile_img && (
@@ -445,9 +506,9 @@ export default function AdminApps() {
                 </td>
               </tr>
             ))}
-            {apps.length === 0 && (
+            {filteredApps.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-slate-400">등록된 앱이 없어요.</td>
+                <td colSpan={6} className="px-4 py-10 text-center text-slate-400">등록된 앱이 없어요.</td>
               </tr>
             )}
           </tbody>
