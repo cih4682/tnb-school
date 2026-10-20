@@ -60,6 +60,17 @@ const ROOMS: Room[] = [
     light: "#c4b5fd",
     image: "/image/jinro.png",
   },
+  {
+    id: "share",
+    label: "나눔의 방",
+    tagline: "함께 쓰는 선생님의 자료",
+    intro: "선생님들이 만든 자료와 노하우를 서로 나누는 방이에요.",
+    categories: ROOM_CATEGORIES.share,
+    glow: "244, 63, 94",
+    door: "#6b1f2e",
+    light: "#fda4af",
+    image: "/image/pink.png",
+  },
 ];
 
 export function RoomGallery() {
@@ -125,7 +136,7 @@ export function RoomGallery() {
             App Gallery
           </p>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            세 개의 방
+            네 개의 방
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-400">
             문을 열면 그 방에 놓인 도구들을 만날 수 있어요.
@@ -134,15 +145,12 @@ export function RoomGallery() {
           </p>
         </motion.div>
 
-        {/* 세 개의 문 */}
+        {/* 네 개의 문 — 위 3개, 아래 1개(나눔의 방)는 가운데 */}
         <div className="mt-16 grid gap-10 sm:grid-cols-3 md:mt-24 md:gap-6">
           {ROOMS.map((room, i) => (
-            <DoorCard
-              key={room.id}
-              room={room}
-              index={i}
-              onEnter={() => setActive(room)}
-            />
+            <div key={room.id} className={i === 3 ? "sm:col-start-2 md:mt-10" : undefined}>
+              <DoorCard room={room} index={i} onEnter={() => setActive(room)} />
+            </div>
           ))}
         </div>
       </div>

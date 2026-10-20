@@ -1,26 +1,29 @@
 // 방 ↔ 카테고리 매핑 (홈 방 · 대시보드 공용)
 
-export type RoomId = "class" | "work" | "career";
+export type RoomId = "class" | "work" | "career" | "share";
 
 export const ROOM_CATEGORIES: Record<RoomId, string[]> = {
   class: ["수업 준비", "수업 자료", "평가", "수업 활동"],
   work: ["학생 관리", "생활지도", "행정 업무", "생기부", "업무 관리"],
   career: ["진로 탐색", "진학 지도", "적성 검사", "진로 상담", "진로"],
+  share: ["자료 나눔", "수업 나눔", "나눔"],
 };
 
 export const ROOM_LABELS: Record<RoomId, string> = {
   class: "수업의 방",
   work: "업무의 방",
   career: "진로의 방",
+  share: "나눔의 방",
 };
 
-export const ROOM_ORDER: RoomId[] = ["class", "work", "career"];
+export const ROOM_ORDER: RoomId[] = ["class", "work", "career", "share"];
 
 // 관리자 카테고리 드롭다운 (방별 그룹)
 export const CATEGORY_GROUPS = [
   { room: "수업의 방", cats: ["수업 준비", "수업 자료", "평가", "수업 활동"] },
   { room: "업무의 방", cats: ["학생 관리", "생활지도", "행정 업무", "생기부"] },
   { room: "진로의 방", cats: ["진로 탐색", "진학 지도", "적성 검사", "진로 상담"] },
+  { room: "나눔의 방", cats: ["자료 나눔", "수업 나눔", "나눔"] },
   { room: "기타", cats: ["기타"] },
 ];
 

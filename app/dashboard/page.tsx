@@ -64,7 +64,7 @@ export default function DashboardPage() {
   }
 
   const tier = getTier(profile?.plan);
-  // 3개 방으로 그룹 (+ 기타)
+  // 방별로 그룹 (+ 기타)
   const groups: { label: string; apps: ManagedApp[] }[] = ROOM_ORDER.map((id) => ({
     label: ROOM_LABELS[id],
     apps: allApps.filter((a) => ROOM_CATEGORIES[id].includes(a.category)),
