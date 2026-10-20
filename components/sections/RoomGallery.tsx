@@ -148,9 +148,13 @@ export function RoomGallery() {
         {/* 네 개의 문 — 위 3개, 아래 1개(나눔의 방)는 가운데 */}
         <div className="mt-16 grid gap-10 sm:grid-cols-3 md:mt-24 md:gap-6">
           {ROOMS.map((room, i) => (
-            <div key={room.id} className={i === 3 ? "sm:col-start-2 md:mt-10" : undefined}>
-              <DoorCard room={room} index={i} onEnter={() => setActive(room)} />
-            </div>
+            <DoorCard
+              key={room.id}
+              room={room}
+              index={i}
+              onEnter={() => setActive(room)}
+              className={i === 3 ? "sm:col-start-2" : undefined}
+            />
           ))}
         </div>
       </div>
@@ -168,10 +172,12 @@ function DoorCard({
   room,
   index,
   onEnter,
+  className,
 }: {
   room: Room;
   index: number;
   onEnter: () => void;
+  className?: string;
 }) {
   const { glow, door, light, locked } = room;
 
@@ -184,7 +190,7 @@ function DoorCard({
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.12 }}
       whileHover={{ scale: 1.09 }}
-      className="group relative flex cursor-pointer flex-col items-center focus:outline-none"
+      className={`group relative flex cursor-pointer flex-col items-center focus:outline-none ${className ?? ""}`}
       style={{ perspective: 1000 }}
       aria-label={locked ? `${room.label} — 곧 열립니다 (미리보기)` : `${room.label} 들어가기`}
     >
