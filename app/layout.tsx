@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ProfileSync } from "@/components/ProfileSync";
+import { AppSplash, SPLASH_SCRIPT } from "@/components/AppSplash";
 
 const SITE_URL = "https://teacherbuff.com";
 const SITE_NAME = "T&B School | 티처버프";
@@ -96,12 +97,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_SCRIPT }} />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0f172a" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -206,6 +208,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans">
+        <AppSplash />
         <ProfileSync />
         {children}
       </body>

@@ -66,10 +66,10 @@ const ROOMS: Room[] = [
     tagline: "함께 쓰는 선생님의 자료",
     intro: "선생님들이 만든 자료와 노하우를 서로 나누는 방이에요.",
     categories: ROOM_CATEGORIES.share,
-    glow: "244, 63, 94",
-    door: "#6b1f2e",
-    light: "#fda4af",
-    image: "/image/pink.png",
+    glow: "59, 130, 246",
+    door: "#1e3a6b",
+    light: "#93c5fd",
+    image: "/image/blue.png",
   },
 ];
 
