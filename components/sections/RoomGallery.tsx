@@ -275,7 +275,7 @@ function DoorCard({
 
       {/* 라벨 */}
       <div className="mt-5 text-center">
-        <h3 className="text-2xl font-bold text-white">{room.label}</h3>
+        <h3 className="text-[22px] font-bold text-white">{room.label}</h3>
         <p className="mt-1 text-sm text-slate-400">{room.tagline}</p>
         <span
           className="mt-3 inline-block text-[13px] font-semibold"
