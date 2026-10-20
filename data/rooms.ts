@@ -1,5 +1,7 @@
 // 방 ↔ 카테고리 매핑 (홈 방 · 대시보드 공용)
 
+import { isSupporter } from "./tiers";
+
 export type RoomId = "class" | "work" | "career" | "share";
 
 export const ROOM_CATEGORIES: Record<RoomId, string[]> = {
@@ -35,6 +37,31 @@ export function roomOfCategory(category: string): RoomId | null {
   return null;
 }
 
+// 앱 공개 범위 — public: 누구나 / member: 가입한 선생님 / supporter: 후원자 이상
+export type AccessLevel = "public" | "member" | "supporter";
+
+export const ACCESS_LEVELS: { value: AccessLevel; label: string }[] = [
+  { value: "public", label: "누구나 (로그인 불필요)" },
+  { value: "member", label: "가입한 선생님" },
+  { value: "supporter", label: "후원자 이상" },
+];
+
+// 칼럼 추가 전(값 없음)에는 가입자 전용으로 취급
+export function toAccessLevel(value?: string | null): AccessLevel {
+  return value === "public" || value === "supporter" ? value : "member";
+}
+
+// 열람 권한이 없으면 잠금 사유를 돌려준다 (없으면 null)
+export function lockReason(
+  level: AccessLevel,
+  viewer: { loggedIn: boolean; plan?: string | null }
+): "login" | "supporter" | null {
+  if (level === "public") return null;
+  if (!viewer.loggedIn) return "login";
+  if (level === "supporter" && !isSupporter(viewer.plan)) return "supporter";
+  return null;
+}
+
 export interface RoomApp {
   id: string;
   name: string;
@@ -48,6 +75,8 @@ export interface RoomApp {
   downloadUrl?: string; // 외부 다운로드 링크(구글 드라이브 등) — 누구나 받을 수 있음
   iconName?: string;
   isNew?: boolean;
+  access: AccessLevel;
+  locked?: "login" | "supporter"; // 열람 권한 없음 — url 은 비워서 내려준다
 }
 
 interface ManagedAppRow {
@@ -63,6 +92,7 @@ interface ManagedAppRow {
   download_url?: string | null;
   icon?: string | null;
   is_new?: boolean | null;
+  access_level?: string | null;
 }
 
 /* 링크 정규화: 프로토콜이 없으면 https:// 를 붙인다.
@@ -115,5 +145,6 @@ export function toRoomApp(r: ManagedAppRow): RoomApp {
     downloadUrl: normalizeUrl(r.download_url),
     iconName: r.icon || undefined,
     isNew: r.is_new || undefined,
+    access: toAccessLevel(r.access_level),
   };
 }

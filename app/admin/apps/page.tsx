@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CATEGORY_GROUPS, ROOM_LABELS, ROOM_ORDER, RoomId, roomOfCategory } from "@/data/rooms";
+import { ACCESS_LEVELS, AccessLevel, CATEGORY_GROUPS, ROOM_LABELS, ROOM_ORDER, RoomId, roomOfCategory, toAccessLevel } from "@/data/rooms";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 interface ManagedApp {
@@ -18,6 +18,7 @@ interface ManagedApp {
   video_url: string | null;
   icon: string | null;
   is_new: boolean | null;
+  access_level?: string | null;
   status: string;
   sort_order: number;
 }
@@ -71,6 +72,7 @@ export default function AdminApps() {
   const [icon, setIcon] = useState("calendar");
   const [isNew, setIsNew] = useState(false);
   const [status, setStatus] = useState("active");
+  const [access, setAccess] = useState<AccessLevel>("member");
 
   useEffect(() => {
     load();
@@ -99,6 +101,7 @@ export default function AdminApps() {
       setIcon(app.icon || "calendar");
       setIsNew(!!app.is_new);
       setStatus(app.status);
+      setAccess(toAccessLevel(app.access_level));
       loadResources(app.id);
     } else {
       setEditing(null);
@@ -114,6 +117,7 @@ export default function AdminApps() {
       setIcon("calendar");
       setIsNew(false);
       setStatus("active");
+      setAccess("member");
       setResources([]);
     }
     setShowForm(true);
@@ -198,6 +202,8 @@ export default function AdminApps() {
       status,
       // download_url 컬럼 추가 전에도 저장이 깨지지 않도록, 값이 있을 때만 포함
       ...(downloadUrl || editing?.download_url ? { download_url: downloadUrl.trim() || null } : {}),
+      // access_level 도 마찬가지 — 기본값(가입자)이 아니거나 이미 칼럼이 있을 때만 포함
+      ...(access !== "member" || editing?.access_level ? { access_level: access } : {}),
     };
     const { error } = editing
       ? await supabase.from("managed_apps").update(payload).eq("id", editing.id)
@@ -369,6 +375,18 @@ export default function AdminApps() {
               </select>
             </div>
 
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs font-semibold text-slate-500">공개 범위 (누가 앱을 열 수 있나)</label>
+              <select value={access} onChange={(e) => setAccess(e.target.value as AccessLevel)} className={inputCls}>
+                {ACCESS_LEVELS.map((a) => (
+                  <option key={a.value} value={a.value}>{a.label}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-slate-400">
+                후원자 이상 = 개인 후원자 · 기업 후원자 · 파트너. 권한이 없으면 카드는 보이고 &quot;앱 열기&quot; 대신 안내가 떠요.
+              </p>
+            </div>
+
             <div className="flex items-center gap-2 sm:col-span-2">
               <input id="isNew" type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} className="h-4 w-4" />
               <label htmlFor="isNew" className="text-sm text-slate-600">NEW 뱃지 표시</label>
@@ -495,6 +513,8 @@ export default function AdminApps() {
                     )}
                     {app.name}
                     {app.is_new && <span className="rounded bg-emerald-100 px-1 text-[10px] font-bold text-emerald-600">NEW</span>}
+                    {toAccessLevel(app.access_level) === "supporter" && <span className="rounded bg-amber-100 px-1 text-[10px] font-bold text-amber-600">후원자</span>}
+                    {toAccessLevel(app.access_level) === "public" && <span className="rounded bg-sky-100 px-1 text-[10px] font-bold text-sky-600">전체공개</span>}
                   </div>
                 </td>
                 <td className="hidden px-4 py-3 text-slate-500 sm:table-cell">{app.category}</td>

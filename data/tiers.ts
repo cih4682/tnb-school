@@ -32,3 +32,8 @@ export function getTier(value?: string | null): Tier {
   const v = value && LEGACY[value] ? LEGACY[value] : value;
   return TIERS.find((t) => t.value === v) ?? TIERS[0];
 }
+
+// 후원자 이상 (후원자 전용 앱 이용 가능)
+export function isSupporter(value?: string | null): boolean {
+  return getTier(value).value !== "member";
+}

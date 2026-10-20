@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { RoomApp, toRoomApp, ROOM_CATEGORIES, AppResource, toAppResource } from "@/data/rooms";
+import { RoomApp, toRoomApp, ROOM_CATEGORIES, AppResource, toAppResource, lockReason } from "@/data/rooms";
 import type { User } from "@supabase/supabase-js";
 import { AppIcon } from "../ui/AppIcon";
 
@@ -77,14 +77,37 @@ export function RoomGallery() {
   const [active, setActive] = useState<Room | null>(null);
   const [apps, setApps] = useState<RoomApp[]>([]);
 
-  // 관리자(managed_apps)에서 활성 앱 불러오기
+  // 관리자(managed_apps)에서 활성 앱 불러오기 — 열람 권한이 없으면 url 을 빼고 잠금 표시
   useEffect(() => {
-    supabase
-      .from("managed_apps")
-      .select("*")
-      .eq("status", "active")
-      .order("sort_order", { ascending: true })
-      .then(({ data }) => setApps((data || []).map(toRoomApp)));
+    async function load() {
+      const [{ data: rows }, { data: { user } }] = await Promise.all([
+        supabase.from("managed_apps").select("*").eq("status", "active").order("sort_order", { ascending: true }),
+        supabase.auth.getUser(),
+      ]);
+      let plan: string | null = null;
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("plan").eq("user_id", user.id).single();
+        plan = profile?.plan ?? null;
+      }
+      setApps(
+        (rows || []).map((r) => {
+          const app = toRoomApp(r);
+          const locked = lockReason(app.access, { loggedIn: !!user, plan });
+          return locked ? { ...app, url: undefined, locked } : app;
+        })
+      );
+    }
+    load();
+  }, []);
+
+  // 잠긴 앱의 "후원 안내" → 방을 닫고 후원 섹션으로 이동
+  useEffect(() => {
+    const onSupport = () => {
+      setActive(null);
+      setTimeout(() => document.getElementById("pro-plan")?.scrollIntoView({ behavior: "smooth", block: "center" }), 350);
+    };
+    window.addEventListener("tnb:open-support", onSupport);
+    return () => window.removeEventListener("tnb:open-support", onSupport);
   }, []);
 
   const listForActive = active
@@ -394,6 +417,15 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                 <h4 className="min-w-0 break-keep text-2xl font-extrabold text-white md:text-3xl [overflow-wrap:anywhere]"><AppName name={featured.name} /></h4>
                 {/* 모바일 전용: 앱 열기 + 링크 복사 + KICK! — 이름과 한 줄, 우측 정렬 */}
                 <div className="flex shrink-0 items-center gap-1.5 md:hidden">
+                  {featured.locked && (
+                    <button
+                      type="button"
+                      onClick={() => setDetail(featured)}
+                      className="inline-flex shrink-0 items-center rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80 transition hover:bg-white/15"
+                    >
+                      🔒 {featured.locked === "login" ? "로그인 필요" : "후원자 전용"}
+                    </button>
+                  )}
                   {featured.url && (
                     <a
                       href={featured.url}
@@ -459,6 +491,15 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                 >
                   앱 열기 →
                 </a>
+              )}
+              {featured.locked && (
+                <button
+                  type="button"
+                  onClick={() => setDetail(featured)}
+                  className="mt-5 hidden w-fit rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/15 md:inline-flex"
+                >
+                  🔒 {featured.locked === "login" ? "로그인 후 이용 가능" : "후원자 전용 앱"}
+                </button>
               )}
             </div>
             {/* 오른쪽: (복사 + KICK!) 우측 정렬 + 16:9 영상 박스 — 데스크톱 전용 */}
@@ -578,6 +619,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
                         NEW
                       </span>
                     )}
+                    {app.access === "supporter" && <SupporterChip />}
                   </div>
                   <p className="mt-0.5 text-xs font-medium" style={{ color: "var(--light)" }}>
                     {app.category}
@@ -645,6 +687,14 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
 
 /* ── 앱 상세 (설명 영상 + 프로필 + 열기) ───────────────── */
 /* 앱 이름: 모바일에서는 띄어쓰기마다 강제 줄바꿈 (예: 특수학급 / 관찰일지), 데스크톱은 한 줄 */
+function SupporterChip() {
+  return (
+    <span className="shrink-0 rounded bg-amber-400/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-300 ring-1 ring-amber-400/30">
+      후원자 전용
+    </span>
+  );
+}
+
 function AppName({ name }: { name: string }) {
   const words = name.trim().split(/\s+/);
   return (
@@ -743,6 +793,7 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
                     NEW
                   </span>
                 )}
+                {app.access === "supporter" && <SupporterChip />}
               </div>
               <p className="text-xs text-white/40">{app.category}</p>
             </div>
@@ -793,7 +844,26 @@ function AppDetailModal({ app, room, onClose }: { app: RoomApp; room: Room; onCl
             </a>
           )}
 
-          {app.url ? (
+          {app.locked === "login" ? (
+            <a
+              href="/login"
+              style={{ backgroundColor: `rgb(${room.glow})` }}
+              className={`${app.downloadUrl ? "mt-3" : "mt-6"} block w-full rounded-full py-3.5 text-center text-sm font-semibold text-white transition hover:brightness-110`}
+            >
+              🔒 로그인 후 이용할 수 있어요 →
+            </a>
+          ) : app.locked === "supporter" ? (
+            <div className={app.downloadUrl ? "mt-3" : "mt-6"}>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event("tnb:open-support"))}
+                className="block w-full rounded-full bg-amber-400 py-3.5 text-center text-sm font-semibold text-[#0b1120] transition hover:brightness-110"
+              >
+                🔒 후원자 전용 앱이에요 — 후원 안내 보기 →
+              </button>
+              <p className="mt-2 text-center text-xs text-white/40">후원해 주신 선생님께 열려 있어요. 후원 후 다시 로그인하면 바로 이용할 수 있어요.</p>
+            </div>
+          ) : app.url ? (
             <a
               href={app.url}
               target="_blank"
@@ -930,6 +1000,7 @@ function RoomInterior({ room, list, onClose }: { room: Room; list: RoomApp[]; on
                       NEW
                     </span>
                   )}
+                  {app.access === "supporter" && <SupporterChip />}
                 </div>
                 <p className="mt-0.5 text-[11px] text-slate-500">
                   {app.category}

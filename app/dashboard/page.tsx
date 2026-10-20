@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { ROOM_ORDER, ROOM_LABELS, ROOM_CATEGORIES, roomOfCategory, normalizeUrl } from "@/data/rooms";
-import { getTier } from "@/data/tiers";
+import { getTier, isSupporter } from "@/data/tiers";
 
 interface ManagedApp {
   id: string;
@@ -16,6 +16,7 @@ interface ManagedApp {
   description: string;
   url: string;
   status: string;
+  access_level?: string | null;
 }
 
 interface Profile {
@@ -103,6 +104,14 @@ export default function DashboardPage() {
                     >
                       <h3 className="text-sm font-bold">{app.name}</h3>
                       <p className="mt-1 whitespace-pre-line text-xs text-slate-400">{app.description}</p>
+                      {app.access_level === "supporter" && !isSupporter(profile?.plan) ? (
+                      <a
+                        href="/#pro-plan"
+                        className="mt-4 block rounded-lg bg-amber-50 py-2 text-center text-xs font-semibold text-amber-700 hover:bg-amber-100"
+                      >
+                        🔒 후원자 전용 — 후원 안내 보기
+                      </a>
+                      ) : (
                       <div className="mt-4 flex gap-2">
                         <a
                           href={normalizeUrl(app.url)}
@@ -145,6 +154,7 @@ export default function DashboardPage() {
                           </AnimatePresence>
                         </div>
                       </div>
+                      )}
                     </div>
                 ))}
               </div>
