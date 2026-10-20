@@ -543,7 +543,8 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.06, duration: 0.4 }}
-            className="relative"
+            // 홀수 개일 때 마지막 카드는 PC에서 가로 전체 폭
+            className={`relative ${gridList.length % 2 === 1 && i === gridList.length - 1 ? "sm:col-span-2" : ""}`}
           >
             <button
               onClick={() => setDetail(app)}
