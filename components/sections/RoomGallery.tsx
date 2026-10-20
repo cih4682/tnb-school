@@ -330,7 +330,7 @@ function RoomShowcase({ room, list }: { room: Room; list: RoomApp[] }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.55, ease: "easeOut" }}
       style={accentVars}
-      className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto px-4 py-10 md:py-14"
+      className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto hide-scrollbar px-4 py-10 md:py-14"
     >
       {/* 헤더 — 볼드 텍스트아트 */}
       <div className="text-center">
@@ -855,7 +855,7 @@ function RoomInterior({ room, list, onClose }: { room: Room; list: RoomApp[]; on
         initial={{ opacity: 0, scale: 0.94, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ delay: 0.55, duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 max-h-[86vh] w-full max-w-4xl overflow-y-auto px-6 py-16"
+        className="relative z-10 max-h-[86vh] w-full max-w-4xl overflow-y-auto hide-scrollbar px-6 py-16"
       >
         <div className="text-center">
           <span
