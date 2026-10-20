@@ -216,9 +216,9 @@ function DoorCard({
           <Image
             src={room.image}
             alt={`${room.label} 문`}
-            width={216}
-            height={288}
-            className="relative h-72 w-auto select-none transition-all duration-500"
+            width={240}
+            height={320}
+            className="relative h-80 w-auto select-none transition-all duration-500"
             style={{ filter: `drop-shadow(0 0 28px rgba(${glow}, 0.45))` }}
           />
         ) : (
@@ -274,8 +274,8 @@ function DoorCard({
       </motion.div>
 
       {/* 라벨 */}
-      <div className="mt-10 text-center">
-        <h3 className="text-xl font-bold text-white">{room.label}</h3>
+      <div className="mt-5 text-center">
+        <h3 className="text-2xl font-bold text-white">{room.label}</h3>
         <p className="mt-1 text-sm text-slate-400">{room.tagline}</p>
         <span
           className="mt-3 inline-block text-[13px] font-semibold"
