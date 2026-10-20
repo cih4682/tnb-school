@@ -136,7 +136,7 @@ export function RoomGallery() {
             App Gallery
           </p>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            네 개의 방
+            세 개의 방
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-400">
             문을 열면 그 방에 놓인 도구들을 만날 수 있어요.
