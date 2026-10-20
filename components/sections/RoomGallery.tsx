@@ -153,7 +153,7 @@ export function RoomGallery() {
               room={room}
               index={i}
               onEnter={() => setActive(room)}
-              className={i === 3 ? "sm:col-start-2" : undefined}
+              className={i === 3 ? "mt-10 sm:col-start-2" : undefined}
             />
           ))}
         </div>
